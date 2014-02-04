@@ -14,7 +14,7 @@
 #include "TH2.h"
 #include "TMath.h"
 
-
+///based on CMS-SUS-13-011; arXiv:1308.1586v2
 class CmsSingleLepton20Fb : public AnalysisBase {
 
 public:
