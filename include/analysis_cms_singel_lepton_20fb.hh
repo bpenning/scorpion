@@ -15,21 +15,21 @@
 #include "TMath.h"
 
 
-class MonoJet : public AnalysisBase {
+class CmsSingleLepton20Fb : public AnalysisBase {
 
 public:
-  MonoJet(const std::string & name, 
+  CmsSingleLepton20Fb(const std::string & name, 
 	  const std::string & experiment,
 	  const unsigned int & numBins);
   
-  MonoJet(const std::string & name, 
+  CmsSingleLepton20Fb(const std::string & name, 
 	  const std::string & experiment, 
 	  const unsigned int & numBins,
 	  const double & intlumi, 
 	  //const std::vector<int> & datayields,
 	  const std::vector<double> & bgpred);
   
-  MonoJet(const std::string & name, 
+  CmsSingleLepton20Fb(const std::string & name, 
 	  const std::string & experiment, 
 	  const unsigned int & numBins,
 	  const double & intlumi, 
@@ -39,7 +39,7 @@ public:
 	  const std::string & fitmode,
 	  const bool & calculateR);
 
-  ~MonoJet();
+  ~CmsSingleLepton20Fb();
 
   void Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight);
   void initHistos();

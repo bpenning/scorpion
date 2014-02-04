@@ -2,14 +2,14 @@
 
 //constructor for object where you don't necessarily want to run a limit,
 //but rather just run the analysis, look at distributions, see what survives
-MonoJet::MonoJet(const std::string & name, 
+CmsSingleLepton20Fb::CmsSingleLepton20Fb(const std::string & name, 
 		 const std::string & experiment,
 		 const unsigned int & numBins) :
   AnalysisBase(name, experiment, numBins) {}
 
 //constructor for object where you also want to run a limit and so other information
 //is necessary
-MonoJet::MonoJet(const std::string & name, 
+CmsSingleLepton20Fb::CmsSingleLepton20Fb(const std::string & name, 
 		 const std::string & experiment, 
 		 const unsigned int & numBins,
 		 const double & intlumi, 
@@ -17,7 +17,7 @@ MonoJet::MonoJet(const std::string & name,
 		 const std::vector<double> & bgpred) :
   AnalysisBase(name, experiment, numBins, intlumi, bgpred) {}
 
-MonoJet::MonoJet(const std::string & name, 
+CmsSingleLepton20Fb::CmsSingleLepton20Fb(const std::string & name, 
 		 const std::string & experiment, 
 		 const unsigned int & numBins,
 		 const double & intlumi, 
@@ -29,9 +29,9 @@ MonoJet::MonoJet(const std::string & name,
   AnalysisBase(name, experiment, numBins, intlumi, bgpred, bgpreduncert, datayields, fitmode, calculateR) {}
 
 
-MonoJet::~MonoJet() {}
+CmsSingleLepton20Fb::~CmsSingleLepton20Fb() {}
 
-TSimpleArray<TRootJet> MonoJet::SubArrayGoodJets(const TClonesArray *JET, const float & pt, const float & eta) {
+TSimpleArray<TRootJet> CmsSingleLepton20Fb::SubArrayGoodJets(const TClonesArray *JET, const float & pt, const float & eta) {
 
   TIter itJet((TCollection*)JET);
   TRootJet *jet;
@@ -46,7 +46,7 @@ TSimpleArray<TRootJet> MonoJet::SubArrayGoodJets(const TClonesArray *JET, const 
   return array;
 }
 
-TSimpleArray<TRootElectron> MonoJet::SubArrayEl(const TClonesArray *ELEC, const float & pt, const float & eta) {
+TSimpleArray<TRootElectron> CmsSingleLepton20Fb::SubArrayEl(const TClonesArray *ELEC, const float & pt, const float & eta) {
   TIter itElec((TCollection*)ELEC);
   TRootElectron *elec;
   itElec.Reset();
@@ -64,7 +64,7 @@ TSimpleArray<TRootElectron> MonoJet::SubArrayEl(const TClonesArray *ELEC, const 
   return array;
 }
 
-TSimpleArray<TRootMuon> MonoJet::SubArrayMu(const TClonesArray *MUON, const float & pt, const float & eta) {
+TSimpleArray<TRootMuon> CmsSingleLepton20Fb::SubArrayMu(const TClonesArray *MUON, const float & pt, const float & eta) {
   TIter itMuon((TCollection*)MUON);
   TRootMuon *muon;
   itMuon.Reset();
@@ -80,7 +80,7 @@ TSimpleArray<TRootMuon> MonoJet::SubArrayMu(const TClonesArray *MUON, const floa
   return array;
 }
 
-TSimpleArray<TRootETmis> MonoJet::makeETM(const TClonesArray *ETMISS) {
+TSimpleArray<TRootETmis> CmsSingleLepton20Fb::makeETM(const TClonesArray *ETMISS) {
   TIter itEtMiss((TCollection*)ETMISS);
   TRootETmis *etm;
   itEtMiss.Reset();
@@ -91,7 +91,7 @@ TSimpleArray<TRootETmis> MonoJet::makeETM(const TClonesArray *ETMISS) {
   return array;
 }
 
-bool MonoJet::checkforsecondjetphi(const TSimpleArray<TRootJet> & goodjets, const double & dphisep) {
+bool CmsSingleLepton20Fb::checkforsecondjetphi(const TSimpleArray<TRootJet> & goodjets, const double & dphisep) {
 
   if(goodjets.GetEntries() == 2) {
     
@@ -116,13 +116,13 @@ bool MonoJet::checkforsecondjetphi(const TSimpleArray<TRootJet> & goodjets, cons
    
 }
 
-void MonoJet::initHistos() {
+void CmsSingleLepton20Fb::initHistos() {
   andir->cd();
   leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
   calomet = new TH1D("calomet",";E_{T}^{miss} [GeV];Entries",200,-5.,1995.);
 }
 
-void MonoJet::Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight) {
+void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight) {
 
   //std::cout << "entries: " << treereader.GetEntries() << std::endl;
 
