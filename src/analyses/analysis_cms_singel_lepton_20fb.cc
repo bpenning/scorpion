@@ -58,8 +58,10 @@ TSimpleArray<TRootElectron> CmsSingleLepton20Fb::SubArrayEl(const TClonesArray *
       //double reliso = (elec->SumEt + elec->SumPt)/elec->PT;
       //std::cout << "reliso: " << reliso << std::endl;
       //reliso > riso
-      if(elec->PT < pt || !elec->IsolFlag || fabs(elec->Eta) > eta || (fabs(elec->Eta) > 1.4 && fabs(elec->Eta) < 1.6)) continue;
-      array.Add(elec);
+//      if(elec->PT < pt || !elec->IsolFlag || fabs(elec->Eta) > eta || (fabs(elec->Eta) > 1.4 && fabs(elec->Eta) < 1.6)) continue;
+      if (fabs(elec->Eta)<1.4442 && elec->PT > 30 && elec->IsolFlag  ){
+          array.Add(elec);
+      }
     }
   return array;
 }
