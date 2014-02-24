@@ -1,6 +1,7 @@
 import optparse
 from python.make_filemap_dict import filemap_from_single_diroctory 
 from python.run_limit_code import runlim
+from python.extract_CLs import print_and_save_CLs 
 
 def parse_args():
     parser=optparse.OptionParser()
@@ -21,4 +22,6 @@ if __name__=="__main__":
     com=args.CM_energy
     filemap_dict=filemap_from_single_diroctory(pythia_delphes_dir,rootfile,experiment)
     runlim(jaf_output_dir,filemap_dict,com,ss5b=1,os5b=1,lp5b=1,alphat7bb=1)
+    print_and_save_CLs(jaf_output_dir,filemap_dict['internal_name'])
+
 
