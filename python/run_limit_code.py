@@ -1,3 +1,4 @@
+import os
 import ROOT as r
 import libjad_DelphesAnalysis as j
 from python.core.types import *
@@ -17,6 +18,12 @@ def filemap_from_dict(filemap_dict):
     return j.FileMap(internal_name, pairmap)
 
 def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,alphat12b=0,ss11b=0,alphat40b=0,ss40b=0):
+    print('XSEC: {0} barn'.format(filemap_dict['xsec']))
+    #jaf needs the directory to end in '/'
+    if not outdir[:-1] =='/':
+        outdir+='/'
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
 
     calculateRyes = True
     calculateRno = False
