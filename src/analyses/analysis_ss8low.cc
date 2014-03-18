@@ -209,7 +209,7 @@ void SS8low::Run(const TreeReader & treereader, const TreeReader & gentreereader
                 if((invmass1 < 106.0 && invmass1 > 76.0 && !oppflav1 && leptons[2].Pt()>10.0) || 
                    (invmass2 < 106.0 && invmass2 > 76.0 && !oppflav2 && leptons[2].Pt()>10.0) ||
                    (invmass1 < 12.0  &&                    !oppflav1 && leptons[2].Pt()>5.0 ) ||             
-                   (invmass2 < 12.0  &&                    !oppflav2 && leptons[2].Pt()>5.0 ) ||             
+                   (invmass2 < 12.0  &&                    !oppflav2 && leptons[2].Pt()>5.0 )              
                     ) {
                   passselection = false; //i.e. we have a Z candidate most likely, veto event...
                 }

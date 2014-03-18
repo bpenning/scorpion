@@ -206,7 +206,7 @@ void SSb8::Run(const TreeReader & treereader, const TreeReader & gentreereader, 
 		if(leptons[1].Flavour() != leptons[2].Flavour()) {
 		  oppflav2 = true;
 		}
-		if((invmass1 < 106.0 && invmass1 > 76.0 && oppflav1) || (invmass2 < 106.0 && invmass2 > 76.0 && oppflav2)) {
+		if((invmass1 < 106.0 && invmass1 > 76.0 && !oppflav1) || (invmass2 < 106.0 && invmass2 > 76.0 && !oppflav2)) {
 		  passselection = false; //i.e. we have a Z candidate most likely, veto event...
 		}
 	      }
