@@ -1,18 +1,15 @@
 #ifndef __JPARTICLECLASS__
 #define __JPARTICLECLASS__
 
-#include "TLorentzVector.h"
+#include "jad_object_class.hh"
 
-class jparticle : public TLorentzVector {
+class jparticle : public jobject {
   
 public:
   jparticle();
   ~jparticle();
   jparticle(double Px, double Py, double Pz, double E, int PID, int Status, double Charge);
 
-  bool operator<(const jparticle & rhs) const;
-  bool operator>(const jparticle & rhs) const;
-  
   double Charge() const;
   int PID() const;
   int Status() const;

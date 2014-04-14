@@ -1,25 +1,24 @@
 #ifndef __JLEPTONCLASS__
 #define __JLEPTONCLASS__
 
-#include "TLorentzVector.h"
+#include "jad_object_class.hh"
 
-class jlepton : public TLorentzVector {
+class jlepton : public jobject {
   
 public:
   jlepton();
   ~jlepton();
-  jlepton(double Px, double Py, double Pz, double E, bool iselectron, bool poscharge);
+  jlepton(double Px, double Py, double Pz, double E, bool iselectron, int charge, bool IsolFlag);
 
-  bool operator<(const jlepton & rhs) const;
-  bool operator>(const jlepton & rhs) const;
-  
   std::string Flavour() const;
-  bool Charge() const;
+  int Charge() const;
+  bool IsolFlag() const; 
 
 private:
 
   bool mIsElectron;
-  bool mPosCharge;
+  bool mIsolFlag;
+  int mCharge;
 
 };
 

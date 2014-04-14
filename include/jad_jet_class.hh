@@ -1,17 +1,15 @@
 #ifndef __JJETCLASS__
 #define __JJETCLASS__
 
-#include "TLorentzVector.h"
+#include "jad_object_class.hh"
 
-class jjet : public TLorentzVector {
-  
+class jjet : public jobject {
+
 public:
   jjet();
-  ~jjet();
   jjet(double Px, double Py, double Pz, double E, bool isbtag);
+  ~jjet();
 
-  bool operator<(const jjet & rhs) const;
-  bool operator>(const jjet & rhs) const;
   bool Btag() const;
 
 private:

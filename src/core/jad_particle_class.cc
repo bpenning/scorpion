@@ -2,24 +2,22 @@
 
 jparticle::jparticle() {}
 jparticle::~jparticle() {}
-jparticle::jparticle(double Px, double Py, double Pz, double E, int PID, int Status, double Charge) : TLorentzVector(Px, Py, Pz, E), mPID(PID), mStatus(Status), mCharge(Charge) {}
+jparticle::jparticle(double Px, double Py, double Pz, double E, int PID, int Status, double Charge) : jobject(Px,Py,Pz,E,mparticle)
+{
+    mPID=PID;
+    mStatus=Status;
+    mCharge=Charge; 
+}
 
 double jparticle::Charge() const {
-  return mCharge;
+    return mCharge;
 }
 
 int jparticle::PID() const {
-  return mPID;
+    return mPID;
 }
 
 int jparticle::Status() const {
-  return mStatus;
+    return mStatus;
 }
 
-bool jparticle::operator<(const jparticle & rhs) const {
-  return this->Pt() < rhs.Pt();
-}
-
-bool jparticle::operator>(const jparticle & rhs) const {
-  return this->Pt() > rhs.Pt();
-}

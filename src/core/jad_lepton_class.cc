@@ -2,33 +2,34 @@
 
 jlepton::jlepton() {}
 jlepton::~jlepton() {}
-jlepton::jlepton(double Px, double Py, double Pz, double E, bool iselectron, bool poscharge) : TLorentzVector(Px, Py, Pz, E), mIsElectron(iselectron), mPosCharge(poscharge) {}
+jlepton::jlepton(double Px, double Py, double Pz, double E, bool iselectron, int charge, bool IsolFlag): jobject(Px,Py,Pz,E,mlepton)
+{
+    mIsElectron=iselectron;
+    mCharge=charge;
+    mIsolFlag=IsolFlag;
+}
 
-bool jlepton::Charge() const {
-  return mPosCharge;
+int jlepton::Charge() const {
+    return mCharge;
+}
+bool jlepton::IsolFlag() const {
+    return mIsolFlag;
 }
 
 std::string jlepton::Flavour() const {
 
-  std::string flavour = "electron";
-  if(!mIsElectron) {
-    flavour = "muon";
-  }
- 
-  //if(mPosCharge) {
-  //  flavour += "+";
-  //} else {
-  //  flavour += "-";
-  //}
+    std::string flavour = "electron";
+    if(!mIsElectron) {
+	flavour = "muon";
+    }
 
-  return flavour;
+    //if(mPosCharge) {
+    //  flavour += "+";
+    //} else {
+    //  flavour += "-";
+    //}
+
+    return flavour;
 
 }
 
-bool jlepton::operator<(const jlepton & rhs) const {
-  return this->Pt() < rhs.Pt();
-}
-
-bool jlepton::operator>(const jlepton & rhs) const {
-  return this->Pt() > rhs.Pt();
-}

@@ -47,7 +47,7 @@ std::vector<jlepton> OS::getleptons(const TClonesArray *ELEC, const TClonesArray
     //reliso > riso
     if((elec->Charge > 0 && !poscharge) || (elec->Charge < 0 && poscharge)) continue;
     if(elec->PT < pte || !elec->IsolFlag || fabs(elec->Eta) > etae || (fabs(elec->Eta) > 1.4 && fabs(elec->Eta) < 1.6)) continue;
-    jlepton lepton(elec->Px, elec->Py, elec->Pz, elec->E, true, poscharge);
+    jlepton lepton(elec->Px, elec->Py, elec->Pz, elec->E, true, elec->Charge,elec->IsolFlag);
     leptons.push_back(lepton);
   }
   
@@ -61,7 +61,7 @@ std::vector<jlepton> OS::getleptons(const TClonesArray *ELEC, const TClonesArray
     //reliso > riso
     if((muon->Charge > 0 && !poscharge) || (muon->Charge < 0 && poscharge)) continue;
     if(muon->PT<ptm || !muon->IsolFlag || fabs(muon->Eta) > etam) continue;
-    jlepton lepton(muon->Px, muon->Py, muon->Pz, muon->E, false, poscharge);
+    jlepton lepton(muon->Px, muon->Py, muon->Pz, muon->E, false, muon->Charge,muon->IsolFlag);
     leptons.push_back(lepton);
   }
 

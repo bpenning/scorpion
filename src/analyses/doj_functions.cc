@@ -154,7 +154,7 @@ std::vector<jlepton> getleptons(const TClonesArray *ELEC, const TClonesArray *MU
       if(elec->Charge < 0) {
 	poschargeele = false;
       }
-      jlepton lepton(elec->Px, elec->Py, elec->Pz, elec->E, true, poschargeele);
+      jlepton lepton(elec->Px, elec->Py, elec->Pz, elec->E, true, elec->Charge,elec->IsolFlag);
       leptons.push_back(lepton);
     }
   }
@@ -174,7 +174,7 @@ std::vector<jlepton> getleptons(const TClonesArray *ELEC, const TClonesArray *MU
       if(muon->Charge < 0) {
 	poschargemu = false;
       }
-      jlepton lepton(muon->Px, muon->Py, muon->Pz, muon->E, false, poschargemu);
+      jlepton lepton(muon->Px, muon->Py, muon->Pz, muon->E, false, muon->Charge,muon->IsolFlag);
       leptons.push_back(lepton);
     }
   }
