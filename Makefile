@@ -53,7 +53,7 @@ $(OBJDIR)/delphesdictionary.o: $(INCDIR)/jBlockClasses.hh $(INCDIR)/jBlockClasse
 	@echo Compiling DELPHES dictionary
 	rootcint -f DictOutput.cxx -c $(INCDIR)/jBlockClasses.hh $(INCDIR)/jBlockClassesLinkDef.h
 	$(CXX) $(CXXFLAGS) DictOutput.cxx -o $(OBJDIR)/delphesdictionary.o -pthread -m64 -I$(ROOT_INC)
-	#rm DictOutput.cxx DictOutput.h
+	rm DictOutput.cxx DictOutput.h
 
 clean:
 	@rm -f $(wildcard obj/*.o)
