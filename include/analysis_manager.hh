@@ -43,6 +43,13 @@ public:
   void RunMany(const std::vector<FileMap> & fileobjs, const std::string & foldername);
   void Limit(const double & signal_uncertainty, const bool & savestatfile, const bool & combinesearches, const bool & combinecalculater);
   void Write();
+  std::vector<fitparams> LimitCode(const std::string & fitmode,
+				   const std::vector<double> & signalyields,
+				   const double & signal_uncertainty,
+				   const std::vector<double> & bgyields,
+				   const std::vector<double> & bguncert,
+				   const std::vector<int> & datayields,
+				   const bool & calculateR);
 
 private:
   void SetupOutputFile(const std::string & name);
@@ -58,13 +65,6 @@ private:
 		    const std::vector<double> & bgerror,
 		    const std::vector<int> & datayields,
 		    const std::string & currdir);
-  std::vector<fitparams> LimitCode(const std::string & fitmode,
-				   const std::vector<double> & signalyields,
-				   const double & signal_uncertainty,
-				   const std::vector<double> & bgyields,
-				   const std::vector<double> & bguncert,
-				   const std::vector<int> & datayields,
-				   const bool & calculateR);
   TFile * mOutputFile;    
   std::vector<AnalysisBase *> mAnalysesToRun; //could replace with vector<struct> if need more info
   std::map<std::string, std::vector<AnalysisBase *> > mAnalysesMap;
