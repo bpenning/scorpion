@@ -8,7 +8,10 @@
 
 #include "alphat_functions.hh"
 #include "analysis_base.hh"
-#include "fileobject_class.hh"
+#include "jad_jet_class.hh"
+#include "jad_lepton_class.hh"
+#include "jad_jet_functions.hh"
+#include "jad_lepton_functions.hh"
 #include "jBlockClasses.hh"
 #include "TSimpleArray.hh"
 #include "TH1.h"
@@ -42,15 +45,10 @@ public:
 
   ~AlphaT();
 
-  void Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight);
+  void Run(const Reader * treereader, const Reader *gentreereader, const double & weight);
   void initHistos();
 
 private:
-  TSimpleArray<TRootJet> SubArrayGoodJets(const TClonesArray *JET, const float & pt, const float & eta);
-  TSimpleArray<TRootElectron> SubArrayEl(const TClonesArray *ELEC, const float & pt, const float & eta);
-  TSimpleArray<TRootMuon> SubArrayMu(const TClonesArray *MUON, const float & pt, const float & eta);
-  TSimpleArray<TRootJet> SubArrayBadJets(const TClonesArray *JET, const float & pt, const float & eta);
-  TSimpleArray<TRootETmis> makeETM(const TClonesArray *ETMISS);
 
   TH1D * leadingjetpt;
   TH1D * hthist;

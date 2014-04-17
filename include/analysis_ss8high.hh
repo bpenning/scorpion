@@ -18,7 +18,10 @@
 #include "jad_lepton_class.hh"
 #include "jad_jet_class.hh"
 #include "jad_particle_class.hh"
+#include "jad_jet_functions.hh"
+#include "jad_lepton_functions.hh"
 #include "pair_info.hh"
+
 
 class SS8high : public AnalysisBase {
 
@@ -46,16 +49,10 @@ public:
   
   ~SS8high();
 
-  void Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight);
+  void Run(const Reader * treereader, const Reader * gentreereader, const double & weight);
   void initHistos();
 
 private:
-  double getht(const std::vector<jjet> & jets);
-  double getmet(const TClonesArray *ETMISS);
-  unsigned int getnbtags(const std::vector<jjet> & jets);
-  std::vector<jjet> getjets(const TClonesArray *JET, const float & pt, const float & eta);
-  std::vector<jlepton> getleptons(const TClonesArray *ELEC, const TClonesArray *MUON, const float & pte, const float & etae, const float & ptm, const float & etam);
-  
 
   TH1D * njethist;
   TH1D * hthist;

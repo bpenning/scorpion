@@ -32,13 +32,14 @@ ATLAS5::ATLAS5(const std::string & name,
 ATLAS5::~ATLAS5() {}
 
 
-bool ATLAS5::jetdrsep(const TSimpleArray<TRootJet> & jets, const double & DR) {
+
+/*bool ATLAS5::jetdrsep(const TSimpleArray<TRootJet> & jets, const double & DR) {
 
   bool failDR = false; //variable to tell us if any jet pair separation is <DR
   double deltarjj=100.0; //initialise it to some large number for sanity
 
-  for(unsigned int i=0; i < jets.GetEntries(); i++) {
-    for(unsigned int j=0; j < jets.GetEntries(); j++) {
+  for(unsigned int i=0; i < jets.size(); i++) {
+    for(unsigned int j=0; j < jets.size(); j++) {
       if(j>i) { //do this to avoid repeating the same pair
 
 	//Find distance (deltaR) between jets
@@ -53,166 +54,8 @@ bool ATLAS5::jetdrsep(const TSimpleArray<TRootJet> & jets, const double & DR) {
   return true; //if we haven't returned false, we must not have any jet pairs with sep<DR!
 
 }
+*/
 
-bool ATLAS5::deltaphiptjet(const TSimpleArray<TRootJet> & jets, const double & px, const double & py, const double & deltaphi, const int & jetcuts, double & dphiret, double & phiret) {
-
-  double phietmiss = TMath::ATan2(py,px); //calculate etmiss phi - do it here as it doesn't change per jet!
-
-  double phijet = 100.0; //initialise to large number for sanity
-  double dphitemp = 100.0; //initialise to large number for sanity
-  double dphi = 100.0; //initialise to large number for sanity
-
-  for(unsigned int ii=0; ii < jets.GetEntries(); ii++) { //loop over all jet entries
-
-    phijet = TMath::ATan2(jets[ii]->Py, jets[ii]->Px); //calculate jet phi
-    dphitemp = fabs(phijet - phietmiss); //calculate the distance in phi between the jet total momentum
-
-    //for two vectors in a 2D plane, they cannot be more than pi away from each other
-    if(dphitemp > TMath::Pi()) {
-      dphitemp = fabs(dphitemp - (2.0 * TMath::Pi()));
-    }
-    
-    //check for the smallest dphi between jet and etmiss
-    if (dphitemp < dphi) {   
-      dphi = dphitemp;
-    }
-
-    //we only consider the first jetcuts jet - but only if they exist so keep the for loop over the GetEntries
-    if (ii == (jetcuts-1)) {
-      break;
-    }
-  }
-
-  //populate some variables for plotting
-  phiret = phietmiss;
-  dphiret = dphi;
-  
-  if (dphi <= deltaphi) { return false; } //if we find a jet with sep<DR relative to etmiss, return false
-  return true; //otherwise, we haven't found any, so return true
-
-}
-
-TSimpleArray<TRootElectron> ATLAS5::SubArrayEl(const TClonesArray *ELEC, float pt, float eta) {
-    TIter itElec((TCollection*)ELEC);
-    TRootElectron *elec;
-    itElec.Reset();
-    TSimpleArray<TRootElectron> array;
-      while( (elec = (TRootElectron*) itElec.Next()) )
-        {
-	  if(elec->PT<pt || !elec->IsolFlag || fabs(elec->Eta) > eta) continue;
-	  array.Add(elec);
-        }
-    return array;
-}
-
-TSimpleArray<TRootElectron> ATLAS5::SubArrayEl2(const TClonesArray *ELEC, float pt, float eta, double DRLmin, const TSimpleArray<TRootJet> &jet) {
-
-  TIter itElec((TCollection*)ELEC);
-  TRootElectron *elec;
-  itElec.Reset();
-  double DRele, DRelemin;
-  TSimpleArray<TRootElectron> array;
-  while( (elec = (TRootElectron*) itElec.Next()) ) {
-    DRelemin = 10.0;
-    for(unsigned int i=0; i < jet.GetEntries(); i++) {
-
-      DRele = TMath::Sqrt( (((elec->Phi)-(jet[i]->Phi))*((elec->Phi)-(jet[i]->Phi))) + (((elec->Eta)-(jet[i]->Eta))*((elec->Eta)-(jet[i]->Eta))) );
-      if (DRelemin > DRele) {
-	DRelemin = DRele;
-      }
-    }
-	 		
-    if (DRelemin > DRLmin) { //if the electron is away from all the jets
-      //if(elec->PT<pt || !elec->IsolFlag || fabs(elec->Eta) > eta) continue;
-      if(elec->PT>pt && elec->IsolFlag && fabs(elec->Eta) < eta) {
-	array.Add(elec);
-      }
-    }
-  }
-  
-  return array;
-}
-
-
-TSimpleArray<TRootMuon> ATLAS5::SubArrayMu(const TClonesArray *MUON, float pt, float eta) {
-   TIter itMuon((TCollection*)MUON);
-   TRootMuon *muon;
-   itMuon.Reset();
-   TSimpleArray<TRootMuon> array;
-   while( (muon = (TRootMuon*) itMuon.Next()) )
-     {
-       if(muon->PT<pt || !muon->IsolFlag || fabs(muon->Eta) > eta) continue;
-       array.Add(muon);
-     }
-   return array;
-}
-
-TSimpleArray<TRootMuon> ATLAS5::SubArrayMu2(const TClonesArray *MUON, float pt, float eta, double DRLmin, const TSimpleArray<TRootJet> &jet) {
-
-  TIter itMuon((TCollection*)MUON);
-  TRootMuon *muon;
-  itMuon.Reset();
-  TSimpleArray<TRootMuon> array;
-  double DRelemin, DRele;
-  while( (muon = (TRootMuon*) itMuon.Next()) ) {
-    DRelemin = 10.0;
-    for(unsigned int i=0; i <jet.GetEntries();i++) {
-
-      DRele = TMath::Sqrt( (((muon->Phi)-(jet[i]->Phi))*((muon->Phi)-(jet[i]->Phi))) + (((muon->Eta)-(jet[i]->Eta))*((muon->Eta)-(jet[i]->Eta))) );
-      if(DRelemin > DRele) {
-	DRelemin = DRele;
-      }
-      
-    }
-			
-    if (DRelemin > DRLmin) { //if the muon is away from all the jets
-      //if(muon->PT<pt || !muon->IsolFlag || fabs(muon->Eta) > eta) continue;
-      if(muon->PT > pt && muon->IsolFlag && fabs(muon->Eta) < eta) {
-	array.Add(muon);
-      }
-    }
-  }
-
-  return array;
-}
-
-TSimpleArray<TRootJet> ATLAS5::SubArrayGoodJets2(const TClonesArray *JET, float pt, float eta, double DRlim, const TSimpleArray<TRootElectron> &ele ) { 
-  
-  TIter itJet((TCollection*)JET); //define JET iterator
-  TRootJet *jet; //pointer to TRootJet object
-  itJet.Reset(); //set it back to the start
-  TSimpleArray<TRootJet> array;
-  double DRele, DRelemin;
-  while( (jet = (TRootJet*) itJet.Next()) ) {
-    
-    DRele = 0.0;
-    DRelemin = 10.0;
-    
-    for (unsigned int ee=0; ee < ele.GetEntries(); ee++) {
-      DRele = TMath::Sqrt( (((ele[ee]->Phi)-(jet->Phi))*((ele[ee]->Phi))-(jet->Phi)) + (((ele[ee]->Eta)-(jet->Eta))*((ele[ee]->Eta)-(jet->Eta))) ); 
-      if(DRelemin > DRele) {
-	DRelemin = DRele;
-      }
-    }
-
-    //check if any jet has Pt>50 and |eta|<3.0 and if the min is above threshold between electron and jet (otherwise it is a jet)
-    if(jet->PT > pt && fabs(jet->Eta) < eta && DRelemin > DRlim) {
-      array.Add(jet); 
-    }
-  } 
-  return array; 
-}
-
-TSimpleArray<TRootETmis> ATLAS5::makeETM(const TClonesArray *ETMISS) {
-  TIter itEtMiss((TCollection*)ETMISS);
-  TRootETmis *etm;
-  itEtMiss.Reset();
-  TSimpleArray<TRootETmis> array;
-  while( (etm = (TRootETmis*) itEtMiss.Next()) ) {
-      array.Add(etm);
-  }
-  return array;
-}
 
 
 void ATLAS5::initHistos() {
@@ -235,56 +78,57 @@ void ATLAS5::initHistos() {
   ATLASE = new TH1D("meffincE", ";m_{eff} [GeV];Entries",300,-5.,2995.);
 }
 
-void ATLAS5::Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight) {
+void ATLAS5::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
 
   andir->cd();
 
   mCounter+=weight; //keep a tally of all the files/events we are running over
 
-  TSimpleArray<TRootElectron> eletemp=SubArrayEl(treereader.Elec(), 20.0, 2.47); //all electrons with pt > 20GeV and eta < 2.47 
-  TSimpleArray<TRootMuon>     muontemp=SubArrayMu(treereader.Muon(), 10.0, 2.4); //all muons  with pt > 10GeV and eta < 2.47 
-  TSimpleArray<TRootJet>      goodjets=SubArrayGoodJets2(treereader.Jet(),20.0,2.8, 0.2, eletemp); //check for jets which we should analyse with pt(>20) and eta cuts and electron proximity veto
-  TSimpleArray<TRootJet>      goodjets40=SubArrayGoodJets2(treereader.Jet(),40.0,2.8, 0.2, eletemp); //check for jets to make deltaphi with pt(>40) and eta cuts and electron jet proximity veto
-  TSimpleArray<TRootJet>      cleanjets=SubArrayGoodJets2(treereader.Jet(),20.0,2.8, 0.2, eletemp); //Jets used to veto leptons not themselves vetoed by electron jet proximity with pt(>20) and eta cuts
-  TSimpleArray<TRootElectron> ele=SubArrayEl2(treereader.Elec(), 20.0, 2.47, 0.4, cleanjets); //Electron Jets with pt and eta cuts and vetoed by cleanjets proximity 
-  TSimpleArray<TRootMuon>     mu=SubArrayMu2(treereader.Muon(), 10.0, 2.4, 0.4, cleanjets);  //Muon Jets with pt and eta cuts and vetoed by cleanjets proximity 
-  TSimpleArray<TRootETmis>    etmis=makeETM(treereader.ETMis());//Missing transverse energy array 
-  
-  double total_met = etmis[0]->ET;//Get missing transverse energy from array
-  double diffe = eletemp.GetEntries()-ele.GetEntries(); //Number of electron jets vetoed by proximity to cleanjets
+  std::vector<jlepton> eletemp=goodleptons(treereader->Elec(), 20.0, 2.47); //all electrons with pt > 20GeV and eta < 2.47 
+  std::vector<jlepton>     muontemp=goodleptons(treereader->Muon(), 10.0, 2.4); //all muons  with pt > 10GeV and eta < 2.47 
 
-  if (ele.GetEntries() == 0 && mu.GetEntries() == 0 && goodjets.GetEntries() > 0) {
-    njets->Fill(goodjets.GetEntries(), weight);//number of jets surviving so far
+  std::vector<jjet>      goodjets=goodjetsDR(treereader->Jet(),20.0,2.8, 0.2, eletemp); //check for jets which we should analyse with pt(>20) and eta cuts and electron proximity veto
+  std::vector<jjet>      goodjets40=goodjetsDR(treereader->Jet(),40.0,2.8, 0.2, eletemp); //check for jets to make deltaphi with pt(>40) and eta cuts and electron jet proximity veto
+  std::vector<jjet>      cleanjets=goodjetsDR(treereader->Jet(),20.0,2.8, 0.2, eletemp); //Jets used to veto leptons not themselves vetoed by electron jet proximity with pt(>20) and eta cuts
+  std::vector<jlepton> ele=goodleptonsDR(treereader->Elec(), 20.0, 2.47, 0.4, cleanjets); //Electron Jets with pt and eta cuts and vetoed by cleanjets proximity 
+  std::vector<jlepton>     mu=goodleptonsDR(treereader->Muon(), 10.0, 2.4, 0.4, cleanjets);  //Muon Jets with pt and eta cuts and vetoed by cleanjets proximity 
+  std::vector<jjet>    etmis=treereader->ETMis();//Missing transverse energy array 
+  
+  double total_met = etmis[0].Et();//Get missing transverse energy from array
+  double diffe = eletemp.size()-ele.size(); //Number of electron jets vetoed by proximity to cleanjets
+
+  if (ele.size() == 0 && mu.size() == 0 && goodjets.size() > 0) {
+    njets->Fill(goodjets.size(), weight);//number of jets surviving so far
 
     double meff = 0.0; //m effective variable (sum of Etmiss and relevant good jets PT)
     double meffinc = total_met;
     double totalht = 0.0;
-    for (int nn =0; nn < goodjets40.GetEntries(); nn++) {
-      meffinc += goodjets40[nn]->PT;//Effective mass defined as sum of PT of all jets with PT>40
-      totalht += goodjets40[nn]->PT;
+    for (int nn =0; nn < goodjets40.size(); nn++) {
+      meffinc += goodjets40[nn].Pt();//Effective mass defined as sum of PT of all jets with PT>40
+      totalht += goodjets40[nn].Pt();
     }
 
     //Create Et miss from all calorimeter deposits
-    double met_x1 = etmis[0]->Px; ///Make x-comp of calorimeter ET
-    double met_y1 = etmis[0]->Py;//Make y-comp of calorimeter ET
+    double met_x1 = etmis[0].Px(); ///Make x-comp of calorimeter ET
+    double met_y1 = etmis[0].Py();//Make y-comp of calorimeter ET
 
     etmisshist->Fill(total_met, weight); // Histogram of calorimeter Missing Transverse Energy 
     hthist->Fill(totalht, weight);
-    leadingjetpt->Fill(goodjets[0]->PT, weight);//Leading Jet PT histogram
+    leadingjetpt->Fill(goodjets[0].Pt(), weight);//Leading Jet PT histogram
 
-    if(total_met > 160.0 && goodjets.GetEntries() > 0 && goodjets[0]->PT > 130.0 ) { //Apply Etmiss >130 cut and pt >130GeV for leading jet cut with check that jets survive  
+    if(total_met > 160.0 && goodjets.size() > 0 && goodjets[0].Pt() > 130.0 ) { //Apply Etmiss >130 cut and pt >130GeV for leading jet cut with check that jets survive  
       double dphiret = 10.0;
       double phiret = 10.0;
 
       //CHANNEL A and A'
-      if(goodjets.GetEntries() >= 2 && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 2, phiret, dphiret)) {//Apply No of jets cut 
+      if(goodjets.size() >= 2 && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 2, phiret, dphiret)) {//Apply No of jets cut 
 
 	PHIPT->Fill(phiret, weight);
-	PHI->Fill(goodjets[0]->Phi, weight); 
+	PHI->Fill(goodjets[0].Phi(), weight); 
 
 	DELTAPHI->Fill(dphiret, weight);
-	if(goodjets[1]->PT > 60.0) { // Second jet pt > 60 cut
-	  meff = total_met + goodjets[0]->PT + goodjets[1]->PT; //Make meff variable from PT of leading 2 goodjets
+	if(goodjets[1].Pt() > 60.0) { // Second jet pt > 60 cut
+	  meff = total_met + goodjets[0].Pt() + goodjets[1].Pt(); //Make meff variable from PT of leading 2 goodjets
 	  if(total_met/meff > 0.3) { //SRA cut on transverse momentum/effective mass
 	    ATLASA->Fill(meffinc, weight);
 	    if(meffinc > 1400.0) {  
@@ -304,11 +148,11 @@ void ATLAS5::Run(const TreeReader & treereader, const TreeReader & gentreereader
       }
 
       //SIGNAL REGION B:
-      if(goodjets.GetEntries() >= 3 && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 3, phiret, dphiret)) { //Apply No of jets cut
+      if(goodjets.size() >= 3 && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 3, phiret, dphiret)) { //Apply No of jets cut
 
-	if(goodjets[1]->PT > 60.0 && goodjets[2]->PT > 60.0 )  {// second and third jet pt > 60 cut
+	if(goodjets[1].Pt() > 60.0 && goodjets[2].Pt() > 60.0 )  {// second and third jet pt > 60 cut
 
-	  meff = total_met + goodjets[0]->PT + goodjets[1]->PT + goodjets[2]->PT; // Make effective mass variable from PT of leading 3 jets
+	  meff = total_met + goodjets[0].Pt() + goodjets[1].Pt() + goodjets[2].Pt(); // Make effective mass variable from PT of leading 3 jets
 
 	  if(total_met/meff > 0.25) {//SRB cut on transverse momentum/effective mass
 
@@ -322,11 +166,11 @@ void ATLAS5::Run(const TreeReader & treereader, const TreeReader & gentreereader
       }
 
       //SIGNAL REGION C:
-      if(goodjets.GetEntries() >= 4 && deltaphiptjet(goodjets40, met_x1, met_y1, 0.2, 1000, phiret, dphiret) && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 3, phiret, dphiret)) { //Apply No of jets cut
+      if(goodjets.size() >= 4 && deltaphiptjet(goodjets40, met_x1, met_y1, 0.2, 1000, phiret, dphiret) && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 3, phiret, dphiret)) { //Apply No of jets cut
 
-	if(goodjets[1]->PT > 60.0 && goodjets[2]->PT > 60.0 && goodjets[3]->PT > 60.0) {// second, third and fourth jet pt > 60 cut
+	if(goodjets[1].Pt() > 60.0 && goodjets[2].Pt() > 60.0 && goodjets[3].Pt() > 60.0) {// second, third and fourth jet pt > 60 cut
 
-	  meff = total_met + goodjets[0]->PT + goodjets[1]->PT + goodjets[2]->PT + goodjets[3]->PT; //Make effective mass variable from PT of leading 4 jets
+	  meff = total_met + goodjets[0].Pt() + goodjets[1].Pt() + goodjets[2].Pt() + goodjets[3].Pt(); //Make effective mass variable from PT of leading 4 jets
 	  
 	  if(total_met/meff > 0.25) {//SRC cut on transverse momentum/effective mass
 
@@ -346,11 +190,11 @@ void ATLAS5::Run(const TreeReader & treereader, const TreeReader & gentreereader
       }
 
       //SIGNAL REGION D:
-      if(goodjets.GetEntries() >= 5 && deltaphiptjet(goodjets40, met_x1, met_y1, 0.2, 100, phiret, dphiret) && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 3, phiret, dphiret)) { //Apply No of jets cut
+      if(goodjets.size() >= 5 && deltaphiptjet(goodjets40, met_x1, met_y1, 0.2, 100, phiret, dphiret) && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 3, phiret, dphiret)) { //Apply No of jets cut
 
-	if(goodjets[1]->PT > 60.0 && goodjets[2]->PT > 60.0 && goodjets[3]->PT > 60.0 && goodjets[4]->PT > 40.0) {// second, third, fourth and fifth jet pt > 60 cut
+	if(goodjets[1].Pt() > 60.0 && goodjets[2].Pt() > 60.0 && goodjets[3].Pt() > 60.0 && goodjets[4].Pt() > 40.0) {// second, third, fourth and fifth jet pt > 60 cut
 	  
-	  meff = total_met + goodjets[0]->PT + goodjets[1]->PT + goodjets[2]->PT + goodjets[3]->PT + goodjets[4]->PT;//Make effective mass variable from PT of leading 5 jets
+	  meff = total_met + goodjets[0].Pt() + goodjets[1].Pt() + goodjets[2].Pt() + goodjets[3].Pt() + goodjets[4].Pt();//Make effective mass variable from PT of leading 5 jets
 
 	  if(total_met/meff > 0.2) {//SRD cut on transverse momentum/effective mass
 
@@ -364,11 +208,11 @@ void ATLAS5::Run(const TreeReader & treereader, const TreeReader & gentreereader
       }
 
       //SIGNAL REGION E:
-      if(goodjets.GetEntries() >= 6 && deltaphiptjet(goodjets40, met_x1, met_y1, 0.2, 1000, phiret, dphiret) && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 3, phiret, dphiret)) { //Apply No of jets cut
+      if(goodjets.size() >= 6 && deltaphiptjet(goodjets40, met_x1, met_y1, 0.2, 1000, phiret, dphiret) && deltaphiptjet(goodjets, met_x1, met_y1, 0.4, 3, phiret, dphiret)) { //Apply No of jets cut
 
-	if(goodjets[1]->PT > 60.0 && goodjets[2]->PT > 60.0 && goodjets[3]->PT > 60.0 && goodjets[4]->PT > 40.0 && goodjets[5]->PT > 40.0) {// second, third, fourth, fifth and sixth jet pt > 60 cut
+	if(goodjets[1].Pt() > 60.0 && goodjets[2].Pt() > 60.0 && goodjets[3].Pt() > 60.0 && goodjets[4].Pt() > 40.0 && goodjets[5].Pt() > 40.0) {// second, third, fourth, fifth and sixth jet pt > 60 cut
 
-	  meff = total_met + goodjets[0]->PT + goodjets[1]->PT + goodjets[2]->PT + goodjets[3]->PT+ goodjets[4]->PT+ goodjets[5]->PT; //Make effective mass variable from PT of leading 6 jets
+	  meff = total_met + goodjets[0].Pt() + goodjets[1].Pt() + goodjets[2].Pt() + goodjets[3].Pt()+ goodjets[4].Pt()+ goodjets[5].Pt(); //Make effective mass variable from PT of leading 6 jets
 
 	  if(total_met/meff > 0.15) {//SRE cut on transverse momentum/effective mass
 

@@ -50,29 +50,6 @@ std::vector<jparticle> SS::getparticles(const TClonesArray * GEN, const unsigned
 	myparticles.push_back(particle);
       }
     }
-    //if(gen->Status == 3) {
-    //double mass = TMath::Sqrt((gen->E * gen->E) - ((gen->Px*gen->Px)+(gen->Py*gen->Py)+(gen->Pz*gen->Pz)));
-    //if(fabs(mass - 400) < 10 && gen->Status == 1 && gen->PID == 0) {
-    //if(fabs(mass - 200) < 10 && gen->Status == 1) {
-      //std::cout << "event " << entry << std::endl;
-      //std::cout << "PID = " << gen->PID << std::endl;      // particle HEP ID number
-      //std::cout << "Status = " << gen->Status << std::endl;   // particle status
-      //std::cout << "M1 = " << gen->M1 << std::endl;       // particle 1st mother
-      //std::cout << "M2 = " << gen->M2 << std::endl;       // particle 2nd mother
-      //std::cout << "D1 = " << gen->D1 << std::endl;       // particle 1st daughter
-      //std::cout << "D2 = " << gen->D2 << std::endl;       // particle 2nd daughter
-      //           Charge = gen->Charge;   // electrical charge
-      
-      //           T      = gen->T;        // particle vertex position (t component)
-      //           X      = gen->X;        // particle vertex position (x component)
-      //           Y      = gen->Y;        // particle vertex position (y component)
-      //           Z      = gen->Z;        // particle vertex position (z component)
-      //           M      = gen->M;        // particle mass
-      
-      //std::cout << "(" << gen->E << ", " << gen->Px << ", " << gen->Py << ", " << gen->Pz << ") " << gen->M << std::endl;
-      //std::cout << "(" << gen->Eta << ", " << gen->Phi << ")" << std::endl;
-      //std::cout << std::endl;
-      //}
   }
 
   return myparticles;
@@ -96,7 +73,7 @@ std::vector<jlepton> SS::getleptons(const TClonesArray *ELEC, const TClonesArray
     if(elec->PT < pte || !elec->IsolFlag || fabs(elec->Eta) > etae || (fabs(elec->Eta) > 1.4 && fabs(elec->Eta) < 1.6)) continue;
     bool poscharge = true;
     if(elec->Charge < 0) { poscharge = false; }
-    jlepton lepton(elec->Px, elec->Py, elec->Pz, elec->E, true, elec->Charge,elec->IsolFlag);
+    jlepton lepton(elec->Px, elec->Py, elec->Pz, elec->E, true, poscharge);
     leptons.push_back(lepton);
   }
   
@@ -113,7 +90,7 @@ std::vector<jlepton> SS::getleptons(const TClonesArray *ELEC, const TClonesArray
     if(muon->Charge < 0) { 
       poscharge = false; 
     }
-    jlepton lepton(muon->Px, muon->Py, muon->Pz, muon->E, false, muon->Charge,muon->IsolFlag);
+    jlepton lepton(muon->Px, muon->Py, muon->Pz, muon->E, false, poscharge);
     leptons.push_back(lepton);
   }
 

@@ -6,6 +6,11 @@
 
 #include "jBlockClasses.hh"
 #include "TSimpleArray.hh"
+#include "jad_object_collection.hh"
+#include "jad_lepton_class.hh"
+#include "jad_jet_class.hh"
+#include "jad_object_collection.hh"
+
 
 struct energy_sums{
   std::vector<double> etvec;
@@ -24,6 +29,6 @@ double alphat( const std::vector<double>& et,
 	       std::vector<bool>& pseudo_jet1,
 	       bool list);
 
-energy_sums make_energy_sums(const TSimpleArray<TRootJet> & ht275, const TSimpleArray<TRootJet> & ht325, const TSimpleArray<TRootJet> & ht375);
+energy_sums make_energy_sums(const std::vector<jjet> & ht275, const std::vector<jjet> & ht325, const std::vector<jjet> & ht375);
 
 #endif

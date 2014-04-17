@@ -38,7 +38,7 @@ double alphat( const std::vector<double>& et,
   
 }
 
-energy_sums make_energy_sums(const TSimpleArray<TRootJet> & ht275, const TSimpleArray<TRootJet> & ht325, const TSimpleArray<TRootJet> & ht375) {
+energy_sums make_energy_sums(const std::vector<jjet> & ht275, const std::vector<jjet> & ht325, const std::vector<jjet> & ht375) {
 
   energy_sums esums;
   //initialise the energy sum quantities
@@ -52,23 +52,23 @@ energy_sums make_energy_sums(const TSimpleArray<TRootJet> & ht275, const TSimple
   std::vector<double> pyvec;
 
   //first, loop over all jets based on threshold of >50 GeV and calculate HT
-  for(unsigned int numjets = 0; numjets < ht375.GetEntries(); numjets++) {
-    total_ht += ht375[numjets]->PT;
-    mht_x += ht375[numjets]->Px;
-    mht_y += ht375[numjets]->Py;    
-    etvec.push_back(ht375[numjets]->PT);
-    pxvec.push_back(ht375[numjets]->Px);
-    pyvec.push_back(ht375[numjets]->Py);
-    if(ht375[numjets]->Btag) {
+  for(unsigned int numjets = 0; numjets < ht375.size(); numjets++) {
+    total_ht += ht375.at(numjets).Pt();
+    mht_x += ht375.at(numjets).Px();
+    mht_y += ht375.at(numjets).Py();    
+    etvec.push_back(ht375.at(numjets).Pt());
+    pxvec.push_back(ht375.at(numjets).Px());
+    pyvec.push_back(ht375.at(numjets).Py());
+    if(ht375.at(numjets).Btag()) {
       nbtags++;
     }
   }
 
-  if(total_ht > 375.0 && ht375.GetEntries() >=2) {
+  if(total_ht > 375.0 && ht375.size() >=2) {
     //now check the jet quality criteria. if ok, fill esum struct
-    if(ht375[0]->PT > 100.0 && fabs(ht375[0]->Eta) < 2.4 && ht375[1]->PT > 100.0) {
+    if(ht375.at(0).Pt() > 100.0 && fabs(ht375.at(0).Eta()) < 2.4 && ht375.at(1).Pt() > 100.0) {
       esums.pass_quality_cuts = true;
-      esums.njets = ht375.GetEntries();
+      esums.njets = ht375.size();
       esums.nbtags = nbtags;
       esums.total_ht = total_ht;
       esums.total_mht = TMath::Sqrt((mht_x * mht_x) +(mht_y * mht_y));
@@ -90,25 +90,25 @@ energy_sums make_energy_sums(const TSimpleArray<TRootJet> & ht275, const TSimple
     pxvec.clear();
     pyvec.clear();
 
-    for(unsigned int numjets = 0; numjets < ht325.GetEntries(); numjets++) {
-      total_ht += ht325[numjets]->PT;
-      mht_x += ht325[numjets]->Px;
-      mht_y += ht325[numjets]->Py;    
-      etvec.push_back(ht325[numjets]->PT);
-      pxvec.push_back(ht325[numjets]->Px);
-      pyvec.push_back(ht325[numjets]->Py);
-      if(ht325[numjets]->Btag) {
+    for(unsigned int numjets = 0; numjets < ht325.size(); numjets++) {
+      total_ht += ht325.at(numjets).Pt();
+      mht_x += ht325.at(numjets).Px();
+      mht_y += ht325.at(numjets).Py();    
+      etvec.push_back(ht325.at(numjets).Pt());
+      pxvec.push_back(ht325.at(numjets).Px());
+      pyvec.push_back(ht325.at(numjets).Py());
+      if(ht325.at(numjets).Btag()) {
 	nbtags++;
       }
     }
 
     //now check the ht
-    if(total_ht > 325.0 && total_ht < 375.0 && ht325.GetEntries() >=2) {
+    if(total_ht > 325.0 && total_ht < 375.0 && ht325.size() >=2) {
 
       //now check the jet quality criteria. if ok, fill esum struct
-      if(ht325[0]->PT > 86.0 && fabs(ht325[0]->Eta) < 2.4 && ht325[1]->PT > 86.0) {
+      if(ht325.at(0).Pt() > 86.0 && fabs(ht325.at(0).Eta()) < 2.4 && ht325.at(1).Pt() > 86.0) {
 	esums.pass_quality_cuts = true;
-	esums.njets = ht325.GetEntries();
+	esums.njets = ht325.size();
 	esums.nbtags = nbtags;
 	esums.total_ht = total_ht;
 	esums.total_mht = TMath::Sqrt((mht_x * mht_x) +(mht_y * mht_y));
@@ -133,26 +133,26 @@ energy_sums make_energy_sums(const TSimpleArray<TRootJet> & ht275, const TSimple
       pxvec.clear();
       pyvec.clear();
       
-      for(unsigned int numjets = 0; numjets < ht275.GetEntries(); numjets++) {
-	total_ht += ht275[numjets]->PT;
-	mht_x += ht275[numjets]->Px;
-	mht_y += ht275[numjets]->Py;    
-	etvec.push_back(ht275[numjets]->PT);
-	pxvec.push_back(ht275[numjets]->Px);
-	pyvec.push_back(ht275[numjets]->Py);
-	if(ht275[numjets]->Btag) {
+      for(unsigned int numjets = 0; numjets < ht275.size(); numjets++) {
+	total_ht += ht275.at(numjets).Pt();
+	mht_x += ht275.at(numjets).Px();
+	mht_y += ht275.at(numjets).Py();    
+	etvec.push_back(ht275.at(numjets).Pt());
+	pxvec.push_back(ht275.at(numjets).Px());
+	pyvec.push_back(ht275.at(numjets).Py());
+	if(ht275.at(numjets).Btag()) {
 	  nbtags++;
 	}
       }
       
       //now check the ht
       //if(total_ht > 275.0 && total_ht < 325.0) { //to be able to see full distribution of HT in histograms
-      if(total_ht < 325.0 && ht275.GetEntries() >=2) {
+      if(total_ht < 325.0 && ht275.size() >=2) {
 
 	//now check the jet quality criteria. if ok, fill esum struct
-	if(ht275[0]->PT > 74.0 && fabs(ht275[0]->Eta) < 2.4 && ht275[1]->PT > 74.0) {
+	if(ht275.at(0).Pt() > 74.0 && fabs(ht275.at(0).Eta()) < 2.4 && ht275.at(1).Pt() > 74.0) {
 	  esums.pass_quality_cuts = true;
-	  esums.njets = ht275.GetEntries();
+	  esums.njets = ht275.size();
 	  esums.nbtags = nbtags;
 	  esums.total_ht = total_ht;
 	  esums.total_mht = TMath::Sqrt((mht_x * mht_x) +(mht_y * mht_y));

@@ -1,6 +1,6 @@
 import libjad_DelphesAnalysis as j
 import imp
-imp.load_source('types','/vols/cms04/kjd110/scorpion/python/core/types.py')
+imp.load_source('types','/home/hep/mc3909/jaf_development/scorpion/python/core/types.py')
 #from core.types import *
 from types import *
 

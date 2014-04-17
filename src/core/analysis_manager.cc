@@ -112,6 +112,7 @@ void AnalysisManager::RunMany(const std::vector<FileMap> & files, const std::str
 
     this->setupAnalyses(mFolderName); //now setup map and initialise the analysis directories etc
 
+
     for(std::vector<FileMap>::const_iterator file=files.begin(); file!=files.end(); file++) {
       this->Run((*file));
     }
@@ -153,14 +154,45 @@ void AnalysisManager::Run(const FileMap & fileobj) {
       //for each experiment, open the files and run over the analyses
 
       std::vector<std::string> filestoadd = fileobj.GetFileList(ii->first);
+      TChain chainRec("Analysis");
+      TChain chainGen("GEN");
+      for(std::vector<std::string>::const_iterator fil=filestoadd.begin(); fil!=filestoadd.end(); fil++) {
+	std::cout << "adding file to TChain: " << *fil << std::endl;
+	chainRec.Add((*fil).c_str());
+	chainGen.Add((*fil).c_str());
+      }
+      //If statement to choose correct reader here (based on number in filemap):
+      D2Reader myd2treereader(&chainRec);
+      D2Reader gend2treereader(&chainGen);
 
-//THIS WILL BE PROVIDED BY CLASS FROM file-pair!!!
+      //Use (virtual or abstract?) base pointer class from here 
+      Reader *mytreereader = &myd2treereader;
+      Reader *gentreereader = &gend2treereader;
 
+      unsigned int numevents = mytreereader->GetEntries();
+      std::cout << "there are " << numevents << " events." << std::endl; 
+      //loop over all events:
+      for(unsigned int event=0; event<numevents; event++) {
+	mytreereader->ReadEntry(event);	  
+	if(mLoadGenInfo) {
+	  // JM: added functionality in the manager to turn on/off generator info
+	  // Added to manager since you will not achieve speedup if adding to individual search (overhead in reading the event, not analysing it)
+	  // In principle you could NOT require geninfo for e.g. ATLAS analysis but for CMS analysis and here you'd read gen info for both
+	  // However, best to run twice in this instance if you want speed up
+	  gentreereader->ReadEntry(event);
+	}
+	//loop over all analyses that depend on this experiment
+	for(std::vector<AnalysisBase *>::const_iterator jj=(ii->second).begin(); jj != (ii->second).end(); jj++) {
+	  //std::cout << "running analysis: " << (*jj)->GetName() << std::endl;
+	  double weight = (1.0E+015 * (*jj)->GetLuminosity())  / (numevents / fileobj.GetCrossSection(ii->first));
+	  //Run analysis
+	  (*jj)->Run(mytreereader, gentreereader, weight);
+	}
       }
 
     }
 
-   else {
+  } else {
     std::cerr << "couldn't find data in file... quitting" << std::endl;
   }
   

@@ -12,7 +12,7 @@ MY_LD_LIBRARY_PATH=$ROOTSYS/lib:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg
 export LD_LIBRARY_PATH=$MY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 export PATH=$ROOTSYS/bin:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/python/2.6.4/bin/:$PATH
 #export PYTHONPATH=$ROOTSYS/lib:/home/hep/jm1103/development/delphes-stuff-rewrite-boost-makefile-gen-optimised-xsec/lib
-export PYTHONPATH=$ROOTSYS/lib:/home/hep/mc3909/jaf_development/scorpion
+export PYTHONPATH=$ROOTSYS/lib:/home/hep/mc3909/jaf_development/scorpion/lib
 
 echo "LD_LIBRARY_PATH is:" $LD_LIBRARY_PATH
 echo "PYTHONPATH is:" $PYTHONPATH

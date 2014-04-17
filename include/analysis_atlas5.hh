@@ -12,6 +12,10 @@
 #include "TSimpleArray.hh"
 #include "TH1.h"
 #include "TMath.h"
+#include "jad_jet_class.hh"
+#include "jad_lepton_class.hh"
+#include "jad_jet_functions.hh"
+#include "jad_lepton_functions.hh"
 
 class ATLAS5 : public AnalysisBase {
 
@@ -39,20 +43,14 @@ public:
 
   ~ATLAS5();
 
-  void Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight);
+  void Run(const Reader * treereader, const Reader * gentreereader, const double & weight);
   void initHistos();
 
 private:  
 
-  bool jetdrsep (const TSimpleArray<TRootJet> & jets, const double & DR);
-  bool deltaphiptjet(const TSimpleArray<TRootJet> & jets, const double & px, const double & py, const double & deltaphi, const int & jetcuts, double & phiret, double & dphiret);
+//  bool jetdrsep (const TSimpleArray<TRootJet> & jets, const double & DR);
+//  bool deltaphiptjet(const TSimpleArray<TRootJet> & jets, const double & px, const double & py, const double & deltaphi, const int & jetcuts, double & phiret, double & dphiret);
 
-  TSimpleArray<TRootElectron> SubArrayEl(const TClonesArray * ELEC, float pt, float eta);
-  TSimpleArray<TRootMuon> SubArrayMu(const TClonesArray *MUON, float pt, float eta);
-  TSimpleArray<TRootJet> SubArrayGoodJets2(const TClonesArray *JET, float pt, float eta, double DRlim, const TSimpleArray<TRootElectron> &ele);
-  TSimpleArray<TRootElectron> SubArrayEl2(const TClonesArray * ELEC, float pt, float eta, double DRLmin, const TSimpleArray<TRootJet> &jet);
-  TSimpleArray<TRootMuon> SubArrayMu2(const TClonesArray *MUON, float pt, float eta,double DRLmin, const TSimpleArray<TRootJet> &jet);
-  TSimpleArray<TRootETmis> makeETM(const TClonesArray *ETMISS);
 
   TH1D * njets;
   TH1D * PHIPT;

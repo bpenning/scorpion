@@ -169,69 +169,69 @@ std::vector<jjet> D2Reader::Jet() const {
     TRootJet *jet;
     itJet.Reset();
     while( (jet = (TRootJet*) itJet.Next()) ) {
-jet_collection.push_back(jjet(jet->Px,jet->Py,jet->Pz,jet->E,jet->Btag));
+	jet_collection.push_back(jjet(jet->Px,jet->Py,jet->Pz,jet->E,jet->Btag));
     }
-  std::sort(jet_collection.begin(), jet_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+    std::sort(jet_collection.begin(), jet_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return jet_collection;
 }
 
 std::vector<jlepton> D2Reader::Elec() const {
-std::vector<jlepton> electron_collection; 
+    std::vector<jlepton> electron_collection; 
 
-  TIter itElec((TCollection*)ELEC);
-  TRootElectron *elec;
-  itElec.Reset();
+    TIter itElec((TCollection*)ELEC);
+    TRootElectron *elec;
+    itElec.Reset();
 
-  while( elec = ((TRootElectron*) itElec.Next()) ) {
-    
-    electron_collection.push_back(jlepton(elec->Px, elec->Py, elec->Pz, elec->E, true, elec->Charge,elec->IsolFlag));
-  }
+    while( elec = ((TRootElectron*) itElec.Next()) ) {
 
-  std::sort(electron_collection.begin(), electron_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+	electron_collection.push_back(jlepton(elec->Px, elec->Py, elec->Pz, elec->E, true, elec->Charge,elec->IsolFlag));
+    }
+
+    std::sort(electron_collection.begin(), electron_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return electron_collection;
 }
 
 std::vector<jlepton> D2Reader::Muon() const {
-std::vector<jlepton> muon_collection; 
+    std::vector<jlepton> muon_collection; 
 
-  TIter itMuon((TCollection*)MUON);
-  TRootMuon *muon;
-  itMuon.Reset();
+    TIter itMuon((TCollection*)MUON);
+    TRootMuon *muon;
+    itMuon.Reset();
 
-  while( muon = ((TRootMuon*) itMuon.Next()) ) {
-    muon_collection.push_back(jlepton(muon->Px, muon->Py, muon->Pz, muon->E, false, muon->Charge,muon->IsolFlag));
-  }
+    while( muon = ((TRootMuon*) itMuon.Next()) ) {
+	muon_collection.push_back(jlepton(muon->Px, muon->Py, muon->Pz, muon->E, false, muon->Charge,muon->IsolFlag));
+    }
 
-  std::sort(muon_collection.begin(), muon_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+    std::sort(muon_collection.begin(), muon_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return muon_collection;
 }
 
 std::vector<jjet> D2Reader::ETMis() const {
-  
-  std::vector<jjet> etmiss_collection;
-  TIter itEtMiss((TCollection*)ETMIS);
-  TRootETmis *etm;
-  itEtMiss.Reset();
 
-  while( (etm = (TRootETmis*) itEtMiss.Next()) ) {
-    etmiss_collection.push_back(jjet(etm->ET,etm->Px,etm->Py,0.,false));
-  }
+    std::vector<jjet> etmiss_collection;
+    TIter itEtMiss((TCollection*)ETMIS);
+    TRootETmis *etm;
+    itEtMiss.Reset();
+
+    while( (etm = (TRootETmis*) itEtMiss.Next()) ) {
+	etmiss_collection.push_back(jjet(etm->Px,etm->Py,0.,etm->ET,false));
+    }
 
     return etmiss_collection;
 }
 std::vector<jparticle> D2Reader::GenParticles() const {
 
-  std::vector<jparticle> particle_collection;
+    std::vector<jparticle> particle_collection;
 
-  TIter itGen((TCollection*)GENPARTICLE);
-  TRootC::GenParticle *gen;
-  itGen.Reset();
-  while( (gen = (TRootC::GenParticle*) itGen.Next()) ) {
-    
+    TIter itGen((TCollection*)GENPARTICLE);
+    TRootC::GenParticle *gen;
+    itGen.Reset();
+    while( (gen = (TRootC::GenParticle*) itGen.Next()) ) {
+
 	particle_collection.push_back(jparticle(gen->Px, gen->Py, gen->Pz, gen->E, gen->PID, gen->Status, gen->Charge));
     }
-  std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
-  return particle_collection;
+    std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+    return particle_collection;
 }
 /*
    const TClonesArray * D2Reader::GenEvent() const {

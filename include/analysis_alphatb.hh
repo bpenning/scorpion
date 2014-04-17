@@ -7,6 +7,8 @@
 #include <numeric>
 
 #include "alphat_functions.hh"
+#include "jad_jet_functions.hh"
+#include "jad_lepton_functions.hh"
 #include "analysis_base.hh"
 #include "fileobject_class.hh"
 #include "jBlockClasses.hh"
@@ -42,27 +44,33 @@ public:
 
   ~AlphaTb();
 
-  void Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight);
+  void Run(const Reader * treereader, const Reader * gentreereader, const double & weight);
   void initHistos();
 
 private:
-  TSimpleArray<TRootJet> SubArrayGoodJets(const TClonesArray *JET, const float & pt, const float & eta);
-  TSimpleArray<TRootElectron> SubArrayEl(const TClonesArray *ELEC, const float & pt, const float & eta);
-  TSimpleArray<TRootMuon> SubArrayMu(const TClonesArray *MUON, const float & pt, const float & eta);
-  TSimpleArray<TRootJet> SubArrayBadJets(const TClonesArray *JET, const float & pt, const float & eta);
-  TSimpleArray<TRootETmis> makeETM(const TClonesArray *ETMISS);
 
+  TH1I * cut_sel;
   TH1D * leadingjetpt;
   TH1D * hthist;
   TH1D * mhthist;
   TH1D * calomethist;
   TH1D * athist;
+  TH1D * athist2jets;
+  TH1D * athist3jets;
+  TH1D * athist4jets;
+  TH1D * athist5jets;
   TH1D * njets;
+  TH1D * ejets;
+  TH1D * bjets;
+  TH1D * mjets;
   TH1D * mht_over_ht;
   TH1D * btagrate;
   TH2D * calomet_vs_mht;
   TH2D * ht_vs_mht_pre_alphaT;
   TH2D * ht_vs_mht_post_alphaT;
+  TH1D * jet1pt;
+  TH1D * jet2pt;
+  TH1D * deltaphi;
 
 };
 

@@ -6,10 +6,14 @@
 #include <vector>
 
 #include "fileobject_class.hh"
-#include "TreeReader.hh"
+#include "Reader.hh"
 #include "TDirectory.h"
 #include "TTree.h"
 #include "TMath.h"
+#include "jad_lepton_class.hh"
+#include "jad_jet_class.hh"
+#include "jad_particle_class.hh"
+#include "jad_object_collection.hh"
 
 class AnalysisBase {
 
@@ -82,7 +86,7 @@ public:
 
   void WriteLimTree();
 
-  virtual void Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight)=0;
+  virtual void Run(const Reader *treereader, const Reader *gentreereader, const double & weight)=0;
   AnalysisBase & operator=(const AnalysisBase & analysisobj);
   bool operator==(const AnalysisBase & analysisobj);
 
