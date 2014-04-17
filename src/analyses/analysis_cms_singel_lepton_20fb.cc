@@ -53,13 +53,7 @@ TSimpleArray<TRootElectron> CmsSingleLepton20Fb::SubArrayEl(const TClonesArray *
   TSimpleArray<TRootElectron> array;
   while( (elec = (TRootElectron*) itElec.Next()) )
     {
-      //if(elec->PT<pt || !elec->IsolFlag || fabs(elec->Eta) > eta) continue;
-      //
-      //double reliso = (elec->SumEt + elec->SumPt)/elec->PT;
-      //std::cout << "reliso: " << reliso << std::endl;
-      //reliso > riso
-//      if(elec->PT < pt || !elec->IsolFlag || fabs(elec->Eta) > eta || (fabs(elec->Eta) > 1.4 && fabs(elec->Eta) < 1.6)) continue;
-      if (fabs(elec->Eta)<1.4442 && elec->PT > 30 && elec->IsolFlag  ){
+      if (fabs(elec->Eta)<eta && elec->PT > pt && elec->IsolFlag  ){
           array.Add(elec);
       }
     }
@@ -73,11 +67,9 @@ TSimpleArray<TRootMuon> CmsSingleLepton20Fb::SubArrayMu(const TClonesArray *MUON
   TSimpleArray<TRootMuon> array;
   while( (muon = (TRootMuon*) itMuon.Next()) )
     {
-      //double reliso = (muon->SumEt + muon->SumPt)/muon->PT;
-      //if(muon->PT<pt || !muon->IsolFlag || fabs(muon->Eta) > eta) continue;
-      //reliso > riso
-      if(muon->PT<pt || !muon->IsolFlag || fabs(muon->Eta) > eta) continue;
-      array.Add(muon);
+      if (fabs(muon->Eta)<eta && muon->PT > pt && muon->IsolFlag  ){
+        array.Add(muon);
+      }
     }
   return array;
 }
@@ -133,31 +125,31 @@ void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & 
   mCounter+=weight; //keep a tally of all the files/events we are running over
 
   //produce subarrays of objects satisfying our criteria
-  TSimpleArray<TRootElectron> ele=SubArrayEl(treereader.Elec(), 10.0, 2.4); //the central isolated electrons, pt > PT_ELEC GeV
-  TSimpleArray<TRootMuon> mu=SubArrayMu(treereader.Muon(), 10.0, 2.1); //the central isolated muons, pt > PT_MUON GeV
-  TSimpleArray<TRootJet> goodjets=SubArrayGoodJets(treereader.Jet(), 30.0, 3.0); //check for jets which we should analyse
+  TSimpleArray<TRootElectron> ele=SubArrayEl(treereader.Elec(), 30.0, 1.4442); //isolated electrons, pt > 30 GeV, |eta| < 1.4442 (barrel region ECAL)
+  TSimpleArray<TRootMuon> mu=SubArrayMu(treereader.Muon(), 25.0, 2.1); //the central isolated muons, pt > 25 GeV, |eta| < 2.1
+  TSimpleArray<TRootJet> goodjets=SubArrayGoodJets(treereader.Jet(), 30.0, 2.4); //check pt > 30 GeV, |eta|<2.4
   TSimpleArray<TRootETmis> etmis=makeETM(treereader.ETMis()); //Missing transverse energy array
 
   double calo_met = etmis[0]->ET;
-
-  if(goodjets.GetEntries() <= 2 && goodjets.GetEntries() > 0 && mu.GetEntries() == 0 && ele.GetEntries() == 0) {
-      
-    if(goodjets[0]->PT > 110.0 && fabs(goodjets[0]->Eta) < 2.4) {
-
-      if(checkforsecondjetphi(goodjets, 2.5) || goodjets.GetEntries()==1) { 
-	
-	leadingjetpt->Fill(goodjets[0]->PT, weight);
-	calomet->Fill(calo_met, weight);
-	if(calo_met > 250.0) { mSigPred.at(0)+=weight; }
-	if(calo_met > 300.0) { mSigPred.at(1)+=weight; }
-	if(calo_met > 350.0) { mSigPred.at(2)+=weight; }
-	if(calo_met > 400.0) { mSigPred.at(3)+=weight; }
-
-      }
-
-    }
-
-  }
+  std::cout << "MET SIZE:" << etmis.size() << std::endl;
+//  if(goodjets.GetEntries() <= 2 && goodjets.GetEntries() > 0 && mu.GetEntries() == 0 && ele.GetEntries() == 0) {
+//      
+//    if(goodjets[0]->PT > 110.0 && fabs(goodjets[0]->Eta) < 2.4) {
+//
+//      if(checkforsecondjetphi(goodjets, 2.5) || goodjets.GetEntries()==1) { 
+//	
+//	leadingjetpt->Fill(goodjets[0]->PT, weight);
+//	calomet->Fill(calo_met, weight);
+//	if(calo_met > 250.0) { mSigPred.at(0)+=weight; }
+//	if(calo_met > 300.0) { mSigPred.at(1)+=weight; }
+//	if(calo_met > 350.0) { mSigPred.at(2)+=weight; }
+//	if(calo_met > 400.0) { mSigPred.at(3)+=weight; }
+//
+//      }
+//
+//    }
+//
+//  }
     
 
   return;
