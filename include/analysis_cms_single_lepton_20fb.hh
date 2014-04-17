@@ -6,13 +6,15 @@
 #include <vector>
 #include <numeric>
 
+#include "TH1.h"
+#include "TH2.h"
+#include "TMath.h"
+
 #include "analysis_base.hh"
 #include "fileobject_class.hh"
 #include "jBlockClasses.hh"
 #include "TSimpleArray.hh"
-#include "TH1.h"
-#include "TH2.h"
-#include "TMath.h"
+#include "cms_single_lepton_20fb_functions.hh"
 
 ///based on CMS-SUS-13-011; arXiv:1308.1586v2
 class CmsSingleLepton20Fb : public AnalysisBase {
@@ -51,7 +53,10 @@ private:
   TSimpleArray<TRootMuon> SubArrayMu(const TClonesArray *MUON, const float & pt, const float & eta);
   TSimpleArray<TRootETmis> makeETM(const TClonesArray *ETMISS);
 
-  bool checkforsecondjetphi(const TSimpleArray<TRootJet> & goodjets, const double & dphisep);
+//  bool checkforsecondjetphi(const TSimpleArray<TRootJet> & goodjets, const double & dphisep);
+  bool gt_1_btag(const TSimpleArray<TRootJet> & jets );
+  double get_mt2w(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TRootMuon> & muons,
+        const TSimpleArray<TRootJet> & jets, const TSimpleArray<TRootETmis> & etmis );
 
   TH1D * leadingjetpt;
   TH1D * calomet;
