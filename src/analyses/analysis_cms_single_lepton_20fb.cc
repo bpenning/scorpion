@@ -85,31 +85,6 @@ TSimpleArray<TRootETmis> CmsSingleLepton20Fb::makeETM(const TClonesArray *ETMISS
   return array;
 }
 
-//bool CmsSingleLepton20Fb::checkforsecondjetphi(const TSimpleArray<TRootJet> & goodjets, const double & dphisep) {
-//
-//  if(goodjets.GetEntries() == 2) {
-//    
-//    //check if deltaphi j1, j2 < 2.5
-//    double phijet1 = TMath::ATan2(goodjets[0]->Py, goodjets[0]->Px); //calculate jet phi
-//    double phijet2 = TMath::ATan2(goodjets[1]->Py, goodjets[1]->Px); //calculate jet phi
-//    double dphij12 = fabs(phijet1 - phijet2); //calculate the distance in phi between the jet total momentum
-//    
-//    //for two vectors in a 2D plane, they cannot be more than pi away from each other
-//    if(dphij12 > TMath::Pi()) {
-//      dphij12 = fabs(dphij12 - (2.0 * TMath::Pi()));
-//    }
-//    
-//    if (dphij12 < dphisep) {
-//      return true;
-//    } else {
-//      return false;
-//    }
-//  }
-//  
-//  return false;
-//   
-//}
-
 void CmsSingleLepton20Fb::initHistos() {
   andir->cd();
   leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
@@ -155,6 +130,22 @@ double get_mt2w(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TR
   return calculateMT2w(jet_momenta, btags, lepton_momentum, met, metphi);
 }
 
+double get_chi2(const TSimpleArray<TRootJet> & jets){
+  //inputs from jets
+  int njets=jets.GetEntries();
+  std::vector<LorentzVector> jet_momenta(njets);
+  //FIXME: fix the jet enery resolution to 10% for now. 
+  //Verena Martinez Outschoorn should tell how to do it better
+  std::vector<float> jet_energy_resolutions(njets,0.1);
+  std::vector<bool> btags(njets);
+  for(unsigned int ijet = 0; ijet < njets; ijet++) {
+    jet_momenta[ijet]=LorentzVector(jets[ijet]->E,jets[ijet]->Px,jets[ijet]->Py,jets[ijet]->Pz);
+    btags[ijet]=jets[ijet]->Btag;
+  }
+  return calculateChi2(jet_momenta, jet_energy_resolutions, btags);
+}
+
+
 void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight) {
 
   //std::cout << "entries: " << treereader.GetEntries() << std::endl;
@@ -197,8 +188,8 @@ void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & 
 
   if (preselected){
     double mt2w=get_mt2w(goodelecs,goodmuons,goodjets,etmis);
+    double chi2=get_chi2(goodjets);
+//    double min_dphi=get_min_dphi(goodjets,etmis);
   }
-    
-
   return;
 }
