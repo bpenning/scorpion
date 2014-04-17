@@ -131,7 +131,7 @@ void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & 
   TSimpleArray<TRootETmis> etmis=makeETM(treereader.ETMis()); //Missing transverse energy array
 
   double calo_met = etmis[0]->ET;
-  std::cout << "MET SIZE:" << etmis.size() << std::endl;
+  std::cout << "MET SIZE:" << etmis.GetEntries() << std::endl;
 //  if(goodjets.GetEntries() <= 2 && goodjets.GetEntries() > 0 && mu.GetEntries() == 0 && ele.GetEntries() == 0) {
 //      
 //    if(goodjets[0]->PT > 110.0 && fabs(goodjets[0]->Eta) < 2.4) {
