@@ -11,6 +11,7 @@
 #include "analysis_ss5.hh"
 #include "analysis_ssb8.hh"
 #include "analysis_zerolepdoj.hh"
+#include "analysis_cms_single_lepton_20fb.hh"
 #include "fileobject_class.hh"
 #include "filemap_class.hh"
 #include "filepair_class.hh"
@@ -241,6 +242,28 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 
 
   class_<ZeroLepDOJ, bases<AnalysisBase> >("ZEROLEPDOJ", init<const std::string &, const std::string &, const unsigned int &>())
+    .def(init<
+	 const std::string &, 
+	 const std::string &, 
+	 const unsigned int &, 
+	 const double &, 
+	 //const std::vector<int> &, 
+	 const std::vector<double> & 
+	 >())
+    .def(init<
+	 const std::string &, 
+	 const std::string &, 
+	 const unsigned int &, 
+	 const double &, 
+	 const std::vector<double> &,
+	 const std::vector<double> &,
+	 const std::vector<int> &,
+	 const std::string &,
+	 const bool &
+	 >());
+    ;
+
+  class_<CmsSingleLepton20Fb, bases<AnalysisBase> >("CmsSingleLepton20Fb", init<const std::string &, const std::string &, const unsigned int &>())
     .def(init<
 	 const std::string &, 
 	 const std::string &, 
