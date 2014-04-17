@@ -57,6 +57,7 @@ private:
   bool gt_1_btag(const TSimpleArray<TRootJet> & jets );
   double get_mt2w(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TRootMuon> & muons,
         const TSimpleArray<TRootJet> & jets, const TSimpleArray<TRootETmis> & etmis );
+  double get_chi2(const TSimpleArray<TRootJet> & jets);
 
   TH1D * leadingjetpt;
   TH1D * calomet;
