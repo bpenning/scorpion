@@ -1,36 +1,33 @@
+
+/***********************************************************************/
+/* modified code from 
+ * https://twiki.cern.ch/twiki/pub/CMSPublic/PhysicsResultsSUS13011/stop_variables-1.tar.gz 
+ * by copying it in one file and getting rid of "using namespace std"  
+ ***********************************************************************/
 #ifndef __CMS_SINGLE_LEPTON_20FB_RUNCTIONS__ 
 #define __CMS_SINGLE_LEPTON_20FB_RUNCTIONS__ 
-//cms_single_lepton_20fb_functions
-//#include "mt2w_bisect.h"
 #include <vector> // mt2w & chi2
+#include <math.h>
 #include "Math/LorentzVector.h" // mt2w & chi2
 #include "TFitter.h" // chi2
-
-//using namespace std;
 
 //mt2w & chi2
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 
 //mt2w
-double calculateMT2w(vector<LorentzVector>& jets, vector<bool>& btag, LorentzVector& lep, float met, float metphi);
+double calculateMT2w(std::vector<LorentzVector>& jets, std::vector<bool>& btag, LorentzVector& lep, float met, float metphi);
 double mt2wWrapper(LorentzVector& lep, LorentzVector& jet_o, LorentzVector& jet_b, float met, float metphi);
 
-//#include <vector>
-//#include "TFitter.h"
-//#include "Math/LorentzVector.h"
-
-//using namespace std;
-
+//chi2
 static const float PDG_TOP_MASS = 173.5;
 static const float PDG_W_MASS = 80.385;
-
-//typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
-
 double fc2 (double c1, double m12, double m22, double m02, bool verbose = false);
 double fchi2 (double c1, double pt1, double sigma1, double pt2, double sigma2,
               double m12, double m22, double m02);
 void minuitFunction(int&, double* , double &result, double par[], int);
-double calculateChi2(vector<LorentzVector>& jets, vector<float>& sigma_jets, vector<bool>& btag);
+double calculateChi2(std::vector<LorentzVector>& jets, std::vector<float>& sigma_jets, std::vector<bool>& btag);
+
+//mt2w_bisect
 /***********************************************************************/
 /*                                                                     */
 /*              Finding MT2W                                           */
@@ -41,9 +38,6 @@ double calculateChi2(vector<LorentzVector>& jets, vector<float>& sigma_jets, vec
 /*              May 8, 2012, v1.00a                                    */
 /*                                                                     */  
 /***********************************************************************/
-
-//#ifndef MT2W_BISECT_H
-//#define MT2W_BISECT_H
 
 
 /*The user can change the desired precision below, the larger one of the following two definitions is used. Relative precision less than 0.00001 is not guaranteed to be achievable--use with caution*/ 
