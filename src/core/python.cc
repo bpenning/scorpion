@@ -54,27 +54,6 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 		const bool &
 		>());
     ;
-    class_<ATLAS5, bases<AnalysisBase> >("ATLAS5", init<const std::string &, const std::string &, const unsigned int &>())
-	.def(init<
-		const std::string &, 
-		const std::string &, 
-		const unsigned int &, 
-		const double &, 
-		//const std::vector<int> &, 
-		const std::vector<double> & 
-		>())
-	.def(init<
-		const std::string &, 
-		const std::string &, 
-		const unsigned int &, 
-		const double &, 
-		const std::vector<double> &,
-		const std::vector<double> &,
-		const std::vector<int> &,
-		const std::string &,
-		const bool &
-		>());
-    ;
 
     class_<FileObject>("FileObject", 
 	    init<const std::string &, 
