@@ -102,8 +102,7 @@ bool CmsSingleLepton20Fb::gt_1_btag(const TSimpleArray<TRootJet> & jets ){
   return gt_1_btag;
 }
 
-double get_mt2w(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TRootMuon> & muons,
-        const TSimpleArray<TRootJet> & jets, const TSimpleArray<TRootETmis> & etmis ){
+double CmsSingleLepton20Fb::get_mt2w(const TRootParticle & lepton, const TSimpleArray<TRootJet> & jets, const TSimpleArray<TRootETmis> & etmis ){
   //inputs from jets
   int njets=jets.GetEntries();
   std::vector<LorentzVector> jet_momenta(njets);
@@ -113,16 +112,7 @@ double get_mt2w(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TR
     btags[ijet]=jets[ijet]->Btag;
   }
   //inputs from leptons
-  double lepton_e,lepton_px,lepton_py,lepton_pz;
-  if (elecs.GetEntries()==1){
-    lepton_e=elecs[0]->E; lepton_px=elecs[0]->Px; lepton_py=elecs[0]->Py; lepton_pz=elecs[0]->Pz; 
-  } else if (muons.GetEntries()==1){
-    lepton_e=muons[0]->E; lepton_px=muons[0]->Px; lepton_py=muons[0]->Py; lepton_pz=muons[0]->Pz; 
-  } else{
-    std::cerr << "ERROR: LEPTON SELECTION WASN'T DONE PROPERLY" << std::endl;
-    return -123456789;
-  }
-  LorentzVector lepton_momentum(lepton_e,lepton_px,lepton_py,lepton_pz);
+  LorentzVector lepton_momentum(lepton.E,lepton.Px,lepton.Py,lepton.Pz);
   //inputs from missing ET
   double met = etmis[0]->ET;
   double metphi = etmis[0]->Phi; 
@@ -130,7 +120,7 @@ double get_mt2w(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TR
   return calculateMT2w(jet_momenta, btags, lepton_momentum, met, metphi);
 }
 
-double get_chi2(const TSimpleArray<TRootJet> & jets){
+double CmsSingleLepton20Fb::get_chi2(const TSimpleArray<TRootJet> & jets){
   //inputs from jets
   int njets=jets.GetEntries();
   std::vector<LorentzVector> jet_momenta(njets);
@@ -145,14 +135,14 @@ double get_chi2(const TSimpleArray<TRootJet> & jets){
   return calculateChi2(jet_momenta, jet_energy_resolutions, btags);
 }
 
-double dphi(double phi1, double phi2){
+double CmsSingleLepton20Fb::dphi(double phi1, double phi2){
   double result = phi1 - phi2;
   while (result > TMath::Pi()) result -= 2*TMath::Pi();
   while (result <= -TMath::Pi()) result += 2*TMath::Pi();
   return result;
 }
 
-double get_min_dphi(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootETmis> & etmis){
+double CmsSingleLepton20Fb::get_min_dphi(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootETmis> & etmis){
  double phi_jet1=jets[0]->Phi;
  double phi_jet2=jets[1]->Phi;
  double phi_etmiss=etmis[0]->Phi;
@@ -160,14 +150,14 @@ double get_min_dphi(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRoot
 }
 
 //FIXME: not sure if the opposite hemisphere is defined using Phi only
-double get_htratio(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootETmis> & etmis){
+double CmsSingleLepton20Fb::get_htratio(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootETmis> & etmis){
   int njets=jets.GetEntries();
   double same_hemisphere_httot;
   double httot;
   double et;
-  double phi_etmiss=etmis[0]->Phi;
+  double phi_etmis=etmis[0]->Phi;
   for(unsigned int ijet = 0; ijet < njets; ijet++) {
-    et=jets[ijet]->ET;
+    et=jets[ijet]->PT;
     httot+=et;
     if (std::abs(jets[ijet]->Phi-phi_etmis)>TMath::Pi()/2){
       same_hemisphere_httot+=et;
@@ -176,44 +166,66 @@ double get_htratio(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootE
   return same_hemisphere_httot/httot;
 }
 
-double get_leading_btagged_pt(const TSimpleArray<TRootJet> & jets){
+TRootJet CmsSingleLepton20Fb::get_leading_bjet(const TSimpleArray<TRootJet> & jets){
+  TRootJet result;
   int njets=jets.GetEntries();
-  double leading_btagged_pt=0;
+  double e, px, py, pz;
+  bool Btag;
+  int NTracks, NCalo;
+  double EHoverEE;
   for(unsigned int ijet = 0; ijet < njets; ijet++) {
     if (jets[ijet]->Btag){
-      leading_btagged_pt=jets[ijet]->PT;
+      e=jets[ijet]->E; 
+      px=jets[ijet]->Px; 
+      py=jets[ijet]->Py; 
+      pz=jets[ijet]->Pz; 
+      result.Set(px,py,pz,e);
+      result.Btag=true;
+      result.NTracks=jets[ijet]->NTracks;
+      result.NCalo=jets[ijet]->NCalo;
+      result.EHoverEE=jets[ijet]->EHoverEE;
       break;
     }
   }
-  return leading_btagged_pt;
+  return result;
 }
 
-double get_(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TRootMuon> & muons,
-        const TSimpleArray<TRootJet> & jets, const TSimpleArray<TRootETmis> & etmis ){
-  //inputs from jets
-  int njets=jets.GetEntries();
-  std::vector<LorentzVector> jet_momenta(njets);
-  std::vector<bool> btags(njets);
-  for(unsigned int ijet = 0; ijet < njets; ijet++) {
-    jet_momenta[ijet]=LorentzVector(jets[ijet]->E,jets[ijet]->Px,jets[ijet]->Py,jets[ijet]->Pz);
-    btags[ijet]=jets[ijet]->Btag;
-  }
-  //inputs from leptons
-  double lepton_e,lepton_px,lepton_py,lepton_pz;
+double CmsSingleLepton20Fb::get_delta_R(const TRootParticle & lepton, const TRootJet & leading_bjet){
+  double lepton_eta=lepton.Eta;
+  double lepton_phi=lepton.Phi;
+  double bjet_eta=leading_bjet.Eta;
+  double bjet_phi=leading_bjet.Phi;
+  double delta_eta = lepton_eta - bjet_eta;
+  double delta_phi = dphi(lepton_phi, bjet_phi);
+  return sqrt(delta_eta*delta_eta+delta_phi*delta_phi);
+}
+
+double CmsSingleLepton20Fb::get_mt(const TRootParticle & lepton, const TSimpleArray<TRootETmis> & etmis){
+  double met_et=etmis[0]->ET;
+  double met_phi=etmis[0]->Phi;
+  double lepton_pt=lepton.PT;
+  double lepton_phi=lepton.Phi;
+  return sqrt(2*met_et*lepton_pt*(1-cos(dphi(lepton_phi,met_phi))));
+}
+
+TRootParticle CmsSingleLepton20Fb::get_lepton(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TRootMuon> & muons){
+  TRootParticle result;
+  double e, px, py, pz;
   if (elecs.GetEntries()==1){
-    lepton_e=elecs[0]->E; lepton_px=elecs[0]->Px; lepton_py=elecs[0]->Py; lepton_pz=elecs[0]->Pz; 
+    e=elecs[0]->E; 
+    px=elecs[0]->Px; 
+    py=elecs[0]->Py; 
+    pz=elecs[0]->Pz; 
   } else if (muons.GetEntries()==1){
-    lepton_e=muons[0]->E; lepton_px=muons[0]->Px; lepton_py=muons[0]->Py; lepton_pz=muons[0]->Pz; 
+    e=muons[0]->E; 
+    px=muons[0]->Px; 
+    py=muons[0]->Py; 
+    pz=muons[0]->Pz; 
   } else{
     std::cerr << "ERROR: LEPTON SELECTION WASN'T DONE PROPERLY" << std::endl;
-    return -123456789;
   }
-  LorentzVector lepton_momentum(lepton_e,lepton_px,lepton_py,lepton_pz);
-  //inputs from missing ET
-  double met = etmis[0]->ET;
-  double metphi = etmis[0]->Phi; 
-  //calculate MT2W 
-  return calculateMT2w(jet_momenta, btags, lepton_momentum, met, metphi);
+  result.Set(px,py,pz,e);
+  return result;
 }
 
 void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight) {
@@ -257,13 +269,40 @@ void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & 
   }
 
   if (preselected){
-    double mt2w=get_mt2w(goodelecs,goodmuons,goodjets,etmis);
+    //get single lepton
+    TRootParticle lepton=get_lepton(goodelecs,goodmuons);
+    TRootJet leading_bjet=get_leading_bjet(goodjets);
+    //get 9 kinematic variables
+    double mt2w=get_mt2w(lepton,goodjets,etmis);
     double chi2=get_chi2(goodjets);
     double min_dphi=get_min_dphi(goodjets,etmis);
     //FIXME: check if get_htratio has been defined correctly
     double htratio=get_htratio(goodjets,etmis);
-    double leading_btagged_pt=get_leading_btagged_pt(goodjets);
-    double delta_R=get_delta_R(goodelecs,goodmuons,goodjets);
+    double leading_bjet_pt=leading_bjet.PT;
+    double delta_R=get_delta_R(lepton,leading_bjet);
+    double lepton_pt=lepton.PT;
+    double mt=get_mt(lepton,etmis);
+    double met=etmis[0]->ET;
+    // stop->top neu; low DeltaM
+    if (met>150 && min_dphi>0.8 && chi2<5 ) mSigPred.at(0)+=weight;
+    if (met>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(1)+=weight;
+    if (met>250 && min_dphi>0.8 && chi2<5 ) mSigPred.at(2)+=weight;
+    if (met>300 && min_dphi>0.8 && chi2<5 ) mSigPred.at(3)+=weight;
+    // stop->top neu; high DeltaM
+    if (met>150 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(4)+=weight;
+    if (met>200 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(5)+=weight;
+    if (met>250 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(6)+=weight;
+    if (met>300 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(7)+=weight;
+    // stop->bot char; low DeltaM
+    if (met>100 && min_dphi>0.8 ) mSigPred.at(8)+=weight;
+    if (met>150 && min_dphi>0.8 ) mSigPred.at(9)+=weight;
+    if (met>200 && min_dphi>0.8 ) mSigPred.at(10)+=weight;
+    if (met>250 && min_dphi>0.8 ) mSigPred.at(11)+=weight;
+    // stop->bot char; high DeltaM
+    if (met>100 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(12)+=weight;
+    if (met>150 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(13)+=weight;
+    if (met>200 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(14)+=weight;
+    if (met>250 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(15)+=weight;
   }
   return;
 }

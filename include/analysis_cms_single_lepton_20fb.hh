@@ -56,13 +56,16 @@ private:
   //miscellaneous
   bool gt_1_btag(const TSimpleArray<TRootJet> & jets );
   double dphi(double, double);
+  //copies of the lepton and the leading bjet
+  TRootParticle get_lepton(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TRootMuon> & muons);
+  TRootJet get_leading_bjet(const TSimpleArray<TRootJet> & jets);
   //kinematic variables
-  double get_mt2w(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TRootMuon> & muons,
-        const TSimpleArray<TRootJet> & jets, const TSimpleArray<TRootETmis> & etmis );
+  double get_mt2w(const TRootParticle & lepton, const TSimpleArray<TRootJet> & jets, const TSimpleArray<TRootETmis> & etmis );
   double get_chi2(const TSimpleArray<TRootJet> & jets);
   double get_min_dphi(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootETmis> & etmis);
   double get_htratio(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootETmis> & etmis);
-  double get_leading_btagged_pt(const TSimpleArray<TRootJet> & jets);
+  double get_delta_R(const TRootParticle & lepton, const TRootJet & leading_bjet);
+  double get_mt(const TRootParticle & lepton, const TSimpleArray<TRootETmis> & etmis);
 
   TH1D * leadingjetpt;
   TH1D * calomet;
