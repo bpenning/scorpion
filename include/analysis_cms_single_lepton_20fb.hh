@@ -53,11 +53,16 @@ private:
   TSimpleArray<TRootMuon> SubArrayMu(const TClonesArray *MUON, const float & pt, const float & eta);
   TSimpleArray<TRootETmis> makeETM(const TClonesArray *ETMISS);
 
-//  bool checkforsecondjetphi(const TSimpleArray<TRootJet> & goodjets, const double & dphisep);
+  //miscellaneous
   bool gt_1_btag(const TSimpleArray<TRootJet> & jets );
+  double dphi(double, double);
+  //kinematic variables
   double get_mt2w(const TSimpleArray<TRootElectron> & elecs, const TSimpleArray<TRootMuon> & muons,
         const TSimpleArray<TRootJet> & jets, const TSimpleArray<TRootETmis> & etmis );
   double get_chi2(const TSimpleArray<TRootJet> & jets);
+  double get_min_dphi(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootETmis> & etmis);
+  double get_htratio(const TSimpleArray<TRootJet> & jets,const TSimpleArray<TRootETmis> & etmis);
+  double get_leading_btagged_pt(const TSimpleArray<TRootJet> & jets);
 
   TH1D * leadingjetpt;
   TH1D * calomet;
