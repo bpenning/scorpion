@@ -51,6 +51,7 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,a
     # 8 TeV analyses
     alphat8_12b = j.AlphaTb8('alphaTb8_analysis12','CMS8', 59, 11.7, bg_at8b, bgunc_at8b, data_at8b, 'combined', calculateRno)
     ss8_11b = j.SSb8('SSb8_analysis11','CMS8', 1, 10.5, bg_ssb8, bgunc_ssb8, data_ssb8, 'combined', calculateRno)
+    lp8_20b = j.CmsSingleLepton20Fb('CmsSingleLepton20Fb','CMS8', 16, 19.5, bg_lp8_20b, bgunc_lp8_20b, data_lp8_20b, 'individual', calculateRno)
     
     # for extrapolations:
     bg_at8b40 = DoubleVector([x * 3.4 for x in bg_at8b])
@@ -77,14 +78,15 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,a
         if alphat7bb:
              mgr.add(alphat7_5b)
     elif com == 8:
-        if alphat12b:
-             mgr.add(alphat8_12b)
-        if ss11b:
-             mgr.add(ss8_11b)
-        if alphat40b:
-             mgr.add(alphat8_40b)
-        if ss40b:
-             mgr.add(ss8_40b)
+        mgr.add(lp8_20b)
+#        if alphat12b:
+#             mgr.add(alphat8_12b)
+#        if ss11b:
+#             mgr.add(ss8_11b)
+#        if alphat40b:
+#             mgr.add(alphat8_40b)
+#        if ss40b:
+#             mgr.add(ss8_40b)
     else:
          print "WRONG ENERGY"
          sys.exit(1) 
