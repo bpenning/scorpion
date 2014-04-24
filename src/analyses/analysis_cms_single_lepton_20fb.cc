@@ -87,8 +87,17 @@ TSimpleArray<TRootETmis> CmsSingleLepton20Fb::makeETM(const TClonesArray *ETMISS
 
 void CmsSingleLepton20Fb::initHistos() {
   andir->cd();
-  leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
-  calomet = new TH1D("calomet",";E_{T}^{miss} [GeV];Entries",200,-5.,1995.);
+  cut_flow_hist = new TH1D("cuts",";cuts;entries",7,0,7);
+  //same histograms as in Fig. 2 1308.1586
+  mt_hist= new TH1D("mt",";M_{T} [GeV];Entries",10 ,0 ,300);
+  met_hist= new TH1D("met",";E_{T}^{miss} [GeV];Entries",10 ,100 ,350);
+  mt2w_hist= new TH1D("mt2w",";M_{T2}^W [GeV];Entries",17 ,75 ,500);
+  chi2_hist= new TH1D("chi2",";Hadronic~top~#chi^2;Entries", 20,0 ,20);
+  htratio_hist= new TH1D("htratio",";H_T^{ratio};Entries",25 ,0 ,1);
+  min_dphi_hist= new TH1D("min_dphi",";#min#{#Delta#phi(j_1,E^{miss}_T),#Delta#phi(j_2,E^{miss}_T) #}[rad];Entries", 15,0 ,TMath::Pi());
+  leading_bjet_pt_hist= new TH1D("leading_bjet_pt",";p_T(b_T);Entries",9, 30 ,300 );
+  delta_R_hist= new TH1D("delta_R",";#Delta R(l,b_1);Entries",15 ,0 ,5);
+  lepton_pt_hist= new TH1D("lepton_pt",";p_T(l) [GeV];Entries", 8, 20,100);
 }
 
 bool CmsSingleLepton20Fb::gt_1_btag(const TSimpleArray<TRootJet> & jets ){
@@ -249,17 +258,24 @@ void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & 
   //preselection
   bool preselected=false;
   // one isolated lepton
+  cut_flow_hist->Fill(0.5);
   if (goodelecs.GetEntries()+goodmuons.GetEntries()==1){
+    cut_flow_hist->Fill(1.5);
     // no second isolated lepton of pt>5GeV. FIXME: isolation algorithm should be: pTsum<0.2*pT && DeltaR<0.4
     if (allelecs.GetEntries()+allmu.GetEntries()==1){
+      cut_flow_hist->Fill(2.5);
       // FIXME: no additional isolated track of pt>10 GeV with opposite sign wrt primary lepton
       if (true){
+        cut_flow_hist->Fill(3.5);
         //FIXME: no jet of pt>20 GeV "consistent with hadronic tau lepton" 
         if (true){
+          cut_flow_hist->Fill(4.5);
           // at least four jets, at least one btag
           if (goodjets.GetEntries()>=4 && gt_1_btag(goodjets)){
+            cut_flow_hist->Fill(5.5);
             // MET>100 GeV
             if (calo_met>100){
+              cut_flow_hist->Fill(6.5);
               preselected=true;
             }
           }
@@ -283,6 +299,16 @@ void CmsSingleLepton20Fb::Run(const TreeReader & treereader, const TreeReader & 
     double lepton_pt=lepton.PT;
     double mt=get_mt(lepton,etmis);
     double met=etmis[0]->ET;
+    //fill histograms (cf. Fig. 2)
+    mt_hist->Fill(mt,1000*weight);
+    met_hist->Fill(met,1000*weight);
+    mt2w_hist->Fill(mt2w,1000*weight);
+    chi2_hist->Fill(chi2,1000*weight);
+    htratio_hist->Fill(htratio,1000*weight);
+    min_dphi_hist->Fill(min_dphi,1000*weight);
+    leading_bjet_pt_hist->Fill(leading_bjet_pt,1000*weight);
+    delta_R_hist->Fill(delta_R,1000*weight);
+    lepton_pt_hist->Fill(lepton_pt,1000*weight);
     // stop->top neu; low DeltaM
     if (met>150 && min_dphi>0.8 && chi2<5 ) mSigPred.at(0)+=weight;
     if (met>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(1)+=weight;

@@ -67,8 +67,17 @@ private:
   double get_delta_R(const TRootParticle & lepton, const TRootJet & leading_bjet);
   double get_mt(const TRootParticle & lepton, const TSimpleArray<TRootETmis> & etmis);
 
-  TH1D * leadingjetpt;
-  TH1D * calomet;
+  TH1D * cut_flow_hist;
+  //same histograms as in Fig. 2 1308.1586
+  TH1D * mt_hist;
+  TH1D * met_hist;
+  TH1D * mt2w_hist;
+  TH1D * chi2_hist;
+  TH1D * htratio_hist;
+  TH1D * min_dphi_hist;
+  TH1D * leading_bjet_pt_hist;
+  TH1D * delta_R_hist;
+  TH1D * lepton_pt_hist;
 };
 
 #endif
