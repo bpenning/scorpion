@@ -117,11 +117,11 @@ double CmsSingleLepton20Fb::get_mt2w(const TRootParticle & lepton, const TSimple
   std::vector<LorentzVector> jet_momenta(njets);
   std::vector<bool> btags(njets);
   for(unsigned int ijet = 0; ijet < njets; ijet++) {
-    jet_momenta[ijet]=LorentzVector(jets[ijet]->E,jets[ijet]->Px,jets[ijet]->Py,jets[ijet]->Pz);
+    jet_momenta[ijet]=LorentzVector(jets[ijet]->Px,jets[ijet]->Py,jets[ijet]->Pz,jets[ijet]->E);
     btags[ijet]=jets[ijet]->Btag;
   }
   //inputs from leptons
-  LorentzVector lepton_momentum(lepton.E,lepton.Px,lepton.Py,lepton.Pz);
+  LorentzVector lepton_momentum(lepton.Px,lepton.Py,lepton.Pz,lepton.E);
   //inputs from missing ET
   double met = etmis[0]->ET;
   double metphi = etmis[0]->Phi; 
@@ -138,7 +138,7 @@ double CmsSingleLepton20Fb::get_chi2(const TSimpleArray<TRootJet> & jets){
   std::vector<float> jet_energy_resolutions(njets,0.1);
   std::vector<bool> btags(njets);
   for(unsigned int ijet = 0; ijet < njets; ijet++) {
-    jet_momenta[ijet]=LorentzVector(jets[ijet]->E,jets[ijet]->Px,jets[ijet]->Py,jets[ijet]->Pz);
+    jet_momenta[ijet]=LorentzVector(jets[ijet]->Px,jets[ijet]->Py,jets[ijet]->Pz,jets[ijet]->E);
     btags[ijet]=jets[ijet]->Btag;
   }
   return calculateChi2(jet_momenta, jet_energy_resolutions, btags);
