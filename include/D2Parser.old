@@ -1,0 +1,18 @@
+#ifndef __D2PARSER__
+#define __D2PARSER__
+
+#include "Parser_class.hh"
+#include "D2Reader.hh"
+
+class D2Parser : public cParser {
+
+    public:
+	D2Parser();
+	D2Parser(Tchain chainRun);
+	~D2Parser();
+	D2Reader& D2Parser::GetReader();
+    private:
+	D2Reader & mytreereader;
+};
+
+#endif
