@@ -3,6 +3,7 @@
 #include <vector>
 #include "analysis_alphatb.hh"
 #include "analysis_monojet8.hh"
+#include "analysis_cms_3_lepton_20fb.hh"
 #include "fileobject_class.hh"
 #include "filemap_class.hh"
 #include "filepair_class.hh"
@@ -55,6 +56,27 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 		>());
     ;
     class_<MonoJet8, bases<AnalysisBase> >("MonoJet8", init<const std::string &, const std::string &, const unsigned int &>())
+	.def(init<
+		const std::string &, 
+		const std::string &, 
+		const unsigned int &, 
+		const double &, 
+		//const std::vector<int> &, 
+		const std::vector<double> & 
+		>())
+	.def(init<
+		const std::string &, 
+		const std::string &, 
+		const unsigned int &, 
+		const double &, 
+		const std::vector<double> &,
+		const std::vector<double> &,
+		const std::vector<int> &,
+		const std::string &,
+		const bool &
+		>());
+    ;
+    class_<Cms3Lepton20Fb, bases<AnalysisBase> >("Cms3Lepton20Fb", init<const std::string &, const std::string &, const unsigned int &>())
 	.def(init<
 		const std::string &, 
 		const std::string &, 
