@@ -97,36 +97,159 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
     //(kinematic) variables
     double met=etmis[0].E();
     //FIXME: correct this
+    double ht=0;
     int N_tau=0;
     int N_b=0;
+    bool on_Z=false;
     //definition of signal regions: 
     //Table 2 CMS-SUS-13-002 divisions (HT>200 GeV; HT<200 GeV); rows (OSSF0 ... OSSF2); columns (N_tau=0,N_b=0 ... N_tau=1, N_b>=1)
     if (leptons.size()+taujets.size()>=4){
-       if (OSSF_pairs.size()==0){
-           if (met>100){
-               if ((N_tau==0) && (N_b==0)) mSigPred.at(0)+=weight;
-               else if ((N_tau==1) && (N_b==0)) mSigPred.at(1)+=weight;
-               else if ((N_tau==0) && (N_b>=1)) mSigPred.at(2)+=weight;
-               else if ((N_tau==1) && (N_b>=1)) mSigPred.at(3)+=weight;
-           } else if (50<met && met<100){
-               if ((N_tau==0) && (N_b==0)) mSigPred.at(5)+=weight;
-               else if ((N_tau==1) && (N_b==0)) mSigPred.at(6)+=weight;
-               else if ((N_tau==0) && (N_b>=1)) mSigPred.at(7)+=weight;
-               else if ((N_tau==1) && (N_b>=1)) mSigPred.at(8)+=weight;
+       if (ht>200){
+           if (OSSF_pairs.size()==0 ){
+               if (met>100){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(0)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(1)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(2)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(3)+=weight;
+               } else if (50<met && met<100){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(4)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(5)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(6)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(7)+=weight;
+               } else if (0<met && met<50){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(8)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(9)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(10)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(11)+=weight;
+               }
+           }else if (OSSF_pairs.size()==1){
+               if (met>100 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(12)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(13)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(14)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(15)+=weight;
+               } else if (met>100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(16)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(17)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(18)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(19)+=weight;
+               } else if (50<met && met<100 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(20)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(21)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(22)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(23)+=weight;
+               } else if (50<met && met<100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(24)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(25)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(26)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(27)+=weight;
+               } else if (0<met && met<50 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(28)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(29)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(30)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(31)+=weight;
+               } else if (0<met && met<50 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(32)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(33)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(34)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(35)+=weight;
+               }
+           
+           }else if (OSSF_pairs.size()==2){
+               if (met>100 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(36)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(37)+=weight;
+               } else if (met>100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(38)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(39)+=weight;
+               } else if (50<met && met<100 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(40)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(41)+=weight;
+               } else if (50<met && met<100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(42)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(43)+=weight;
+               } else if (0<met && met<50 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(44)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(45)+=weight;
+               } else if (0<met && met<50 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(46)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(47)+=weight;
+               }
            }
-           } else if (0<met && met<50){
-               if ((N_tau==0) && (N_b==0)) mSigPred.at(9)+=weight;
-               else if ((N_tau==1) && (N_b==0)) mSigPred.at(10)+=weight;
-               else if ((N_tau==0) && (N_b>=1)) mSigPred.at(11)+=weight;
-               else if ((N_tau==1) && (N_b>=1)) mSigPred.at(12)+=weight;
+    }else{
+           if (OSSF_pairs.size()==0 ){
+               if (met>100){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(48)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(49)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(50)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(51)+=weight;
+               } else if (50<met && met<100){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(52)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(53)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(54)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(55)+=weight;
+               } else if (0<met && met<50){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(56)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(57)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(58)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(59)+=weight;
+               }
+           }else if (OSSF_pairs.size()==1){
+               if (met>100 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(60)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(61)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(62)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(63)+=weight;
+               } else if (met>100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(64)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(65)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(66)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(67)+=weight;
+               } else if (50<met && met<100 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(68)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(69)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(70)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(71)+=weight;
+               } else if (50<met && met<100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(72)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(73)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(74)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(75)+=weight;
+               } else if (0<met && met<50 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(76)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(77)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(78)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(79)+=weight;
+               } else if (0<met && met<50 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(80)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(81)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(82)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(83)+=weight;
+               }
+           
+           }else if (OSSF_pairs.size()==2){
+               if (met>100 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(84)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(85)+=weight;
+               } else if (met>100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(86)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(87)+=weight;
+               } else if (50<met && met<100 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(88)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(89)+=weight;
+               } else if (50<met && met<100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(90)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(91)+=weight;
+               } else if (0<met && met<50 && on_Z==false){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(92)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(93)+=weight;
+               } else if (0<met && met<50 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(94)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(95)+=weight;
+               }
            }
-       
-       }else if (OSSF_pairs.size()==1){
-       
-       }else if (OSSF_pairs.size()==2){
-       }
-      
-    }
-  
+        }
+     } 
+  }
   return;
 }
