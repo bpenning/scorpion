@@ -11,6 +11,17 @@
 	}
 	return mleptonvec;
     }
+    //Normal Jet Collection (eta and pt cuts)
+    std::vector <jlepton> goodleptons(const std::vector <jlepton> & lepton_collection,double ptcut, double etacut)
+    {
+	std::vector<jlepton> mleptonvec;
+	for (int ii=0; ii<lepton_collection.size();ii++)
+	{
+	    if(!(lepton_collection[ii].IsolFlag()) || lepton_collection[ii].Pt() < ptcut || fabs(lepton_collection[ii].Eta()) > etacut ) continue;
+	    mleptonvec.push_back(lepton_collection[ii]);
+	}
+	return mleptonvec;
+    }
 
     //Bad Jet Collection (pt cut normal but eta cut reversed)
     std::vector <jlepton> badleptons(std::vector <jlepton> & lepton_collection,double ptcut, double etacut)
@@ -31,6 +42,28 @@
 	for (int ii=0; ii<elec.size();ii++)
 	{
 	    if(elec[ii].Pt() < pte || !elec[ii].IsolFlag() || fabs(elec[ii].Eta()) > etae || (fabs(elec[ii].Eta()) > etaw1 && fabs(elec[ii].Eta()) < etaw2)) continue;
+	    leptons.push_back(elec[ii]);
+	}
+
+
+	for (int ii=0; ii<muon.size();ii++)
+	{
+	    if(muon[ii].Pt()<ptm || !muon[ii].IsolFlag() || fabs(muon[ii].Eta()) > etam) continue;
+	    leptons.push_back(muon[ii]);
+	}
+
+	std::sort(leptons.begin(), leptons.end(), std::greater<jlepton>()); //operators defined in the jlepton class
+	return leptons;
+    }
+
+    std::vector<jlepton> leptonSkim(const std::vector<jlepton> & elec, const std::vector<jlepton> & muon, 
+            const double & pte, const double & etae, const double & ptm, const double & etam) {
+
+	std::vector<jlepton> leptons;
+
+	for (int ii=0; ii<elec.size();ii++)
+	{
+	    if(elec[ii].Pt() < pte || !elec[ii].IsolFlag() || fabs(elec[ii].Eta()) > etae ) continue;
 	    leptons.push_back(elec[ii]);
 	}
 
@@ -71,3 +104,18 @@ std::vector<jlepton> goodleptonsDR(std::vector<jlepton> & lepton_collection, flo
     return array;
 }
 */
+std::vector<std::pair<jlepton,jlepton> > get_OSSF_pairs(std::vector<jlepton> leptons){
+     std::vector<std::pair<jlepton,jlepton> > OSSF_pairs;
+     std::vector<jlepton>::iterator l1_it;
+     std::vector<jlepton>::iterator l2_it;
+     for (l1_it=leptons.begin();l1_it!=leptons.end();l1_it++){
+        for (l2_it=l1_it+1;l2_it!=leptons.end();l2_it++){
+            //if opposite sign same flavour
+            if (l1_it->Charge()==-l1_it->Charge() && l1_it->Flavour()==l2_it->Flavour()){
+                std::pair<jlepton,jlepton> OSSF_pair((*l1_it),(*l2_it));
+                OSSF_pairs.push_back(OSSF_pair);
+            }
+        }
+     }
+     return OSSF_pairs;
+}
