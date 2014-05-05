@@ -11,7 +11,6 @@
 D2Reader::D2Reader(TTree *tree) :
   fChain(tree), fCurrentTree(-1), fIsInitDone(kFALSE)
 {
-
   //std::cout << "tree = " << tree->GetName() << std::endl;
   std::string anstring = "Analysis";
   std::string genstring = "GEN";
@@ -19,7 +18,7 @@ D2Reader::D2Reader(TTree *tree) :
 
   if(!anstring.compare(tree->GetName())) {
     JET    = this->UseBranch("Jet");
-    //TAUJET = this->UseBranch("TauJet");
+    TAUJET = this->UseBranch("TauJet");
     //PHOTON = this->UseBranch("Photon");
     ELEC   = this->UseBranch("Electron");
     MUON   = this->UseBranch("Muon");
@@ -30,7 +29,6 @@ D2Reader::D2Reader(TTree *tree) :
   } else {
     std::cout << "Invalid tree name specified!" << std::endl;
   }
-
   
 }
 
@@ -162,20 +160,20 @@ void D2Reader::Notify()
   }
 }
 
-std::vector<jjet> D2Reader::Jet() const {
+std::vector<jjet> D2Reader::GetJet() const {
     std::vector<jjet> jet_collection;
 
     TIter itJet(JET);
     TRootJet *jet;
     itJet.Reset();
     while( (jet = (TRootJet*) itJet.Next()) ) {
-	jet_collection.push_back(jjet(jet->Px,jet->Py,jet->Pz,jet->E,jet->Btag));
+	jet_collection.push_back(jjet(jet->Px,jet->Py,jet->Pz,jet->E,jet->Btag,false));
     }
     std::sort(jet_collection.begin(), jet_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return jet_collection;
 }
 
-std::vector<jlepton> D2Reader::Elec() const {
+std::vector<jlepton> D2Reader::GetElec() const {
     std::vector<jlepton> electron_collection; 
 
     TIter itElec((TCollection*)ELEC);
@@ -191,7 +189,7 @@ std::vector<jlepton> D2Reader::Elec() const {
     return electron_collection;
 }
 
-std::vector<jlepton> D2Reader::Muon() const {
+std::vector<jlepton> D2Reader::GetMuon() const {
     std::vector<jlepton> muon_collection; 
 
     TIter itMuon((TCollection*)MUON);
@@ -206,7 +204,7 @@ std::vector<jlepton> D2Reader::Muon() const {
     return muon_collection;
 }
 
-std::vector<jjet> D2Reader::ETMis() const {
+std::vector<jjet> D2Reader::GetMet() const {
 
     std::vector<jjet> etmiss_collection;
     TIter itEtMiss((TCollection*)ETMIS);
@@ -214,12 +212,27 @@ std::vector<jjet> D2Reader::ETMis() const {
     itEtMiss.Reset();
 
     while( (etm = (TRootETmis*) itEtMiss.Next()) ) {
-	etmiss_collection.push_back(jjet(etm->Px,etm->Py,0.,etm->ET,false));
+	etmiss_collection.push_back(jjet(etm->Px,etm->Py,0.,etm->ET,false,false));
     }
 
     return etmiss_collection;
 }
-std::vector<jparticle> D2Reader::GenParticles() const {
+std::vector<jjet> D2Reader::GetTauJet() const
+{
+  std::vector<jjet> tau_collection;
+  TIter itTauJet((TCollection*)TAUJET);
+  TRootTauJet *taujet;
+  itTauJet.Reset();
+  while( (taujet = (TRootTauJet*) itTauJet.Next()) )
+    {
+      //double reliso = (muon->SumEt + muon->SumPt)/muon->PT;
+      //if(muon->PT<pt || !muon->IsolFlag || fabs(muon->Eta) > eta) continue;
+      //reliso > riso
+      tau_collection.push_back(jjet(taujet->Px,taujet->Py,taujet->Pz,taujet->E,false,true));
+    }
+  return tau_collection;
+}
+std::vector<jparticle> D2Reader::GetGenParticle() const {
 
     std::vector<jparticle> particle_collection;
 

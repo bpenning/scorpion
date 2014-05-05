@@ -34,7 +34,7 @@ CXXFLAGS=-c -fPIC -ansi -g -DLinux
 
 all: $(ANALYSESOBJ) $(COREOBJ) $(OBJDIR)/fileobject_class.o $(OBJDIR)/delphesdictionary.o
 	@echo Building Library
-	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) -g -fPIC $(COREDIR)/python.cc -shared -lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMathMore -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode -rdynamic -pthread -m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
+	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -L/home/hep/mc3909/jaf_development/scorpion -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) -g -fPIC $(COREDIR)/python.cc -shared -lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMathMore -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode -rdynamic -pthread -m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
 	@echo --DONE--
 
 $(ANALYSESOBJ): $(ANALYSES)

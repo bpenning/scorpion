@@ -68,13 +68,13 @@ void AlphaTb::Run(const Reader * treereader, const Reader * gentreereader, const
   mCounter+=weight; //keep a tally of all the files/events we are running over
 
   //produce subarrays of objects satisfying our criteria
-  std::vector<jlepton> ele=goodleptons(treereader->Elec(), 10.0, 2.4);         //the central isolated electrons, pt > PT_ELEC GeV
-  std::vector<jlepton>     mu=goodleptons(treereader->Muon(), 10.0, 2.1);          //the central isolated muons, pt > PT_MUON GeV
-  std::vector<jjet>      badjets=badjetsSkim(treereader->Jet(),50.0,3.0);   //check for jets which we should veto
-  std::vector<jjet>      goodjets275=goodjetsSkim(treereader->Jet(),37.0,3.0); //check for jets which we should analyse
-  std::vector<jjet>      goodjets325=goodjetsSkim(treereader->Jet(),43.0,3.0); //check for jets which we should analyse
-  std::vector<jjet>     goodjets375=goodjetsSkim(treereader->Jet(),50.0,3.0); //check for jets which we should analyse
-  std::vector<jjet>    etmis=treereader->ETMis(); //Missing transverse energy array
+  std::vector<jlepton> ele=goodleptons(treereader->GetElec(), 10.0, 2.4,2.5,2.6);         //the central isolated electrons, pt > PT_ELEC GeV
+  std::vector<jlepton> mu=goodleptons(treereader->GetMuon(), 10.0, 2.1,2.5,2.6);          //the central isolated muons, pt > PT_MUON GeV
+  std::vector<jjet> badjets=badjetsSkim(treereader->GetJet(),50.0,3.0);   //check for jets which we should veto
+  std::vector<jjet> goodjets275=goodjetsSkim(treereader->GetJet(),37.0,3.0); //check for jets which we should analyse
+  std::vector<jjet> goodjets325=goodjetsSkim(treereader->GetJet(),43.0,3.0); //check for jets which we should analyse
+  std::vector<jjet> goodjets375=goodjetsSkim(treereader->GetJet(),50.0,3.0); //check for jets which we should analyse
+  std::vector<jjet> etmis=treereader->GetMet(); //Missing transverse energy array
   //TSimpleArray<TRootJet>      goodjets2=SubArrayGoodJets(treereader.Jet(),10.0,3.0); //check for jets which we should analyse
   //TSimpleArray<TRootJet> goodjets2 = SubArrayGoodJets(treereader.Jet(),10.0,3.0); //check for jets which we should analyse
   if (goodjets275.size() != 0)

@@ -7,14 +7,16 @@ class jjet : public jobject {
 
 public:
   jjet();
-  jjet(double Px, double Py, double Pz, double E, bool isbtag);
+  jjet(double Px, double Py, double Pz, double E, bool isbtag, bool istautag);
   ~jjet();
 
   bool Btag() const;
+  bool TauTag() const;
 
 private:
 
   bool mIsBtagged;
+  bool mIsTautagged;
 
 };
 

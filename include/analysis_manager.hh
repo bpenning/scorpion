@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include "D2Reader.hh"
+//#include "D3Reader.hh"
 #include "Reader.hh"
 #include "filemap_class.hh"
 #include "analysis_base.hh"
