@@ -249,7 +249,141 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                }
            }
         }
-     } 
+     } else {
+       if (ht>200){
+           if (OSSF_pairs.size()==0 ){
+               if (met>100){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(96)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(97)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(98)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(99)+=weight;
+               } else if (50<met && met<100){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(100)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(101)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(102)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(103)+=weight;
+               } else if (0<met && met<50){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(104)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(105)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(106)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(107)+=weight;
+               }
+           }else if (OSSF_pairs.size()==1){
+               if (met>100 && above_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(108)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(109)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(110)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(111)+=weight;
+               } else if (met>100 && below_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(112)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(113)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(114)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(115)+=weight;
+               } else if (met>100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(116)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(117)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(118)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(119)+=weight;
+               } else if (50<met && met<100 && above_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(120)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(121)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(122)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(123)+=weight;
+               } else if (50<met && met<100 && below_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(124)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(125)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(126)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(127)+=weight;
+               } else if (50<met && met<100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(128)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(129)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(130)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(131)+=weight;
+               } else if (0<met && met<50 && above_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(132)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(133)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(134)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(135)+=weight;
+               } else if (0<met && met<50 && below_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(136)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(137)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(138)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(139)+=weight;
+               } else if (0<met && met<50 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(140)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(141)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(142)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(143)+=weight;
+               }
+           }
+    }else{
+           if (OSSF_pairs.size()==0 ){
+               if (met>100){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(144)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(145)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(146)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(147)+=weight;
+               } else if (50<met && met<100){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(148)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(149)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(150)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(151)+=weight;
+               } else if (0<met && met<50){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(152)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(153)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(154)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(155)+=weight;
+               }
+           }else if (OSSF_pairs.size()==1){
+               if (met>100 && above_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(156)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(157)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(158)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(159)+=weight;
+               } else if (met>100 && below_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(160)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(161)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(162)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(163)+=weight;
+               } else if (met>100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(164)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(165)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(166)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(167)+=weight;
+               } else if (50<met && met<100 && above_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(168)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(169)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(170)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(171)+=weight;
+               } else if (50<met && met<100 && below_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(172)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(173)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(174)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(175)+=weight;
+               } else if (50<met && met<100 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(176)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(177)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(178)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(179)+=weight;
+               } else if (0<met && met<50 && above_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(180)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(181)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(182)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(183)+=weight;
+               } else if (0<met && met<50 && below_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(184)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(185)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(186)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(187)+=weight;
+               } else if (0<met && met<50 && on_Z==true){
+                   if ((N_tau==0) && (N_b==0)) mSigPred.at(188)+=weight;
+                   else if ((N_tau==1) && (N_b==0)) mSigPred.at(189)+=weight;
+                   else if ((N_tau==0) && (N_b>=1)) mSigPred.at(190)+=weight;
+                   else if ((N_tau==1) && (N_b>=1)) mSigPred.at(191)+=weight;
+               }
+           }
+        }
+     }
   }
   return;
 }
