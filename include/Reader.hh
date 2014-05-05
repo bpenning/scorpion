@@ -18,6 +18,7 @@ public :
   virtual Bool_t ReadEntry(Long64_t entry)=0;
 
   virtual std::vector<jjet> GetJet() const = 0;
+  virtual std::vector<jjet> GetTauJet() const = 0;
   virtual std::vector<jlepton> GetElec() const = 0;
   virtual std::vector<jlepton> GetMuon() const = 0;
   virtual std::vector<jjet> GetMet() const = 0;
