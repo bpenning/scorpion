@@ -31,117 +31,6 @@ SS8low::SS8low(const std::string & name,
 
 SS8low::~SS8low() {}
 
-std::vector<jlepton> SS8low::getleptons(const TClonesArray *ELEC, const TClonesArray *MUON, const float & pte, const float & etae, const float & ptm, const float & etam) {
-
-  std::vector<jlepton> leptons;
-
-  TIter itElec((TCollection*)ELEC);
-  TRootElectron *elec;
-  itElec.Reset();
-
-  while( elec = ((TRootElectron*) itElec.Next()) ) {
-    //if(elec->PT<pt || !elec->IsolFlag || fabs(elec->Eta) > eta) continue;
-    //
-    //double reliso = (elec->SumEt + elec->SumPt)/elec->PT;
-    //std::cout << "reliso: " << reliso << std::endl;
-    //reliso > riso
-    if(elec->PT < pte || !elec->IsolFlag || fabs(elec->Eta) > etae || (fabs(elec->Eta) > 1.4442 && fabs(elec->Eta) < 1.566)) continue;
-    bool poscharge = true;
-    if(elec->Charge < 0) { poscharge = false; }
-    jlepton lepton(elec->Px, elec->Py, elec->Pz, elec->E, true, poscharge);
-    leptons.push_back(lepton);
-  }
-  
-  TIter itMuon((TCollection*)MUON);
-  TRootMuon *muon;
-  itMuon.Reset();
-  
-  while( muon = ((TRootMuon*) itMuon.Next()) ) {
-    //double reliso = (muon->SumEt + muon->SumPt)/muon->PT;
-    //if(muon->PT<pt || !muon->IsolFlag || fabs(muon->Eta) > eta) continue;
-    //reliso > riso
-    if(muon->PT<ptm || !muon->IsolFlag || fabs(muon->Eta) > etam) continue;
-    bool poscharge = true;
-    if(muon->Charge < 0) { 
-      poscharge = false; 
-    }
-    jlepton lepton(muon->Px, muon->Py, muon->Pz, muon->E, false, poscharge);
-    leptons.push_back(lepton);
-  }
-
-  std::sort(leptons.begin(), leptons.end(), std::greater<jlepton>()); //operators defined in the jlepton class
- 
-  return leptons;
-}
-
-std::vector<jjet> SS8low::getjets(const TClonesArray *JET, const float & pt, const float & eta) {
-
-  //this method drops jets with DR<0.4 with any leptons that pass the selection
-
-  std::vector<jjet> jets;
-
-  TIter itJet((TCollection*)JET);
-  TRootJet *jet;
-  itJet.Reset();
-  TSimpleArray<TRootJet> array;
-  while( (jet = (TRootJet*) itJet.Next()) ) {
-    //check if any jet has Pt>50 and |eta|<3.0
-    if(jet->PT > pt && fabs(jet->Eta) < eta) {
-      jjet myjet(jet->Px, jet->Py, jet->Pz, jet->E, jet->Btag);
-      jets.push_back(myjet);
-    }
-  }
-  
-  std::sort(jets.begin(), jets.end(), std::greater<jjet>()); //operators defined in the jjets class
-
-  return jets;
-
-}
-
-double SS8low::getht(const std::vector<jjet> & jets) {
-  double HT=0.0;
-  for(unsigned int i=0;i<jets.size();i++) {
-    HT += jets[i].Pt();
-  }
-  return HT;
-}
-
-double SS8low::getmet(const TClonesArray *ETMISS) {
-  
-  std::vector<double> etmvec;
-
-  TIter itEtMiss((TCollection*)ETMISS);
-  TRootETmis *etm;
-  itEtMiss.Reset();
-
-  while( (etm = (TRootETmis*) itEtMiss.Next()) ) {
-    etmvec.push_back(etm->ET);
-  }
-
-  if(etmvec.size() == 1) {
-    return etmvec[0];
-  } else {
-    std::cout << "more than one MET vector defined in this event!" << std::endl;
-
-  }
-  return -1.0;
-
-}
-
-unsigned int SS8low::getnbtags(const std::vector<jjet> & jets) {
-
-  unsigned int numbtags = 0;
-
-  for(unsigned int i=0; i<jets.size(); i++) {
-    if(jets[i].Btag()) {
-      numbtags++;
-    }
-  }
-  
-  return numbtags;
-
-}
-
 void SS8low::initHistos() {
   andir->cd();
   ptleadinglep = new TH1D("ptleadinglep",";leading p_{T} [GeV];",100, -5.0, 995.0);
@@ -155,21 +44,21 @@ void SS8low::initHistos() {
   drjetcombo = new TH1D("drjetcombo",";#DeltaR;",500, -0.005, 4.995);
 }
 
-void SS8low::Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight) {
+void SS8low::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
 
   andir->cd();
 
   mCounter+=weight; //keep a tally of all the files/events we are running over
 
   //produce subarrays of objects satisfying our criteria
-  std::vector<jlepton> leptons = getleptons(treereader.Elec(), treereader.Muon(), 5.0, 2.4, 5.0, 2.4);
-  std::vector<jjet> goodjets = getjets(treereader.Jet(), 40.0, 2.4);
+  std::vector<jlepton> leptons = leptonSkim(treereader->Elec(), treereader->Muon(), 5.0, 2.4, 5.0, 2.4, 1.4442, 1.566);
+  std::vector<jjet> goodjets = goodjetsSkim(treereader->Jet(), 40.0, 2.4);
 
   //plot dr of each jet with every other jet
   for(unsigned int i=0; i<goodjets.size(); i++) {
     for(unsigned int j=0; j<goodjets.size(); j++) {
       if(j > i) { //prevent jet matching with itself
-	drjetcombo->Fill(goodjets[i].DeltaR(goodjets[j]), weight);
+        drjetcombo->Fill(goodjets[i].DeltaR(goodjets[j]), weight);
       }
     }
   }
@@ -179,10 +68,13 @@ void SS8low::Run(const TreeReader & treereader, const TreeReader & gentreereader
 
   if(numjets >= 2) {
     double HT = 1.05 * getht(goodjets); //5% scale correction
-    double MET = getmet(treereader.ETMis());
+
+    std::vector<jjet> etmis = treereader->GetMet(); //Missing transverse energy array
+    double MET = (etmis.size() == 1) ? etmis[0].E(): -1;
+
     njethist->Fill(numjets, weight);
     leadingjetpt->Fill(goodjets[0].Pt(), weight);
-    
+
     //check for two or three leptons that pass selection - otherwise we ignore these events
     if(leptons.size() == 2 || leptons.size() == 3) { 
       ptleadinglep->Fill(leptons[0].Pt(), weight);
@@ -207,10 +99,10 @@ void SS8low::Run(const TreeReader & treereader, const TreeReader & gentreereader
                   oppflav2 = true;
                 }
                 if((invmass1 < 106.0 && invmass1 > 76.0 && !oppflav1 && leptons[2].Pt()>10.0) || 
-                   (invmass2 < 106.0 && invmass2 > 76.0 && !oppflav2 && leptons[2].Pt()>10.0) ||
-                   (invmass1 < 12.0  &&                    !oppflav1 && leptons[2].Pt()>5.0 ) ||             
-                   (invmass2 < 12.0  &&                    !oppflav2 && leptons[2].Pt()>5.0 )              
-                    ) {
+                    (invmass2 < 106.0 && invmass2 > 76.0 && !oppflav2 && leptons[2].Pt()>10.0) ||
+                    (invmass1 < 12.0  &&                    !oppflav1 && leptons[2].Pt()>5.0 ) ||             
+                    (invmass2 < 12.0  &&                    !oppflav2 && leptons[2].Pt()>5.0 )              
+                  ) {
                   passselection = false; //i.e. we have a Z candidate most likely, veto event...
                 }
               }
@@ -224,149 +116,149 @@ void SS8low::Run(const TreeReader & treereader, const TreeReader & gentreereader
 
               //B tag 0 signal regions
               if(numbtags == 0 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT >= 250.0 && HT  <= 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT >= 250.0 && HT  <= 400.0) {
                 mSigPred.at(0)+=weight;
               }
               else if(numbtags == 0 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  > 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  > 400.0) {
                 mSigPred.at(1)+=weight;
               }
               else if(numbtags == 0 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=4  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=4  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(2)+=weight;
               }
               else if(numbtags == 0 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=4  &&
-                 HT  > 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=4  &&
+                  HT  > 400.0) {
                 mSigPred.at(3)+=weight;
               }
               else if(numbtags == 0 &&  
-                 MET > 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET > 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(4)+=weight;
               }
               else if(numbtags == 0 &&  
-                 MET > 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  > 400.0) {
+                  MET > 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  > 400.0) {
                 mSigPred.at(5)+=weight;
               }
               else if(numbtags == 0 &&  
-                 MET > 120.0 && 
-                 numjets >=4  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET > 120.0 && 
+                  numjets >=4  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(6)+=weight;
               }
               else if(numbtags == 0 &&  
-                 MET > 120.0 && 
-                 numjets >=4  &&
-                 HT  > 400.0) {
+                  MET > 120.0 && 
+                  numjets >=4  &&
+                  HT  > 400.0) {
                 mSigPred.at(7)+=weight;
               }
               //Btag 1 signal regions
               else if(numbtags == 1 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT >= 250.0 && HT  <= 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT >= 250.0 && HT  <= 400.0) {
                 mSigPred.at(8)+=weight;
               }
               else if(numbtags == 1 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  > 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  > 400.0) {
                 mSigPred.at(9)+=weight;
               }
               else if(numbtags == 1 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=4  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=4  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(10)+=weight;
               }
               else if(numbtags == 1 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=4  &&
-                 HT  > 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=4  &&
+                  HT  > 400.0) {
                 mSigPred.at(11)+=weight;
               }
               else if(numbtags == 1 &&  
-                 MET > 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET > 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(12)+=weight;
               }
               else if(numbtags == 1 &&  
-                 MET > 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  > 400.0) {
+                  MET > 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  > 400.0) {
                 mSigPred.at(13)+=weight;
               }
               else if(numbtags == 1 &&  
-                 MET > 120.0 && 
-                 numjets >=4  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET > 120.0 && 
+                  numjets >=4  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(14)+=weight;
               }
               else if(numbtags == 1 &&  
-                 MET > 120.0 && 
-                 numjets >=4  &&
-                 HT  > 400.0) {
+                  MET > 120.0 && 
+                  numjets >=4  &&
+                  HT  > 400.0) {
                 mSigPred.at(15)+=weight;
               }
               //B tag >= 2 signal regions
               else if(numbtags >= 2 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT >= 250.0 && HT  <= 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT >= 250.0 && HT  <= 400.0) {
                 mSigPred.at(16)+=weight;
               }
               else if(numbtags >= 2 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  > 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  > 400.0) {
                 mSigPred.at(17)+=weight;
               }
               else if(numbtags >= 2 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=4  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=4  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(18)+=weight;
               }
               else if(numbtags >= 2 &&  
-                 MET >= 50.0 && MET <= 120.0 && 
-                 numjets >=4  &&
-                 HT  > 400.0) {
+                  MET >= 50.0 && MET <= 120.0 && 
+                  numjets >=4  &&
+                  HT  > 400.0) {
                 mSigPred.at(19)+=weight;
               }
               else if(numbtags >= 2 &&  
-                 MET > 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET > 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(20)+=weight;
               }
               else if(numbtags >= 2 &&  
-                 MET > 120.0 && 
-                 numjets >=2 && numjets <=3  &&
-                 HT  > 400.0) {
+                  MET > 120.0 && 
+                  numjets >=2 && numjets <=3  &&
+                  HT  > 400.0) {
                 mSigPred.at(21)+=weight;
               }
               else if(numbtags >= 2 &&  
-                 MET > 120.0 && 
-                 numjets >=4  &&
-                 HT  >= 250.0 && HT <=400.0) {
+                  MET > 120.0 && 
+                  numjets >=4  &&
+                  HT  >= 250.0 && HT <=400.0) {
                 mSigPred.at(22)+=weight;
               }
               else if(numbtags >= 2 &&  
-                 MET > 120.0 && 
-                 numjets >=4  &&
-                 HT  > 400.0) {
+                  MET > 120.0 && 
+                  numjets >=4  &&
+                  HT  > 400.0) {
                 mSigPred.at(23)+=weight;
               }
 

@@ -31,117 +31,6 @@ SS8high::SS8high(const std::string & name,
 
 SS8high::~SS8high() {}
 
-std::vector<jlepton> SS8high::getleptons(const TClonesArray *ELEC, const TClonesArray *MUON, const float & pte, const float & etae, const float & ptm, const float & etam) {
-
-  std::vector<jlepton> leptons;
-
-  TIter itElec((TCollection*)ELEC);
-  TRootElectron *elec;
-  itElec.Reset();
-
-  while( elec = ((TRootElectron*) itElec.Next()) ) {
-    //if(elec->PT<pt || !elec->IsolFlag || fabs(elec->Eta) > eta) continue;
-    //
-    //double reliso = (elec->SumEt + elec->SumPt)/elec->PT;
-    //std::cout << "reliso: " << reliso << std::endl;
-    //reliso > riso
-    if(elec->PT < pte || !elec->IsolFlag || fabs(elec->Eta) > etae || (fabs(elec->Eta) > 1.4442 && fabs(elec->Eta) < 1.566)) continue;
-    bool poscharge = true;
-    if(elec->Charge < 0) { poscharge = false; }
-    jlepton lepton(elec->Px, elec->Py, elec->Pz, elec->E, true, poscharge);
-    leptons.push_back(lepton);
-  }
-  
-  TIter itMuon((TCollection*)MUON);
-  TRootMuon *muon;
-  itMuon.Reset();
-  
-  while( muon = ((TRootMuon*) itMuon.Next()) ) {
-    //double reliso = (muon->SumEt + muon->SumPt)/muon->PT;
-    //if(muon->PT<pt || !muon->IsolFlag || fabs(muon->Eta) > eta) continue;
-    //reliso > riso
-    if(muon->PT<ptm || !muon->IsolFlag || fabs(muon->Eta) > etam) continue;
-    bool poscharge = true;
-    if(muon->Charge < 0) { 
-      poscharge = false; 
-    }
-    jlepton lepton(muon->Px, muon->Py, muon->Pz, muon->E, false, poscharge);
-    leptons.push_back(lepton);
-  }
-
-  std::sort(leptons.begin(), leptons.end(), std::greater<jlepton>()); //operators defined in the jlepton class
- 
-  return leptons;
-}
-
-std::vector<jjet> SS8high::getjets(const TClonesArray *JET, const float & pt, const float & eta) {
-
-  //this method drops jets with DR<0.4 with any leptons that pass the selection
-
-  std::vector<jjet> jets;
-
-  TIter itJet((TCollection*)JET);
-  TRootJet *jet;
-  itJet.Reset();
-  TSimpleArray<TRootJet> array;
-  while( (jet = (TRootJet*) itJet.Next()) ) {
-    //check if any jet has Pt>50 and |eta|<3.0
-    if(jet->PT > pt && fabs(jet->Eta) < eta) {
-      jjet myjet(jet->Px, jet->Py, jet->Pz, jet->E, jet->Btag);
-      jets.push_back(myjet);
-    }
-  }
-  
-  std::sort(jets.begin(), jets.end(), std::greater<jjet>()); //operators defined in the jjets class
-
-  return jets;
-
-}
-
-double SS8high::getht(const std::vector<jjet> & jets) {
-  double HT=0.0;
-  for(unsigned int i=0;i<jets.size();i++) {
-    HT += jets[i].Pt();
-  }
-  return HT;
-}
-
-double SS8high::getmet(const TClonesArray *ETMISS) {
-  
-  std::vector<double> etmvec;
-
-  TIter itEtMiss((TCollection*)ETMISS);
-  TRootETmis *etm;
-  itEtMiss.Reset();
-
-  while( (etm = (TRootETmis*) itEtMiss.Next()) ) {
-    etmvec.push_back(etm->ET);
-  }
-
-  if(etmvec.size() == 1) {
-    return etmvec[0];
-  } else {
-    std::cout << "more than one MET vector defined in this event!" << std::endl;
-
-  }
-  return -1.0;
-
-}
-
-unsigned int SS8high::getnbtags(const std::vector<jjet> & jets) {
-
-  unsigned int numbtags = 0;
-
-  for(unsigned int i=0; i<jets.size(); i++) {
-    if(jets[i].Btag()) {
-      numbtags++;
-    }
-  }
-  
-  return numbtags;
-
-}
-
 void SS8high::initHistos() {
   andir->cd();
   ptleadinglep = new TH1D("ptleadinglep",";leading p_{T} [GeV];",100, -5.0, 995.0);
@@ -155,21 +44,21 @@ void SS8high::initHistos() {
   drjetcombo = new TH1D("drjetcombo",";#DeltaR;",500, -0.005, 4.995);
 }
 
-void SS8high::Run(const TreeReader & treereader, const TreeReader & gentreereader, const double & weight) {
+void SS8high::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
 
   andir->cd();
 
   mCounter+=weight; //keep a tally of all the files/events we are running over
 
   //produce subarrays of objects satisfying our criteria
-  std::vector<jlepton> leptons = getleptons(treereader.Elec(), treereader.Muon(), 5.0, 2.4, 5.0, 2.4);
-  std::vector<jjet> goodjets = getjets(treereader.Jet(), 40.0, 2.4);
+  std::vector<jlepton> leptons = leptonSkim(treereader->Elec(), treereader->Muon(), 5.0, 2.4, 5.0, 2.4, 1.4442, 1.566);
+  std::vector<jjet> goodjets = goodjetsSkim(treereader->Jet(), 40.0, 2.4);
 
   //plot dr of each jet with every other jet
   for(unsigned int i=0; i<goodjets.size(); i++) {
     for(unsigned int j=0; j<goodjets.size(); j++) {
       if(j > i) { //prevent jet matching with itself
-	drjetcombo->Fill(goodjets[i].DeltaR(goodjets[j]), weight);
+        drjetcombo->Fill(goodjets[i].DeltaR(goodjets[j]), weight);
       }
     }
   }
@@ -179,10 +68,13 @@ void SS8high::Run(const TreeReader & treereader, const TreeReader & gentreereade
 
   if(numjets >= 2) {
     double HT = 1.05 * getht(goodjets); //5% scale correction
-    double MET = getmet(treereader.ETMis());
+
+    std::vector<jjet> etmis = treereader->GetMet(); //Missing transverse energy array
+    double MET = (etmis.size() == 1) ? etmis[0].E(): -1;
+
     njethist->Fill(numjets, weight);
     leadingjetpt->Fill(goodjets[0].Pt(), weight);
-    
+
     //check for two or three leptons that pass selection - otherwise we ignore these events
     if(leptons.size() == 2 || leptons.size() == 3) { 
       ptleadinglep->Fill(leptons[0].Pt(), weight);
