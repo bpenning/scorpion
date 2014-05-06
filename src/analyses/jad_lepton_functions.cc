@@ -104,18 +104,21 @@ std::vector<jlepton> goodleptonsDR(std::vector<jlepton> & lepton_collection, flo
     return array;
 }
 */
-std::vector<std::pair<jlepton,jlepton> > get_OSSF_pairs(std::vector<jlepton> leptons){
-     std::vector<std::pair<jlepton,jlepton> > OSSF_pairs;
+
+std::vector<std::pair<jlepton,jlepton> > get_ossf_pairs(std::vector<jlepton> leptons){
+     std::vector<std::pair<jlepton,jlepton> > ossf_pairs;
      std::vector<jlepton>::iterator l1_it;
      std::vector<jlepton>::iterator l2_it;
      for (l1_it=leptons.begin();l1_it!=leptons.end();l1_it++){
         for (l2_it=l1_it+1;l2_it!=leptons.end();l2_it++){
             //if opposite sign same flavour
             if (l1_it->Charge()==-l1_it->Charge() && l1_it->Flavour()==l2_it->Flavour()){
-                std::pair<jlepton,jlepton> OSSF_pair((*l1_it),(*l2_it));
-                OSSF_pairs.push_back(OSSF_pair);
+                std::pair<jlepton,jlepton> ossf_pair((*l1_it),(*l2_it));
+                ossf_pairs.push_back(ossf_pair);
             }
         }
      }
-     return OSSF_pairs;
+     return ossf_pairs;
 }
+
+
