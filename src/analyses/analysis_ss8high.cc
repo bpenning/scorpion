@@ -51,8 +51,11 @@ void SS8high::Run(const Reader * treereader, const Reader * gentreereader, const
   mCounter+=weight; //keep a tally of all the files/events we are running over
 
   //produce subarrays of objects satisfying our criteria
-  std::vector<jlepton> leptons = leptonSkim(treereader->Elec(), treereader->Muon(), 5.0, 2.4, 5.0, 2.4, 1.4442, 1.566);
-  std::vector<jjet> goodjets = goodjetsSkim(treereader->Jet(), 40.0, 2.4);
+  std::vector<jlepton> elecs = treereader->GetElec();
+  std::vector<jlepton> muons = treereader->GetMuon();
+  
+  std::vector<jlepton> leptons = leptonSkim(elecs, muons, 5.0, 2.4, 5.0, 2.4, 1.4442, 1.566);
+  std::vector<jjet> goodjets = goodjetsSkim(treereader->GetJet(), 40.0, 2.4);
 
   //plot dr of each jet with every other jet
   for(unsigned int i=0; i<goodjets.size(); i++) {
