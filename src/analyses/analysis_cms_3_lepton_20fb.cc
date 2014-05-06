@@ -101,6 +101,8 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
     int N_tau=0;
     int N_b=0;
     bool on_Z=false;
+    bool above_Z=false;
+    bool below_Z=false;
     //definition of signal regions: 
     //Table 2 CMS-SUS-13-002 divisions (HT>200 GeV; HT<200 GeV); rows (OSSF0 ... OSSF2); columns (N_tau=0,N_b=0 ... N_tau=1, N_b>=1)
     if (leptons.size()+taujets.size()>=4){
