@@ -33,11 +33,28 @@ void Cms3Lepton20Fb::initHistos() {
   andir->cd();
 }
 
-bool reject_OSSF(std::vector<jlepton> leptons){
+ossf_bools Cms3Lepton20Fb::get_ossf_bools(const std::vector<std::pair<jlepton,jlepton> > & ossf_pairs, double m_ossf_min, double m_ossf_max){
+    ossf_bools result;
+    result.on_Z=false; 
+    double m_ossf;
+    std::vector< std::pair<jlepton, jlepton> >::const_iterator ossf_it;
+    for (ossf_it=ossf_pairs.begin();ossf_it!=ossf_pairs.end();ossf_it++){
+        m_ossf=(ossf_it->first+ossf_it->second).M();
+        if (m_ossf_min<m_ossf && m_ossf<m_ossf_max){
+            result.on_Z=true;
+            break;
+        }
+    }
+    result.below_Z=m_ossf<m_ossf_min;
+    result.above_Z=m_ossf>m_ossf_max;
+    return result;
+}
+
+bool Cms3Lepton20Fb::reject_ossf(const std::vector<jlepton> & leptons, double mlll_min, double mlll_max){
   bool result=false;
-  std::vector<jlepton>::iterator l1_it;
-  std::vector<jlepton>::iterator l2_it;
-  std::vector<jlepton>::iterator l3_it;
+  std::vector<jlepton>::const_iterator l1_it;
+  std::vector<jlepton>::const_iterator l2_it;
+  std::vector<jlepton>::const_iterator l3_it;
   for (l1_it=leptons.begin();l1_it!=leptons.end();l1_it++){
      for (l2_it=l1_it+1;l2_it!=leptons.end();l2_it++){
          //if opposite sign same flavour
@@ -45,7 +62,7 @@ bool reject_OSSF(std::vector<jlepton> leptons){
             for (l3_it=leptons.begin();l3_it!=leptons.end();l3_it++){
                 if ((l3_it!=l1_it) && (l3_it!=l2_it)){
                     double mlll=((*l1_it)+(*l2_it)+(*l3_it)).M(); 
-                    if (mlll > 75 && mlll < 115){
+                    if (mlll > mlll_min && mlll < mlll_max){
                         //FIXME: kinematic characteristics consistend with background from events with Z boson and jets (Z+jets)
                         if (true){
                             result=true;
@@ -71,7 +88,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
   std::vector<jjet> taujets=goodjetsSkim(treereader->GetTauJet(),20,2.3); 
   std::vector<jjet> jets=goodjetsSkimDRcut(treereader->GetJet(),30,2.5,leptons,0.3); 
   std::vector<jjet> etmis=treereader->GetMet(); 
-  std::vector<std::pair<jlepton,jlepton> > OSSF_pairs=get_OSSF_pairs(leptons);
+  std::vector<std::pair<jlepton,jlepton> > ossf_pairs=get_ossf_pairs(leptons);
 
   bool selected=false;
   //at least three reconstructed leptons, where by "lepton" we mean an electron, muon or tau candidate
@@ -80,13 +97,8 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
     if (leptons[0].Pt()>20){
       //at most one tau candidate
       if (taujets.size()<=1){
-         //"Events with an OSSF pair outside the Z boson mass region (75<m_OSSF<115), but that satisfy 
-         //75<m_(OSSF+lepton)<115 are liekly te arise from final-state radiation from Z-boson decay producs,
-         //followed by conversion of the photon to a charged lepton pair. Events that meet this condition are
-         //rejected if they also exhibit kinematic characteristics consistent with background from events with a Z
-         //boson and jets" (p3 CMS-SUS-13-003)
          //FIXME: can the third lepton be a tau?
-         if (!reject_OSSF(leptons)){
+         if (!reject_ossf(leptons,75,115)){
             selected=true;
          }
       }
@@ -96,18 +108,18 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
   if (selected){
     //(kinematic) variables
     double met=etmis[0].E();
-    //FIXME: correct this
-    double ht=0;
-    int N_tau=0;
-    int N_b=0;
-    bool on_Z=false;
-    bool above_Z=false;
-    bool below_Z=false;
+    double ht=getht(jets);
+    int N_tau=taujets.size();
+    int N_b=getnbtags(jets);
+    ossf_bools bools=get_ossf_bools(ossf_pairs,75,105);
+    bool on_Z=bools.on_Z;
+    bool above_Z=bools.above_Z;
+    bool below_Z=bools.below_Z;
     //definition of signal regions: 
     //Table 2 CMS-SUS-13-002 divisions (HT>200 GeV; HT<200 GeV); rows (OSSF0 ... OSSF2); columns (N_tau=0,N_b=0 ... N_tau=1, N_b>=1)
     if (leptons.size()+taujets.size()>=4){
        if (ht>200){
-           if (OSSF_pairs.size()==0 ){
+           if (ossf_pairs.size()==0 ){
                if (met>100){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(0)+=weight;
                    else if ((N_tau==1) && (N_b==0)) mSigPred.at(1)+=weight;
@@ -124,7 +136,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                    else if ((N_tau==0) && (N_b>=1)) mSigPred.at(10)+=weight;
                    else if ((N_tau==1) && (N_b>=1)) mSigPred.at(11)+=weight;
                }
-           }else if (OSSF_pairs.size()==1){
+           }else if (ossf_pairs.size()==1){
                if (met>100 && on_Z==false){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(12)+=weight;
                    else if ((N_tau==1) && (N_b==0)) mSigPred.at(13)+=weight;
@@ -157,7 +169,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                    else if ((N_tau==1) && (N_b>=1)) mSigPred.at(35)+=weight;
                }
            
-           }else if (OSSF_pairs.size()==2){
+           }else if (ossf_pairs.size()==2){
                if (met>100 && on_Z==false){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(36)+=weight;
                    else if ((N_tau==0) && (N_b>=1)) mSigPred.at(37)+=weight;
@@ -179,7 +191,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                }
            }
     }else{
-           if (OSSF_pairs.size()==0 ){
+           if (ossf_pairs.size()==0 ){
                if (met>100){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(48)+=weight;
                    else if ((N_tau==1) && (N_b==0)) mSigPred.at(49)+=weight;
@@ -196,7 +208,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                    else if ((N_tau==0) && (N_b>=1)) mSigPred.at(58)+=weight;
                    else if ((N_tau==1) && (N_b>=1)) mSigPred.at(59)+=weight;
                }
-           }else if (OSSF_pairs.size()==1){
+           }else if (ossf_pairs.size()==1){
                if (met>100 && on_Z==false){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(60)+=weight;
                    else if ((N_tau==1) && (N_b==0)) mSigPred.at(61)+=weight;
@@ -229,7 +241,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                    else if ((N_tau==1) && (N_b>=1)) mSigPred.at(83)+=weight;
                }
            
-           }else if (OSSF_pairs.size()==2){
+           }else if (ossf_pairs.size()==2){
                if (met>100 && on_Z==false){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(84)+=weight;
                    else if ((N_tau==0) && (N_b>=1)) mSigPred.at(85)+=weight;
@@ -253,7 +265,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
         }
      } else {
        if (ht>200){
-           if (OSSF_pairs.size()==0 ){
+           if (ossf_pairs.size()==0 ){
                if (met>100){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(96)+=weight;
                    else if ((N_tau==1) && (N_b==0)) mSigPred.at(97)+=weight;
@@ -270,7 +282,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                    else if ((N_tau==0) && (N_b>=1)) mSigPred.at(106)+=weight;
                    else if ((N_tau==1) && (N_b>=1)) mSigPred.at(107)+=weight;
                }
-           }else if (OSSF_pairs.size()==1){
+           }else if (ossf_pairs.size()==1){
                if (met>100 && above_Z==true){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(108)+=weight;
                    else if ((N_tau==1) && (N_b==0)) mSigPred.at(109)+=weight;
@@ -319,7 +331,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                }
            }
     }else{
-           if (OSSF_pairs.size()==0 ){
+           if (ossf_pairs.size()==0 ){
                if (met>100){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(144)+=weight;
                    else if ((N_tau==1) && (N_b==0)) mSigPred.at(145)+=weight;
@@ -336,7 +348,7 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                    else if ((N_tau==0) && (N_b>=1)) mSigPred.at(154)+=weight;
                    else if ((N_tau==1) && (N_b>=1)) mSigPred.at(155)+=weight;
                }
-           }else if (OSSF_pairs.size()==1){
+           }else if (ossf_pairs.size()==1){
                if (met>100 && above_Z==true){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(156)+=weight;
                    else if ((N_tau==1) && (N_b==0)) mSigPred.at(157)+=weight;
