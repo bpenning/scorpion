@@ -1,8 +1,5 @@
 import libjad_DelphesAnalysis as j
-import imp
-imp.load_source('types','/home/hep/mc3909/jaf_development/scorpion/python/core/types.py')
-#from core.types import *
-from types import *
+from python.core.types import *
 
 bg_at = DoubleVector([787.0, 310.0, 202.0, 60.4, 20.3, 7.7, 3.2, 2.8])
 bgunc_at = DoubleVector([0.05, 0.05, 0.05, 0.07, 0.09, 0.10, 0.13, 0.15])

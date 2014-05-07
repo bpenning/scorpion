@@ -1,7 +1,6 @@
 import libjad_DelphesAnalysis as j
-import imp
-types=imp.load_source('types','../python/core/types.py')
-from types import *
+from python.core.types import *
+
 pmssm_219462978_cms7xsec=1.71952298774e-12
 pmssm_219462978_cms7filelist = StringVector(["/vols/cms04/mc3909/FTpoint/D3output.root"])
 pmssm_219462978_pair = j.FilePair(pmssm_219462978_cms7xsec, pmssm_219462978_cms7filelist)
