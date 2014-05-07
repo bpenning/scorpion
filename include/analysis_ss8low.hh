@@ -1,5 +1,5 @@
-#ifndef __ANALYSISSS8HIGH__
-#define __ANALYSISSS8HIGH__
+#ifndef __ANALYSISSS8LOW__
+#define __ANALYSISSS8LOW__
 
 #include <iostream>
 #include <algorithm>
@@ -23,21 +23,21 @@
 #include "pair_info.hh"
 
 
-class SS8high : public AnalysisBase {
+class SS8low : public AnalysisBase {
 
 public:
-  SS8high(const std::string & name, 
+  SS8low(const std::string & name, 
        const std::string & experiment,
        const unsigned int & numBins);
   
-  SS8high(const std::string & name, 
+  SS8low(const std::string & name, 
        const std::string & experiment, 
        const unsigned int & numBins,
        const double & intlumi, 
        //const std::vector<int> & datayields,
        const std::vector<double> & bgpred);
   
-  SS8high(const std::string & name, 
+  SS8low(const std::string & name, 
        const std::string & experiment, 
        const unsigned int & numBins,
        const double & intlumi, 
@@ -47,7 +47,7 @@ public:
        const std::string & fitmode,
        const bool & calculateR);
   
-  ~SS8high();
+  ~SS8low();
 
   void Run(const Reader * treereader, const Reader * gentreereader, const double & weight);
   void initHistos();

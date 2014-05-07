@@ -42,41 +42,43 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,a
     
     # 7 TeV analyses
     alphat7_5b = j.AlphaTb('alphaTb7_analysis5','CMS7', 32, 4.98, bg_at7b, bgunc_at7b, data_at7b, 'combined', calculateRno)
-    3lep_20 = j.AlphaTb('alphaTb7_analysis5','CMS7', 32, 4.98, bg_at7b, bgunc_at7b, data_at7b, 'combined', calculateRno)
-#    atlas5 = j.ATLAS5('ATLAS5 analysis','ATLAS', 11, 4.710, bg_atlas5, bgunc_atlas5, data_atlas5, 'individual', calculateRno)
-#    lp5 = j.LP('LP_analysis5','CMS7', 18, 4.7, bg_lp5, bgunc_lp5, data_lp5, 'combined', calculateRno)
-#    monojet5 = j.MonoJet('MonoJet_analysis75','CMS', 4, 5.0, bg_monojet5, bgunc_monojet5, data_monojet5, 'individual', calculateRno)
-#    os5 = j.OS('OS_analysis5','CMS7', 6, 4.98, bg_os5, bgunc_os5, data_os5, 'combined', calculateRno)
-#    ss5 = j.SS('SS_analysis5','CMS7', 3, 4.98, bg_ss5, bgunc_ss5, data_ss5, 'combined', calculateRno)
-#    
-#    # 8 TeV analyses
-#    alphat8_12b = j.AlphaTb8('alphaTb8_analysis12','CMS8', 59, 11.7, bg_at8b, bgunc_at8b, data_at8b, 'combined', calculateRno)
-#    ss8_11b = j.SSb8('SSb8_analysis11','CMS8', 1, 10.5, bg_ssb8, bgunc_ssb8, data_ssb8, 'combined', calculateRno)
-#    
-#    # for extrapolations:
-#    bg_at8b40 = DoubleVector([x * 3.4 for x in bg_at8b])
-#    data_at8b40 = IntVector([int(x * 3.4) for x in data_at8b])
-#    
-#    bg_ssb40 = DoubleVector([x * 3.8 for x in bg_ssb8])
-#    data_ssb40 = IntVector([int(x * 3.8) for x in data_ssb8])
-#    
-#    # weather forecast (40/fb):
-#    alphat8_40b = j.AlphaTb8('alphaTb8_analysis40','CMS8', 59, 40.0, bg_at8b40, bgunc_at8b, data_at8b40, 'combined', calculateRno)
-#    ss8_40b = j.SSb8('SSb8_analysis40','CMS8', 1, 10.5, bg_ssb40, bgunc_ssb8, data_ssb40, 'combined', calculateRno)
-#    ss8HighPt = j.SSb8('SSb8_analysis40','CMS8', 24, 19.5, bg_ss8HighPt, bgunc_ss8HighPt, data_ss8HighPt, 'combined', calculateRno)
-#    ss8LowPt = j.SSb8('SSb8_analysis40','CMS8', 24, 19.5, bg_ss8LowPt, bgunc_ss8LowPt, data_ss8LowPt, 'combined', calculateRno)
-#    
+    atlas5 = j.ATLAS5('ATLAS5 analysis','ATLAS', 11, 4.710, bg_atlas5, bgunc_atlas5, data_atlas5, 'individual', calculateRno)
+    lp5 = j.LP('LP_analysis5','CMS7', 18, 4.7, bg_lp5, bgunc_lp5, data_lp5, 'combined', calculateRno)
+    monojet5 = j.MonoJet('MonoJet_analysis75','CMS', 4, 5.0, bg_monojet5, bgunc_monojet5, data_monojet5, 'individual', calculateRno)
+    os5 = j.OS('OS_analysis5','CMS7', 6, 4.98, bg_os5, bgunc_os5, data_os5, 'combined', calculateRno)
+    ss5 = j.SS('SS_analysis5','CMS7', 3, 4.98, bg_ss5, bgunc_ss5, data_ss5, 'combined', calculateRno)
+    
+    # 8 TeV analyses
+    alphat8_12b = j.AlphaTb8('alphaTb8_analysis12','CMS8', 59, 11.7, bg_at8b, bgunc_at8b, data_at8b, 'combined', calculateRno)
+    ss8_11b = j.SSb8('SSb8_analysis11','CMS8', 1, 10.5, bg_ssb8, bgunc_ssb8, data_ssb8, 'combined', calculateRno)
+    
+    # for extrapolations:
+    bg_at8b40 = DoubleVector([x * 3.4 for x in bg_at8b])
+    data_at8b40 = IntVector([int(x * 3.4) for x in data_at8b])
+    
+    bg_ssb40 = DoubleVector([x * 3.8 for x in bg_ssb8])
+    data_ssb40 = IntVector([int(x * 3.8) for x in data_ssb8])
+    
+    # weather forecast (40/fb):
+    alphat8_40b = j.AlphaTb8('alphaTb8_analysis40','CMS8', 59, 40.0, bg_at8b40, bgunc_at8b, data_at8b40, 'combined', calculateRno)
+    ss8_40b = j.SSb8('SSb8_analysis40','CMS8', 1, 10.5, bg_ssb40, bgunc_ssb8, data_ssb40, 'combined', calculateRno)
+
+    # 20/fb 8 TeV searches
+    ss8HighPt = j.SS8high('SS8high_analysis20','CMS8', 24, 19.5, bg_ss8HighPt, bgunc_ss8HighPt, data_ss8HighPt, 'combined', calculateRno)
+    ss8LowPt = j.SS8low('SS8low_analysis20','CMS8', 24, 19.5, bg_ss8LowPt, bgunc_ss8LowPt, data_ss8LowPt, 'combined', calculateRno)
+    zerolep8 = j.ZeroLep8('SSb8_analysis40','CMS8', 48, 19.4, bg_zerolep8, bgunc_zerolep8, data_zerolep8, 'combined', calculateRno)
+    
     mgr = j.AnalysisManager(outdir, geninfono) #bool for geninfo
     
     if com == 7:
-#        if ss5b:
-#              mgr.add(ss5)
-#        if os5b:
-#             mgr.add(os5)
-#        if lp5b:
-#             mgr.add(lp5)
-#        if alphat7b:
-#             mgr.add(alphat7_5)
+        if ss5b:
+              mgr.add(ss5)
+        if os5b:
+             mgr.add(os5)
+        if lp5b:
+             mgr.add(lp5)
+        if alphat7b:
+             mgr.add(alphat7_5)
         if alphat7bb:
              mgr.add(alphat7_5b)
     elif com == 8:

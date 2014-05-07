@@ -76,6 +76,112 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 		>());
     ;
 
+    class_<SS8low, bases<AnalysisBase> >("SS8low", init<const std::string &, const std::string &, const unsigned int &>())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          //const std::vector<int> &, 
+          const std::vector<double> & 
+          >())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          const std::vector<double> &,
+          const std::vector<double> &,
+          const std::vector<int> &,
+          const std::string &,
+          const bool &
+          >());
+    ;
+    class_<SS8high, bases<AnalysisBase> >("SS8high", init<const std::string &, const std::string &, const unsigned int &>())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          //const std::vector<int> &, 
+          const std::vector<double> & 
+          >())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          const std::vector<double> &,
+          const std::vector<double> &,
+          const std::vector<int> &,
+          const std::string &,
+          const bool &
+          >());
+    ;
+    class_<ZeroLep8, bases<AnalysisBase> >("ZeroLep8", init<const std::string &, const std::string &, const unsigned int &>())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          //const std::vector<int> &, 
+          const std::vector<double> & 
+          >())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          const std::vector<double> &,
+          const std::vector<double> &,
+          const std::vector<int> &,
+          const std::string &,
+          const bool &
+          >());
+    ;
+    class_<CmsSingleLepton20Fb, bases<AnalysisBase> >("CmsSingleLepton20Fb", init<const std::string &, const std::string &, const unsigned int &>())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          //const std::vector<int> &, 
+          const std::vector<double> & 
+          >())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          const std::vector<double> &,
+          const std::vector<double> &,
+          const std::vector<int> &,
+          const std::string &,
+          const bool &
+          >());
+    ;
+    class_<Cms3Lepton20Fb, bases<AnalysisBase> >("Cms3Lepton20Fb", init<const std::string &, const std::string &, const unsigned int &>())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          //const std::vector<int> &, 
+          const std::vector<double> & 
+          >())
+      .def(init<
+          const std::string &, 
+          const std::string &, 
+          const unsigned int &, 
+          const double &, 
+          const std::vector<double> &,
+          const std::vector<double> &,
+          const std::vector<int> &,
+          const std::string &,
+          const bool &
+          >());
+    ;
+
     class_<FileObject>("FileObject", 
 	    init<const std::string &, 
 	    const double &, 

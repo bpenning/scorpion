@@ -244,3 +244,11 @@ data_cms3l8=IntVector([
     85,   142,   353,    48,   140,   773,  1276,    56,    81,
    178,  1676,    17,   115,   510,  9939,    34,   226,  3869,
  50188,   148,   906])
+bg_zerolep8 = DoubleVector([
+                           ])
+
+bgunc_zerolep8 = DoubleVector([
+                           ])
+
+data_zerolep8 = IntVector([
+                           ])
