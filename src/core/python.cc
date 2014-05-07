@@ -3,7 +3,6 @@
 #include <vector>
 #include "analysis_alphatb.hh"
 #include "analysis_monojet8.hh"
-#include "analysis_cms_3_lepton_20fb.hh"
 #include "fileobject_class.hh"
 #include "filemap_class.hh"
 #include "filepair_class.hh"
@@ -76,27 +75,6 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 		const bool &
 		>());
     ;
-    class_<Cms3Lepton20Fb, bases<AnalysisBase> >("Cms3Lepton20Fb", init<const std::string &, const std::string &, const unsigned int &>())
-	.def(init<
-		const std::string &, 
-		const std::string &, 
-		const unsigned int &, 
-		const double &, 
-		//const std::vector<int> &, 
-		const std::vector<double> & 
-		>())
-	.def(init<
-		const std::string &, 
-		const std::string &, 
-		const unsigned int &, 
-		const double &, 
-		const std::vector<double> &,
-		const std::vector<double> &,
-		const std::vector<int> &,
-		const std::string &,
-		const bool &
-		>());
-    ;
 
     class_<FileObject>("FileObject", 
 	    init<const std::string &, 
@@ -109,14 +87,14 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 
     class_<FilePair>("FilePair",
 	    init<const double &,
-	    const std::vector<std::string> &,
-	    const int &
+	    const std::vector<std::string> &
 	    > ())
 	.def("Print", &FilePair::Print);
 
     class_<FileMap>("FileMap",
 	    init<const std::string &,
-	    const std::map<std::string, FilePair> &
+	    const std::map<std::string, FilePair> &,
+	    const int &
 	    > ())
 	.def("Print", &FileMap::Print);
 

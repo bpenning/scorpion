@@ -149,190 +149,214 @@ void AnalysisManager::Run(const FileMap & fileobj) {
     //loop over the map contents (of experiments <--> analyses)
     for( std::map<std::string, std::vector<AnalysisBase *> >::const_iterator ii=mAnalysesMap.begin(); ii!=mAnalysesMap.end(); ii++) {
 
-      std::cout << "running over experiment: " << ii->first << " : " << std::endl;
+	std::cout << "running over experiment: " << ii->first << " : " << std::endl;
 
-      //for each experiment, open the files and run over the analyses
+	//for each experiment, open the files and run over the analyses
 
-      std::vector<std::string> filestoadd = fileobj.GetFileList(ii->first);
-      TChain chainRec("Analysis");
-      TChain chainGen("GEN");
-      for(std::vector<std::string>::const_iterator fil=filestoadd.begin(); fil!=filestoadd.end(); fil++) {
-	std::cout << "adding file to TChain: " << *fil << std::endl;
-	chainRec.Add((*fil).c_str());
-	chainGen.Add((*fil).c_str());
-      }
-      //If statement to choose correct reader here (based on number in filemap):
-      D2Reader myd2treereader(&chainRec);
-      D2Reader gend2treereader(&chainGen);
+	std::vector<std::string> filestoadd = fileobj.GetFileList(ii->first);
 
-      //Use (virtual or abstract?) base pointer class from here 
-      Reader *mytreereader = &myd2treereader;
-      Reader *gentreereader = &gend2treereader;
+	Reader *mytreereader;
+	Reader *gentreereader;
 
-      unsigned int numevents = mytreereader->GetEntries();
-      std::cout << "there are " << numevents << " events." << std::endl; 
-      //loop over all events:
-      for(unsigned int event=0; event<numevents; event++) {
-	mytreereader->ReadEntry(event);	  
-	if(mLoadGenInfo) {
-	  // JM: added functionality in the manager to turn on/off generator info
-	  // Added to manager since you will not achieve speedup if adding to individual search (overhead in reading the event, not analysing it)
-	  // In principle you could NOT require geninfo for e.g. ATLAS analysis but for CMS analysis and here you'd read gen info for both
-	  // However, best to run twice in this instance if you want speed up
-	  gentreereader->ReadEntry(event);
+	std::cout << fileobj.GetReader() << std::endl;
+	TChain chainRec("Analysis");
+	TChain chainGen("GEN");
+	TChain chainRec1("Delphes");
+	TChain chainGen1("Delphes");
+
+	//Use (virtual or abstract?) base pointer class from here 
+	if (fileobj.GetReader()==0)
+	{
+
+	    for(std::vector<std::string>::const_iterator fil=filestoadd.begin(); fil!=filestoadd.end(); fil++) {
+		std::cout << "adding file to TChain: " << *fil << std::endl;
+		chainRec.Add((*fil).c_str());
+		chainGen.Add((*fil).c_str());
+	    }
+	    //If statement to choose correct reader here (based on number in filemap):
+	    mytreereader= new D2Reader(&chainRec);
+	    gentreereader= new D2Reader(&chainGen);
+
+	    //Use (virtu = &d2tempgen;
 	}
-	//loop over all analyses that depend on this experiment
-	for(std::vector<AnalysisBase *>::const_iterator jj=(ii->second).begin(); jj != (ii->second).end(); jj++) {
-	  //std::cout << "running analysis: " << (*jj)->GetName() << std::endl;
-	  double weight = (1.0E+015 * (*jj)->GetLuminosity())  / (numevents / fileobj.GetCrossSection(ii->first));
-	  //Run analysis
-	  (*jj)->Run(mytreereader, gentreereader, weight);
+	else if (fileobj.GetReader()==1)
+	{
+
+	    for(std::vector<std::string>::const_iterator fil=filestoadd.begin(); fil!=filestoadd.end(); fil++) {
+		std::cout << "adding file to TChain: " << *fil << std::endl;
+		chainRec1.Add((*fil).c_str());
+		chainGen1.Add((*fil).c_str());
+	    }
+	    //If statement to choose correct reader here (based on number in filemap):
+	    mytreereader= new D3Reader(&chainRec1);
+	    gentreereader= new D3Reader(&chainGen1);
+
 	}
-      }
+
+	unsigned int numevents = mytreereader->GetEntries();
+	std::cout << "there are " << numevents << " events." << std::endl; 
+	//loop over all events:
+	for(unsigned int event=0; event<numevents; event++) {
+	    mytreereader->ReadEntry(event);	  
+	    if(mLoadGenInfo) {
+		// JM: added functionality in the manager to turn on/off generator info
+		// Added to manager since you will not achieve speedup if adding to individual search (overhead in reading the event, not analysing it)
+		// In principle you could NOT require geninfo for e.g. ATLAS analysis but for CMS analysis and here you'd read gen info for both
+		// However, best to run twice in this instance if you want speed up
+		gentreereader->ReadEntry(event);
+	    }
+	    //loop over all analyses that depend on this experiment
+	    for(std::vector<AnalysisBase *>::const_iterator jj=(ii->second).begin(); jj != (ii->second).end(); jj++) {
+		//std::cout << "running analysis: " << (*jj)->GetName() << std::endl;
+		double weight = (1.0E+015 * (*jj)->GetLuminosity())  / (numevents / fileobj.GetCrossSection(ii->first));
+		//Run analysis
+		(*jj)->Run(mytreereader, gentreereader, weight);
+	    }
+	}
 
     }
 
   } else {
-    std::cerr << "couldn't find data in file... quitting" << std::endl;
+      std::cerr << "couldn't find data in file... quitting" << std::endl;
   }
-  
+
   return;
-  
+
 }
 
 void AnalysisManager::Limit(const double & signal_uncertainty, const bool & savestatfile, const bool & combinesearches, const bool & combinecalculater) {
 
-  std::vector<double> combined_signalyields;
-  std::vector<double> combined_bgyields;
-  std::vector<double> combined_bguncert;
-  std::vector<int> combined_datayields;
+    std::vector<double> combined_signalyields;
+    std::vector<double> combined_bgyields;
+    std::vector<double> combined_bguncert;
+    std::vector<int> combined_datayields;
 
-  bool combine_searches = combinesearches;
-  bool combine_calculateR = combinecalculater;
-  std::string combined_fittingmode;
+    bool combine_searches = combinesearches;
+    bool combine_calculateR = combinecalculater;
+    std::string combined_fittingmode;
 
-  //check if any analyses in the vector
-  if(mAnalysesToRun.size()) {
-    //check if those analyses have been run i.e. the size of the mSigPred
-    for(std::vector<AnalysisBase *>::iterator an=mAnalysesToRun.begin(); an!=mAnalysesToRun.end(); an++) {
-      if((*an)->GetSignalPrediction().size() == (*an)->GetNumBins() && 
-	 //signal_uncertainty.size() == (*an)->GetNumBins() &&
-	 (*an)->GetBackgroundPrediction().size() == (*an)->GetNumBins() &&
-	 (*an)->GetBGUncert().size() == (*an)->GetNumBins() &&
-	 (*an)->GetDataYields().size() == (*an)->GetNumBins() &&
-	 checkFitMode((*an)->GetFitMode())) {
-	
-	std::cout << "running limit..." << std::endl;
-	(*an)->resetLim(); //make sure the vectors are empty
-	(*an)->initLimTree(); //set up the limit tree
+    //check if any analyses in the vector
+    if(mAnalysesToRun.size()) {
+	//check if those analyses have been run i.e. the size of the mSigPred
+	for(std::vector<AnalysisBase *>::iterator an=mAnalysesToRun.begin(); an!=mAnalysesToRun.end(); an++) {
+	    if((*an)->GetSignalPrediction().size() == (*an)->GetNumBins() && 
+		    //signal_uncertainty.size() == (*an)->GetNumBins() &&
+		    (*an)->GetBackgroundPrediction().size() == (*an)->GetNumBins() &&
+		    (*an)->GetBGUncert().size() == (*an)->GetNumBins() &&
+		    (*an)->GetDataYields().size() == (*an)->GetNumBins() &&
+		    checkFitMode((*an)->GetFitMode())) {
 
-	//set up vectors
-	std::vector<int> datayields = (*an)->GetDataYields();
-	std::vector<double> signalyields = (*an)->GetSignalPrediction();
-	std::vector<double> bgyields = (*an)->GetBackgroundPrediction();
-	std::vector<double> bguncert = (*an)->GetBGUncert();
+		std::cout << "running limit..." << std::endl;
+		(*an)->resetLim(); //make sure the vectors are empty
+		(*an)->initLimTree(); //set up the limit tree
 
-	//check if data file needs to be written out (for debug or use with Higgs Limit code)
-	if(savestatfile) {
-	  //std::cout << "current dir is " << (*an)->GetCurrDir() << std::endl;
-	  SaveStatFile((*an)->GetFitMode(), (*an)->GetNumBins(), signalyields, signal_uncertainty, bgyields, bguncert, datayields, (*an)->GetCurrDir());
+		//set up vectors
+		std::vector<int> datayields = (*an)->GetDataYields();
+		std::vector<double> signalyields = (*an)->GetSignalPrediction();
+		std::vector<double> bgyields = (*an)->GetBackgroundPrediction();
+		std::vector<double> bguncert = (*an)->GetBGUncert();
+
+		//check if data file needs to be written out (for debug or use with Higgs Limit code)
+		if(savestatfile) {
+		    //std::cout << "current dir is " << (*an)->GetCurrDir() << std::endl;
+		    SaveStatFile((*an)->GetFitMode(), (*an)->GetNumBins(), signalyields, signal_uncertainty, bgyields, bguncert, datayields, (*an)->GetCurrDir());
+		}
+
+		//now run the limit code
+		std::vector<fitparams> fitresults = LimitCode((*an)->GetFitMode(), signalyields, signal_uncertainty, bgyields, bguncert, datayields, (*an)->CalculateR());
+
+		//now loop over the vector of results
+		for(std::vector<fitparams>::const_iterator fp=fitresults.begin(); fp!=fitresults.end(); fp++) {
+		    (*an)->FillLimTree((*fp).cls, (*fp).errs, (*fp).clb, (*fp).errb, (*fp).clsb, (*fp).errsb, (*fp).rtmp, (*fp).rtmperr);
+		}
+
+		//now write the tree
+		(*an)->WriteLimTree();
+
+		//now do some stuff for the combination
+		if(combine_searches) {
+		    if(combined_fittingmode.empty()) {
+			combined_fittingmode = (*an)->GetFitMode();
+		    } else if(combined_fittingmode != (*an)->GetFitMode()) {
+			std::cout << "There is a mixture of fitting modes defined. Skipping combination..." << std::endl;
+			combine_searches = false;
+		    }
+		    if(mAnalysesToRun.size() > 1) { //no point combining if only one analysis!!
+			combined_datayields.insert(combined_datayields.end(), datayields.begin(), datayields.end());
+			combined_bguncert.insert(combined_bguncert.end(), bguncert.begin(), bguncert.end());
+			combined_bgyields.insert(combined_bgyields.end(), bgyields.begin(), bgyields.end());
+			combined_signalyields.insert(combined_signalyields.end(), signalyields.begin(), signalyields.end());
+		    } else {
+			combine_searches = false;
+		    }
+		}
+
+
+	    } else {
+		std::cerr << "Either the analysis hasn't been run yet, OR" << std::endl;
+		std::cerr << "There are missing/mismatched vectors, OR" << std::endl;
+		std::cerr << "The fit mode was not recognised." << std::endl;
+		std::cerr << "Please check! Quitting..." << std::endl;
+	    }
 	}
 
-	//now run the limit code
-	std::vector<fitparams> fitresults = LimitCode((*an)->GetFitMode(), signalyields, signal_uncertainty, bgyields, bguncert, datayields, (*an)->CalculateR());
+	if(combine_searches && combined_datayields.size() && combined_bguncert.size() && combined_bgyields.size() && combined_signalyields.size()) {
 
-	//now loop over the vector of results
-	for(std::vector<fitparams>::const_iterator fp=fitresults.begin(); fp!=fitresults.end(); fp++) {
-	  (*an)->FillLimTree((*fp).cls, (*fp).errs, (*fp).clb, (*fp).errb, (*fp).clsb, (*fp).errsb, (*fp).rtmp, (*fp).rtmperr);
+	    if(savestatfile) {
+		SaveStatFile(combined_fittingmode, combined_signalyields.size(), combined_signalyields, signal_uncertainty, combined_bgyields, combined_bguncert, combined_datayields, mFolderName+"_combined_datacard");
+	    }
+
+
+	    std::vector<fitparams> fitresultscombined = LimitCode(combined_fittingmode, combined_signalyields, signal_uncertainty, combined_bgyields, combined_bguncert, combined_datayields, combine_calculateR);
+
+	    //this bit of code is a bit of an afterthought since it was never envisaged that the manager would combine search limits...
+
+	    std::vector<double> mCLs;
+	    std::vector<double> mCLserr;
+	    std::vector<double> mCLb;
+	    std::vector<double> mCLberr;
+	    std::vector<double> mCLsb;
+	    std::vector<double> mCLsberr;
+	    std::vector<double> mUpperLim; //upper limit on R
+	    std::vector<double> mUpperLimerr;
+
+	    mOutputFile->cd();
+	    TDirectory * combdir = mOutputFile->mkdir(mFolderName.c_str(), mFolderName.c_str());
+	    combdir->cd();
+	    TTree * limittree = new TTree("LimitTreec","LimitTreec");
+	    limittree->Branch("cls", &mCLs);
+	    limittree->Branch("clserr", &mCLserr);
+	    limittree->Branch("clb", &mCLb);
+	    limittree->Branch("clberr", &mCLberr);
+	    limittree->Branch("clsb", &mCLsb);
+	    limittree->Branch("clsberr", &mCLsberr);
+	    limittree->Branch("upperlimitR", &mUpperLim);
+	    limittree->Branch("upperlimitRerr", &mUpperLimerr);
+
+	    for(std::vector<fitparams>::const_iterator fp=fitresultscombined.begin(); fp!=fitresultscombined.end(); fp++) {
+		mCLs.push_back((*fp).cls);
+		mCLserr.push_back((*fp).errs);
+		mCLb.push_back((*fp).clb);
+		mCLberr.push_back((*fp).errb);
+		mCLsb.push_back((*fp).clsb);
+		mCLsberr.push_back((*fp).errsb);
+		mUpperLim.push_back((*fp).rtmp);
+		mUpperLimerr.push_back((*fp).rtmperr);
+	    }
+
+	    limittree->Fill();
+
+
+	} else {
+	    std::cout << "Combination not run" << std::endl;
 	}
-
-	//now write the tree
-	(*an)->WriteLimTree();
-
-	//now do some stuff for the combination
-	if(combine_searches) {
-	  if(combined_fittingmode.empty()) {
-	    combined_fittingmode = (*an)->GetFitMode();
-	  } else if(combined_fittingmode != (*an)->GetFitMode()) {
-	    std::cout << "There is a mixture of fitting modes defined. Skipping combination..." << std::endl;
-	    combine_searches = false;
-	  }
-	  if(mAnalysesToRun.size() > 1) { //no point combining if only one analysis!!
-	    combined_datayields.insert(combined_datayields.end(), datayields.begin(), datayields.end());
-	    combined_bguncert.insert(combined_bguncert.end(), bguncert.begin(), bguncert.end());
-	    combined_bgyields.insert(combined_bgyields.end(), bgyields.begin(), bgyields.end());
-	    combined_signalyields.insert(combined_signalyields.end(), signalyields.begin(), signalyields.end());
-	  } else {
-	    combine_searches = false;
-	  }
-	}
-
-  
-      } else {
-	std::cerr << "Either the analysis hasn't been run yet, OR" << std::endl;
-	std::cerr << "There are missing/mismatched vectors, OR" << std::endl;
-	std::cerr << "The fit mode was not recognised." << std::endl;
-	std::cerr << "Please check! Quitting..." << std::endl;
-      }
-    }
-
-    if(combine_searches && combined_datayields.size() && combined_bguncert.size() && combined_bgyields.size() && combined_signalyields.size()) {
-
-      if(savestatfile) {
-	SaveStatFile(combined_fittingmode, combined_signalyields.size(), combined_signalyields, signal_uncertainty, combined_bgyields, combined_bguncert, combined_datayields, mFolderName+"_combined_datacard");
-      }
-
-      
-      std::vector<fitparams> fitresultscombined = LimitCode(combined_fittingmode, combined_signalyields, signal_uncertainty, combined_bgyields, combined_bguncert, combined_datayields, combine_calculateR);
-
-      //this bit of code is a bit of an afterthought since it was never envisaged that the manager would combine search limits...
-
-      std::vector<double> mCLs;
-      std::vector<double> mCLserr;
-      std::vector<double> mCLb;
-      std::vector<double> mCLberr;
-      std::vector<double> mCLsb;
-      std::vector<double> mCLsberr;
-      std::vector<double> mUpperLim; //upper limit on R
-      std::vector<double> mUpperLimerr;
-
-      mOutputFile->cd();
-      TDirectory * combdir = mOutputFile->mkdir(mFolderName.c_str(), mFolderName.c_str());
-      combdir->cd();
-      TTree * limittree = new TTree("LimitTreec","LimitTreec");
-      limittree->Branch("cls", &mCLs);
-      limittree->Branch("clserr", &mCLserr);
-      limittree->Branch("clb", &mCLb);
-      limittree->Branch("clberr", &mCLberr);
-      limittree->Branch("clsb", &mCLsb);
-      limittree->Branch("clsberr", &mCLsberr);
-      limittree->Branch("upperlimitR", &mUpperLim);
-      limittree->Branch("upperlimitRerr", &mUpperLimerr);
-
-      for(std::vector<fitparams>::const_iterator fp=fitresultscombined.begin(); fp!=fitresultscombined.end(); fp++) {
-	mCLs.push_back((*fp).cls);
-	mCLserr.push_back((*fp).errs);
-	mCLb.push_back((*fp).clb);
-	mCLberr.push_back((*fp).errb);
-	mCLsb.push_back((*fp).clsb);
-	mCLsberr.push_back((*fp).errsb);
-	mUpperLim.push_back((*fp).rtmp);
-	mUpperLimerr.push_back((*fp).rtmperr);
-      }
-
-      limittree->Fill();
-      
 
     } else {
-      std::cout << "Combination not run" << std::endl;
+	std::cerr << "couldn't find any analyses in the queue... quitting" << std::endl;
     }
-    
-  } else {
-    std::cerr << "couldn't find any analyses in the queue... quitting" << std::endl;
-  }
 
-  /*
-    CRandom *rdm = new CRandom(seed);  //initialise a random generator
+    /*
+       CRandom *rdm = new CRandom(seed);  //initialise a random generator
 
     // set up counting model
     lands::CountingModel *cms=new lands::CountingModel();
@@ -355,37 +379,37 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
     cms->AddChannel("b2", tmpsigbkgs, 1);
     cms->SetProcessNames(1, tmpprocnn);
     cms->AddObservedData(1, 321);
-  
+
     tmpsigbkgs.at(0) = 2.62457;
     tmpsigbkgs.at(1) = 202;
     cms->AddChannel("b3", tmpsigbkgs, 1);
     cms->SetProcessNames(2, tmpprocnn);
     cms->AddObservedData(2, 196);
-  
+
     tmpsigbkgs.at(0) = 1.37316;
     tmpsigbkgs.at(1) = 60.4;
     cms->AddChannel("b4", tmpsigbkgs, 1);
     cms->SetProcessNames(3, tmpprocnn);
     cms->AddObservedData(3, 62);
-  
+
     tmpsigbkgs.at(0) = 0.62232;
     tmpsigbkgs.at(1) = 20.3;
     cms->AddChannel("b5", tmpsigbkgs, 1);
     cms->SetProcessNames(4, tmpprocnn);
     cms->AddObservedData(4, 21);
-  
+
     tmpsigbkgs.at(0) = 0.304396;
     tmpsigbkgs.at(1) = 7.7;
     cms->AddChannel("b6", tmpsigbkgs, 1);
     cms->SetProcessNames(5, tmpprocnn);
     cms->AddObservedData(5, 6);
-  
+
     tmpsigbkgs.at(0) = 0.128523;
     tmpsigbkgs.at(1) = 3.2;
     cms->AddChannel("b7", tmpsigbkgs, 1);
     cms->SetProcessNames(6, tmpprocnn);
     cms->AddObservedData(6, 3);
-  
+
     tmpsigbkgs.at(0) = 0.229988;
     tmpsigbkgs.at(1) = 2.8;
     cms->AddChannel("b8", tmpsigbkgs, 1);
@@ -409,7 +433,7 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
     cms->TagUncertaintyFloatInFit("signal", 1);
     cms->AddUncertainty(7, 0, 0.15, 0.15, 1, "signal" );
     cms->TagUncertaintyFloatInFit("signal", 1);
-  
+
     //uncertainty on the backgrounds
     cms->AddUncertainty(0, 1, 0.05, 0.05, 1, "bgb1" );
     cms->TagUncertaintyFloatInFit("bgb1", 1);
@@ -427,8 +451,8 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
     cms->TagUncertaintyFloatInFit("bgb7", 1);
     cms->AddUncertainty(7, 1, 0.15, 0.15, 1, "bgb8" );
     cms->TagUncertaintyFloatInFit("bgb8", 1);	
-  
-  
+
+
 
     cms->SetUseSystematicErrors(true);
     cms->ForceSymmetryError(false);
@@ -449,11 +473,11 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
 
     double tmp;
     lands::vdata_global=cms->Get_v_data();
-  
+
     frequentist.SetModel(cms);
-  
+
     frequentist.prepareLogNoverB();
-	
+
     frequentist.BuildM2lnQ_data();
     frequentist.BuildM2lnQ_sb(nexps, false, false);
     frequentist.BuildM2lnQ_b(nexps, false, false);
@@ -474,11 +498,11 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
     double rtmp;
     clsr95.SetAlpha(0.05);
     cms->SetSignalScaleFactor(1.);
-  
-  
+
+
     rtmp = clsr95.LimitOnSignalScaleFactor(cms, &frequentist,nexps);
-  
-  
+
+
     std::cout<<"------------------------------------------------------------"<<std::endl;
     std::cout<<"Observed Upper Limit on the ratio R at 95\% CL = "<<rtmp<<" +/- "<<clsr95.LimitErr()<<std::endl;
     std::cout<<"------------------------------------------------------------"<<std::endl;
@@ -486,222 +510,98 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
 
     delete cms;
     delete rdm;
-  */
+    */
 }
 
 std::vector<fitparams> AnalysisManager::LimitCode(const std::string & fitmode, const std::vector<double> & signalyields, const double & signal_uncertainty, const std::vector<double> & bgyields, const std::vector<double> & bguncert, const std::vector<int> & datayields, const bool & calculateR) {
 
-  //initialise iterators
-  std::vector<int>::const_iterator dy = datayields.begin();
-  std::vector<double>::const_iterator sy = signalyields.begin();
-  std::vector<double>::const_iterator by = bgyields.begin();
-  std::vector<double>::const_iterator byunc = bguncert.begin();
+    //initialise iterators
+    std::vector<int>::const_iterator dy = datayields.begin();
+    std::vector<double>::const_iterator sy = signalyields.begin();
+    std::vector<double>::const_iterator by = bgyields.begin();
+    std::vector<double>::const_iterator byunc = bguncert.begin();
 
-  //there are two fitting modes at this point - combined or on their own
+    //there are two fitting modes at this point - combined or on their own
 
-  //define some constants for the fit:
-  int nexps=10000;
-  int seed =1234;
-  int testStatistics = 1;
-  int rule = 1; // default is CLs
+    //define some constants for the fit:
+    int nexps=10000;
+    int seed =1234;
+    int testStatistics = 1;
+    int rule = 1; // default is CLs
 
-  //setup results
-  std::vector<fitparams> results;
+    //setup results
+    std::vector<fitparams> results;
 
-  if(fitmode == "combined") {
+    if(fitmode == "combined") {
 
-    CRandom * rdm = new CRandom(seed);  //initialise a random generator
-    
-    //set up counting model
-    lands::CountingModel * cms = new lands::CountingModel();
-    cms->SetRdm(rdm);
-    cms->SetModelName("model");
-
-    std::vector<double> tmpsigbkgs(2,0.0);
-    std::vector<string> tmpprocnn;
-    tmpprocnn.push_back("sig");
-    tmpprocnn.push_back("bg");
-
-    unsigned int tmpindex = 0;
-	  
-    for(; dy != datayields.end() && 
-	  sy != signalyields.end() &&
-	  by != bgyields.end() &&
-	  byunc != bguncert.end()
-	  ; dy++, sy++, by++, byunc++) {
-      
-      stringstream bgident;
-      bgident << "b" << tmpindex+1;
-      stringstream bgbident;
-      bgbident << "bgb" << tmpindex+1;
-      
-      tmpsigbkgs.at(0) = (*sy);
-      tmpsigbkgs.at(1) = (*by);
-
-      //add channels
-      cms->AddChannel(bgident.str(), tmpsigbkgs, 1);
-      cms->SetProcessNames(tmpindex, tmpprocnn);
-      cms->AddObservedData(tmpindex, (*dy));
-      
-      //add uncertainty on signal - correlated between bins
-      cms->AddUncertainty(tmpindex, 0, signal_uncertainty, signal_uncertainty, 1, "signal");
-      cms->TagUncertaintyFloatInFit("signal", 1);
-
-      //add uncertainty on background
-      cms->AddUncertainty(tmpindex, 1, (*byunc), (*byunc), 1, bgbident.str() );
-      cms->TagUncertaintyFloatInFit(bgbident.str(), 1);
-      
-      tmpindex++;
-    }
-
-    cms->SetUseSystematicErrors(true);
-    cms->ForceSymmetryError(false);
-    cms->RemoveChannelsWithExpectedSignal0orBkg0(0);
-    cms->MultiSigProcShareSamePDF(false);
-    cms->SetMoveUpShapeUncertainties(1);
-    cms->SetMass(-1);
-    
-    cms->SetTossToyConvention(0);
-    cms->SetUseBestEstimateToCalcQ(1);
-    
-    // initialize the calculator
-    lands::CLsBase frequentist;
-    frequentist.SetDebug(0);
-    frequentist.SetRdm(rdm);
-    frequentist.SetTestStatistics(testStatistics);
-    lands::cms_global= cms;
-    
-    double tmp;
-    lands::vdata_global=cms->Get_v_data();
-    
-    frequentist.SetModel(cms);
-    
-    frequentist.prepareLogNoverB();
-    
-    frequentist.BuildM2lnQ_data();
-    frequentist.BuildM2lnQ_sb(nexps, false, false);
-    frequentist.BuildM2lnQ_b(nexps, false, false);
-    double errs, errb, errsb;
-    double cls = frequentist.CLs(errs);
-    double clsb = frequentist.CLsb(errsb);
-    double clb = frequentist.CLb(errb);
-    //std::cout<<"------------------------------------------------------------"<<std::endl;
-    //std::cout<<"Observed CLs = "<<cls<<" +/- "<<errs<<std::endl;
-    //std::cout<<"Observed CLsb = "<<clsb<<" +/- "<<errsb<<std::endl;
-    //std::cout<<"Observed CLb = "<<clb<<" +/- "<<errb<<std::endl;
-    //std::cout<<"------------------------------------------------------------"<<std::endl;
-    
-    
-    lands::CLsLimit clsr95;
-    clsr95.SetDebug(0);
-    clsr95.SetRule(rule);
-    double rtmp;
-    clsr95.SetAlpha(0.05);
-    cms->SetSignalScaleFactor(1.);
-    
-    //JM: 24012013: commented out upperlimit calculation - now it's a function
-    //the range for which you try to match CLs with upplimR, and the number of points to interpolate
-    if(calculateR) {
-      rtmp = clsr95.LimitOnSignalScaleFactor(cms, 0.1, 3.0, &frequentist, nexps, 50);
-    }
-    
-    
-    //std::cout<<"------------------------------------------------------------"<<std::endl;
-    //std::cout<<"Observed Upper Limit on the ratio R at 95\% CL = "<<rtmp<<" +/- "<<clsr95.LimitErr()<<std::endl;
-    //std::cout<<"------------------------------------------------------------"<<std::endl;
-    
-    
-    delete cms;
-    delete rdm;
-    
-    fitparams fitresult;
-    fitresult.cls = cls;
-    fitresult.errs = errs;
-    fitresult.clb = clb;
-    fitresult.errb = errb;
-    fitresult.clsb = clsb;
-    fitresult.errsb = errsb;
-    //JM: update for calculateR flag
-    if(calculateR) {
-      fitresult.rtmp = rtmp;
-      fitresult.rtmperr = clsr95.LimitErr();
-    } else {
-      fitresult.rtmp = 0.0;
-      fitresult.rtmperr = 0.0;
-    }
-    results.push_back(fitresult);
-    
-  } else if(fitmode == "individual") {
-
-	
-    for(; dy != datayields.end() && 
-	  sy != signalyields.end() &&
-	  by != bgyields.end() &&
-	  byunc != bguncert.end()
-	  ; dy++, sy++, by++, byunc++) {
-      
-      if((*sy) > 0) { //i.e. only look at bins with signal > 0
-	
 	CRandom * rdm = new CRandom(seed);  //initialise a random generator
-	
+
 	//set up counting model
 	lands::CountingModel * cms = new lands::CountingModel();
 	cms->SetRdm(rdm);
 	cms->SetModelName("model");
-	
+
 	std::vector<double> tmpsigbkgs(2,0.0);
 	std::vector<string> tmpprocnn;
 	tmpprocnn.push_back("sig");
 	tmpprocnn.push_back("bg");
-	
+
 	unsigned int tmpindex = 0;
-	
-	stringstream bgident;
-	bgident << "b" << tmpindex+1;
-	stringstream bgbident;
-	bgbident << "bgb" << tmpindex+1;
-	
-	tmpsigbkgs.at(0) = (*sy);
-	tmpsigbkgs.at(1) = (*by);
-	
-	//add channels
-	cms->AddChannel(bgident.str(), tmpsigbkgs, 1);
-	cms->SetProcessNames(tmpindex, tmpprocnn);
-	cms->AddObservedData(tmpindex, (*dy));
-	
-	//add uncertainty on signal - correlated between bins
-	cms->AddUncertainty(tmpindex, 0, signal_uncertainty, signal_uncertainty, 1, "signal");
-	cms->TagUncertaintyFloatInFit("signal", 1);
-	
-	//add uncertainty on background
-	cms->AddUncertainty(tmpindex, 1, (*byunc), (*byunc), 1, bgbident.str() );
-	cms->TagUncertaintyFloatInFit(bgbident.str(), 1);
-	
-	
+
+	for(; dy != datayields.end() && 
+		sy != signalyields.end() &&
+		by != bgyields.end() &&
+		byunc != bguncert.end()
+		; dy++, sy++, by++, byunc++) {
+
+	    stringstream bgident;
+	    bgident << "b" << tmpindex+1;
+	    stringstream bgbident;
+	    bgbident << "bgb" << tmpindex+1;
+
+	    tmpsigbkgs.at(0) = (*sy);
+	    tmpsigbkgs.at(1) = (*by);
+
+	    //add channels
+	    cms->AddChannel(bgident.str(), tmpsigbkgs, 1);
+	    cms->SetProcessNames(tmpindex, tmpprocnn);
+	    cms->AddObservedData(tmpindex, (*dy));
+
+	    //add uncertainty on signal - correlated between bins
+	    cms->AddUncertainty(tmpindex, 0, signal_uncertainty, signal_uncertainty, 1, "signal");
+	    cms->TagUncertaintyFloatInFit("signal", 1);
+
+	    //add uncertainty on background
+	    cms->AddUncertainty(tmpindex, 1, (*byunc), (*byunc), 1, bgbident.str() );
+	    cms->TagUncertaintyFloatInFit(bgbident.str(), 1);
+
+	    tmpindex++;
+	}
+
 	cms->SetUseSystematicErrors(true);
 	cms->ForceSymmetryError(false);
 	cms->RemoveChannelsWithExpectedSignal0orBkg0(0);
 	cms->MultiSigProcShareSamePDF(false);
 	cms->SetMoveUpShapeUncertainties(1);
 	cms->SetMass(-1);
-	
+
 	cms->SetTossToyConvention(0);
 	cms->SetUseBestEstimateToCalcQ(1);
-	
+
 	// initialize the calculator
 	lands::CLsBase frequentist;
 	frequentist.SetDebug(0);
 	frequentist.SetRdm(rdm);
 	frequentist.SetTestStatistics(testStatistics);
 	lands::cms_global= cms;
-	
+
 	double tmp;
 	lands::vdata_global=cms->Get_v_data();
-	
+
 	frequentist.SetModel(cms);
-	
+
 	frequentist.prepareLogNoverB();
-	
+
 	frequentist.BuildM2lnQ_data();
 	frequentist.BuildM2lnQ_sb(nexps, false, false);
 	frequentist.BuildM2lnQ_b(nexps, false, false);
@@ -714,29 +614,30 @@ std::vector<fitparams> AnalysisManager::LimitCode(const std::string & fitmode, c
 	//std::cout<<"Observed CLsb = "<<clsb<<" +/- "<<errsb<<std::endl;
 	//std::cout<<"Observed CLb = "<<clb<<" +/- "<<errb<<std::endl;
 	//std::cout<<"------------------------------------------------------------"<<std::endl;
-	
-	
+
+
 	lands::CLsLimit clsr95;
 	clsr95.SetDebug(0);
 	clsr95.SetRule(rule);
 	double rtmp;
 	clsr95.SetAlpha(0.05);
 	cms->SetSignalScaleFactor(1.);
-	
-	//JM: 24012013: commented out upperlimit calculation -- same as above, make configurable
+
+	//JM: 24012013: commented out upperlimit calculation - now it's a function
+	//the range for which you try to match CLs with upplimR, and the number of points to interpolate
 	if(calculateR) {
-	  rtmp = clsr95.LimitOnSignalScaleFactor(cms, 0.1, 3.0, &frequentist, nexps, 50);
+	    rtmp = clsr95.LimitOnSignalScaleFactor(cms, 0.1, 3.0, &frequentist, nexps, 50);
 	}
-	
-	
+
+
 	//std::cout<<"------------------------------------------------------------"<<std::endl;
 	//std::cout<<"Observed Upper Limit on the ratio R at 95\% CL = "<<rtmp<<" +/- "<<clsr95.LimitErr()<<std::endl;
 	//std::cout<<"------------------------------------------------------------"<<std::endl;
-	
-	
+
+
 	delete cms;
 	delete rdm;
-	 
+
 	fitparams fitresult;
 	fitresult.cls = cls;
 	fitresult.errs = errs;
@@ -744,150 +645,273 @@ std::vector<fitparams> AnalysisManager::LimitCode(const std::string & fitmode, c
 	fitresult.errb = errb;
 	fitresult.clsb = clsb;
 	fitresult.errsb = errsb;
+	//JM: update for calculateR flag
 	if(calculateR) {
-	  fitresult.rtmp = rtmp;
-	  fitresult.rtmperr = clsr95.LimitErr();
+	    fitresult.rtmp = rtmp;
+	    fitresult.rtmperr = clsr95.LimitErr();
 	} else {
-	  fitresult.rtmp = 0.0;
-	  fitresult.rtmperr = 0.0;
+	    fitresult.rtmp = 0.0;
+	    fitresult.rtmperr = 0.0;
 	}
 	results.push_back(fitresult);
 
-      } else {
-	//the signal expectation was 0 so ignore this bin
-	fitparams fitresult;
-	fitresult.cls = 0.0;
-	fitresult.errs = 0.0;
-	fitresult.clb = 0.0;
-	fitresult.errb = 0.0;
-	fitresult.clsb = 0.0;
-	fitresult.errsb = 0.0;
-	fitresult.rtmp = 0.0;
-	fitresult.rtmperr = 0.0;
-	results.push_back(fitresult);
-      }
+    } else if(fitmode == "individual") {
+
+
+	for(; dy != datayields.end() && 
+		sy != signalyields.end() &&
+		by != bgyields.end() &&
+		byunc != bguncert.end()
+		; dy++, sy++, by++, byunc++) {
+
+	    if((*sy) > 0) { //i.e. only look at bins with signal > 0
+
+		CRandom * rdm = new CRandom(seed);  //initialise a random generator
+
+		//set up counting model
+		lands::CountingModel * cms = new lands::CountingModel();
+		cms->SetRdm(rdm);
+		cms->SetModelName("model");
+
+		std::vector<double> tmpsigbkgs(2,0.0);
+		std::vector<string> tmpprocnn;
+		tmpprocnn.push_back("sig");
+		tmpprocnn.push_back("bg");
+
+		unsigned int tmpindex = 0;
+
+		stringstream bgident;
+		bgident << "b" << tmpindex+1;
+		stringstream bgbident;
+		bgbident << "bgb" << tmpindex+1;
+
+		tmpsigbkgs.at(0) = (*sy);
+		tmpsigbkgs.at(1) = (*by);
+
+		//add channels
+		cms->AddChannel(bgident.str(), tmpsigbkgs, 1);
+		cms->SetProcessNames(tmpindex, tmpprocnn);
+		cms->AddObservedData(tmpindex, (*dy));
+
+		//add uncertainty on signal - correlated between bins
+		cms->AddUncertainty(tmpindex, 0, signal_uncertainty, signal_uncertainty, 1, "signal");
+		cms->TagUncertaintyFloatInFit("signal", 1);
+
+		//add uncertainty on background
+		cms->AddUncertainty(tmpindex, 1, (*byunc), (*byunc), 1, bgbident.str() );
+		cms->TagUncertaintyFloatInFit(bgbident.str(), 1);
+
+
+		cms->SetUseSystematicErrors(true);
+		cms->ForceSymmetryError(false);
+		cms->RemoveChannelsWithExpectedSignal0orBkg0(0);
+		cms->MultiSigProcShareSamePDF(false);
+		cms->SetMoveUpShapeUncertainties(1);
+		cms->SetMass(-1);
+
+		cms->SetTossToyConvention(0);
+		cms->SetUseBestEstimateToCalcQ(1);
+
+		// initialize the calculator
+		lands::CLsBase frequentist;
+		frequentist.SetDebug(0);
+		frequentist.SetRdm(rdm);
+		frequentist.SetTestStatistics(testStatistics);
+		lands::cms_global= cms;
+
+		double tmp;
+		lands::vdata_global=cms->Get_v_data();
+
+		frequentist.SetModel(cms);
+
+		frequentist.prepareLogNoverB();
+
+		frequentist.BuildM2lnQ_data();
+		frequentist.BuildM2lnQ_sb(nexps, false, false);
+		frequentist.BuildM2lnQ_b(nexps, false, false);
+		double errs, errb, errsb;
+		double cls = frequentist.CLs(errs);
+		double clsb = frequentist.CLsb(errsb);
+		double clb = frequentist.CLb(errb);
+		//std::cout<<"------------------------------------------------------------"<<std::endl;
+		//std::cout<<"Observed CLs = "<<cls<<" +/- "<<errs<<std::endl;
+		//std::cout<<"Observed CLsb = "<<clsb<<" +/- "<<errsb<<std::endl;
+		//std::cout<<"Observed CLb = "<<clb<<" +/- "<<errb<<std::endl;
+		//std::cout<<"------------------------------------------------------------"<<std::endl;
+
+
+		lands::CLsLimit clsr95;
+		clsr95.SetDebug(0);
+		clsr95.SetRule(rule);
+		double rtmp;
+		clsr95.SetAlpha(0.05);
+		cms->SetSignalScaleFactor(1.);
+
+		//JM: 24012013: commented out upperlimit calculation -- same as above, make configurable
+		if(calculateR) {
+		    rtmp = clsr95.LimitOnSignalScaleFactor(cms, 0.1, 3.0, &frequentist, nexps, 50);
+		}
+
+
+		//std::cout<<"------------------------------------------------------------"<<std::endl;
+		//std::cout<<"Observed Upper Limit on the ratio R at 95\% CL = "<<rtmp<<" +/- "<<clsr95.LimitErr()<<std::endl;
+		//std::cout<<"------------------------------------------------------------"<<std::endl;
+
+
+		delete cms;
+		delete rdm;
+
+		fitparams fitresult;
+		fitresult.cls = cls;
+		fitresult.errs = errs;
+		fitresult.clb = clb;
+		fitresult.errb = errb;
+		fitresult.clsb = clsb;
+		fitresult.errsb = errsb;
+		if(calculateR) {
+		    fitresult.rtmp = rtmp;
+		    fitresult.rtmperr = clsr95.LimitErr();
+		} else {
+		    fitresult.rtmp = 0.0;
+		    fitresult.rtmperr = 0.0;
+		}
+		results.push_back(fitresult);
+
+	    } else {
+		//the signal expectation was 0 so ignore this bin
+		fitparams fitresult;
+		fitresult.cls = 0.0;
+		fitresult.errs = 0.0;
+		fitresult.clb = 0.0;
+		fitresult.errb = 0.0;
+		fitresult.clsb = 0.0;
+		fitresult.errsb = 0.0;
+		fitresult.rtmp = 0.0;
+		fitresult.rtmperr = 0.0;
+		results.push_back(fitresult);
+	    }
+	}
     }
-  }
- 
-  return results;
+
+    return results;
 
 }
 
 void AnalysisManager::SaveStatFile(const std::string & fitmode, 
-				   const unsigned int & numbins,
-				   const std::vector<double> & signalyields, 
-				   const double & sigerror,
-				   const std::vector<double> & bgyields,
-				   const std::vector<double> & bguncert,
-				   const std::vector<int> & datayields,
-				   const std::string & currdir) {
+	const unsigned int & numbins,
+	const std::vector<double> & signalyields, 
+	const double & sigerror,
+	const std::vector<double> & bgyields,
+	const std::vector<double> & bguncert,
+	const std::vector<int> & datayields,
+	const std::string & currdir) {
 
-  std::string filename = mOutputPath + currdir + ".txt"; //mBasePath
+    std::string filename = mOutputPath + currdir + ".txt"; //mBasePath
 
-  //initialise relevant iterators
-  std::vector<int>::const_iterator dy = datayields.begin();
-  std::vector<double>::const_iterator sy = signalyields.begin();
-  std::vector<double>::const_iterator by = bgyields.begin();
-  std::vector<double>::const_iterator byunc = bguncert.begin();
+    //initialise relevant iterators
+    std::vector<int>::const_iterator dy = datayields.begin();
+    std::vector<double>::const_iterator sy = signalyields.begin();
+    std::vector<double>::const_iterator by = bgyields.begin();
+    std::vector<double>::const_iterator byunc = bguncert.begin();
 
 
-  std::ofstream myfile;
-  myfile.open(filename.c_str());
+    std::ofstream myfile;
+    myfile.open(filename.c_str());
 
-  std::cout << "writing out to file " << filename << std::endl;
+    std::cout << "writing out to file " << filename << std::endl;
 
-  if(fitmode == "combined") {
+    if(fitmode == "combined") {
 
-    myfile << "# Counting experiment with multiple channels" << std::endl;
-    myfile << "imax " << numbins << "  number of channels" << std::endl;
-    myfile << "jmax 1  number of backgrounds" << std::endl;
-    myfile << "kmax " << numbins+1 << "  number of nuisance parameters (sources of systematical uncertainties)" << std::endl;
-    myfile << "------------" << std::endl;
-    myfile << "# n bins" << std::endl;
-    myfile << "bin            ";
+	myfile << "# Counting experiment with multiple channels" << std::endl;
+	myfile << "imax " << numbins << "  number of channels" << std::endl;
+	myfile << "jmax 1  number of backgrounds" << std::endl;
+	myfile << "kmax " << numbins+1 << "  number of nuisance parameters (sources of systematical uncertainties)" << std::endl;
+	myfile << "------------" << std::endl;
+	myfile << "# n bins" << std::endl;
+	myfile << "bin            ";
 
-    for(unsigned int i=0; i<numbins; i++) {
-      myfile << "b" << i+1;
-      if(i==(numbins - 1)) { myfile << std::endl; }
-      else { myfile << "  "; }
+	for(unsigned int i=0; i<numbins; i++) {
+	    myfile << "b" << i+1;
+	    if(i==(numbins - 1)) { myfile << std::endl; }
+	    else { myfile << "  "; }
+	}
+
+	myfile << "observation    ";
+	for(unsigned int i=0; i<numbins; i++) {
+	    myfile << datayields.at(i);
+	    if(i==(numbins - 1)) { myfile << std::endl; }
+	    else { myfile << "  "; }
+	}
+
+	myfile << "------------" << std::endl;
+
+	myfile << "# now we list the expected events for signal and all backgrounds in that bin" << std::endl;
+	myfile << "# the second 'process' line must have a positive number for backgrounds, and 0 for signal" << std::endl;
+	myfile << "# now we list the independent sources of uncertainties, and give their effect (syst. error)" << std::endl;
+	myfile << "# on each process and bin" << std::endl;
+
+	myfile << "bin            ";
+	for(unsigned int i=0; i<numbins; i++) { 
+	    myfile << "b" << i+1 << "    " << "b" << i+1;
+	    if(i==(numbins - 1)) { myfile << std::endl; }
+	    else { myfile << "   "; }
+	}
+
+	myfile << "process        ";
+	for(unsigned int i=0; i<numbins; i++) {
+	    myfile << "sig    bg";
+	    if(i==(numbins - 1)) { myfile << std::endl; }
+	    else { myfile << "    "; } 
+	}
+
+	myfile << "process         ";
+	for(unsigned int i=0; i<numbins; i++) {
+	    myfile << "0    1";
+	    if(i==(numbins - 1)) { myfile << std::endl; }
+	    else { myfile << "    "; }      
+	}
+
+	myfile << "rate           ";
+	for(unsigned int i=0; i<numbins; i++) {
+	    myfile << signalyields.at(i) <<"   " << bgyields.at(i);
+	    if(i==(numbins - 1)) { myfile << std::endl; }
+	    else { myfile << "  "; }
+	}
+
+	myfile << "------------" << std::endl;
+	myfile << "signal   lnN   ";
+	for(unsigned int i=0; i<numbins; i++) {
+	    myfile << sigerror + 1.00 << "   " << " -";
+	    if(i==(numbins - 1)) { myfile << "   15% uncertainty on signal" << std::endl; }
+	    else { myfile << "   "; }
+	}
+
+	unsigned int countme=0; //to place the required bg uncertainty in the right order since number of entries depends on mask
+	for(unsigned int i=0; i<numbins; i++) {
+	    myfile << "bgb" << i+1 << "    lnN     ";
+	    for(unsigned int j=0; j<numbins; j++) {
+		if(j == countme) { myfile << "-    " << bguncert.at(i) + 1.00 << "    ";}
+		else {myfile << "-     -    ";}
+	    }
+	    myfile << "x% on background in bin" << std::endl;
+	    countme++; 
+	}
+
+
+
+    } else if(fitmode == "individual") {
+
+	for(; dy != datayields.end() && 
+		sy != signalyields.end() &&
+		by != bgyields.end() &&
+		byunc != bguncert.end()
+		; dy++, sy++, by++, byunc++) {
+	    myfile << (*sy) << "\t" << sigerror << "\t" << (*by) << "\t" << (*byunc) << "\t" << (*dy) <<std::endl;
+	}
     }
 
-    myfile << "observation    ";
-    for(unsigned int i=0; i<numbins; i++) {
-      myfile << datayields.at(i);
-      if(i==(numbins - 1)) { myfile << std::endl; }
-      else { myfile << "  "; }
-    }
-    
-    myfile << "------------" << std::endl;
-    
-    myfile << "# now we list the expected events for signal and all backgrounds in that bin" << std::endl;
-    myfile << "# the second 'process' line must have a positive number for backgrounds, and 0 for signal" << std::endl;
-    myfile << "# now we list the independent sources of uncertainties, and give their effect (syst. error)" << std::endl;
-    myfile << "# on each process and bin" << std::endl;
-    
-    myfile << "bin            ";
-    for(unsigned int i=0; i<numbins; i++) { 
-      myfile << "b" << i+1 << "    " << "b" << i+1;
-      if(i==(numbins - 1)) { myfile << std::endl; }
-      else { myfile << "   "; }
-    }
-    
-    myfile << "process        ";
-    for(unsigned int i=0; i<numbins; i++) {
-      myfile << "sig    bg";
-      if(i==(numbins - 1)) { myfile << std::endl; }
-      else { myfile << "    "; } 
-    }
-    
-    myfile << "process         ";
-    for(unsigned int i=0; i<numbins; i++) {
-      myfile << "0    1";
-      if(i==(numbins - 1)) { myfile << std::endl; }
-      else { myfile << "    "; }      
-    }
-    
-    myfile << "rate           ";
-    for(unsigned int i=0; i<numbins; i++) {
-      myfile << signalyields.at(i) <<"   " << bgyields.at(i);
-      if(i==(numbins - 1)) { myfile << std::endl; }
-      else { myfile << "  "; }
-    }
-    
-    myfile << "------------" << std::endl;
-    myfile << "signal   lnN   ";
-    for(unsigned int i=0; i<numbins; i++) {
-      myfile << sigerror + 1.00 << "   " << " -";
-      if(i==(numbins - 1)) { myfile << "   15% uncertainty on signal" << std::endl; }
-      else { myfile << "   "; }
-    }
-    
-    unsigned int countme=0; //to place the required bg uncertainty in the right order since number of entries depends on mask
-    for(unsigned int i=0; i<numbins; i++) {
-      myfile << "bgb" << i+1 << "    lnN     ";
-      for(unsigned int j=0; j<numbins; j++) {
-	if(j == countme) { myfile << "-    " << bguncert.at(i) + 1.00 << "    ";}
-	else {myfile << "-     -    ";}
-      }
-      myfile << "x% on background in bin" << std::endl;
-      countme++; 
-    }
-    
 
+    myfile.close();
 
-  } else if(fitmode == "individual") {
-
-    for(; dy != datayields.end() && 
-	  sy != signalyields.end() &&
-	  by != bgyields.end() &&
-	  byunc != bguncert.end()
-	  ; dy++, sy++, by++, byunc++) {
-      myfile << (*sy) << "\t" << sigerror << "\t" << (*by) << "\t" << (*byunc) << "\t" << (*dy) <<std::endl;
-    }
-  }
-
-
-  myfile.close();
-
-  return;
+    return;
 }

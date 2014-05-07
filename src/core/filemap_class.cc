@@ -1,17 +1,19 @@
 #include "filemap_class.hh"
 
-FileMap::FileMap(const std::string & name, const std::map<std::string, FilePair > & filelistmap) : 
+FileMap::FileMap(const std::string & name, const std::map<std::string, FilePair > & filelistmap,const int & filereader) : 
   mName(name),
-  mFileListMap(filelistmap)
+  mFileListMap(filelistmap),
+  mReader(filereader)
 { 
   //std::cout << "Initialised File Map" << std::endl;
 }
 
 FileMap::~FileMap() {}
 
-FileMap::FileMap(const FileMap & fileobj) {
+FileMap::FileMap(const FileMap & fileobj,const int & filereader) {
   mName = fileobj.GetName();
   mFileListMap = fileobj.GetFileListMap();
+  mReader=filereader;
 }
 
 std::string FileMap::GetName() const {
@@ -26,6 +28,9 @@ const double FileMap::GetCrossSection(const std::string & experiment) const {
   }
   std::cout << "Experiment not found. No cross-section returned" << std::endl;
 
+}
+const int FileMap::GetReader() const {
+    return mReader;
 }
 
 std::map<std::string, FilePair > FileMap::GetFileListMap() const {
