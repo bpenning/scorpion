@@ -13,6 +13,7 @@ BOOST_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/boost/1.47.0/lib
 #MINE
 #ROOFIT_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/roofit/5.32.00-cms5/lib
 LIMIT_LIB=/vols/cms03/mc3909/LandS
+DELPHES_LIB=/home/hep/mc3909/jaf_development/scorpion/
 
 CXX=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/gcc/4.6.2/bin/g++
 
@@ -38,7 +39,12 @@ CXXFLAGS=-c -fPIC -ansi -g -DLinux
 
 all: $(ANALYSESOBJ) $(COREOBJ) $(OBJDIR)/fileobject_class.o $(OBJDIR)/delphesdictionary.o
 	@echo Building Library
-	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -L$(PWD) -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) -g -fPIC $(COREDIR)/python.cc -shared -lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lDelphes -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMathMore -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode -rdynamic -pthread -m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
+	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) \
+		-L$(DELPHES_LIB) -L$(PWD) -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) \
+	   	-g -fPIC $(COREDIR)/python.cc -shared \
+		-lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lDelphes -lRint -lPostscript \
+		-lMatrix -lPhysics -lMathCore -lThread -lMathMore -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode \
+	   	-rdynamic -pthread -m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
 	@echo --DONE--
 
 $(ANALYSESOBJ): $(ANALYSES)
