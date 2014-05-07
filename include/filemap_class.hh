@@ -10,12 +10,13 @@
 class FileMap {
 
 public:
-  FileMap(const std::string & name, const std::map<std::string, FilePair > & filelistmap);
+  FileMap(const std::string & name, const std::map<std::string, FilePair > & filelistmap,const int & filereader);
   ~FileMap();
-  FileMap(const FileMap & filemap);
+  FileMap(const FileMap & filemap, const int & filereader);
 
   std::string GetName() const;
   const double GetCrossSection(const std::string & experiment) const;
+  const int GetReader() const;
   const std::vector<std::string> GetFileList(const std::string & experiment) const;
   std::map<std::string, FilePair> GetFileListMap() const;
 
@@ -31,6 +32,7 @@ public:
 private:
   std::string mName;
   std::map<std::string, FilePair > mFileListMap;
+  int mReader;
   
 };
 
