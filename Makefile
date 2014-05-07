@@ -1,14 +1,18 @@
 PYTHON_INC=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/python/2.6.4/include/python2.6
 ROOT_INC=$(ROOTSYS)/include
 BOOST_INC=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/boost/1.47.0/include
-ROOFIT_INC=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/roofit/5.32.00-cms5/include
-LIMIT_INC=/home/hep/jm1103/LandS/include
+#MINE
+ROOFIT_INC=/vols/cms03/mc3909/root/roofit/roofitcore/inc
+ROOFIT_INC2=/vols/cms03/mc3909/root/roofit/roofit/inc
+
+LIMIT_INC=/vols/cms03/mc3909/LandS/include
 
 PYTHON_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/python/2.6.4/lib
 ROOT_LIB=$(ROOTSYS)/lib
 BOOST_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/boost/1.47.0/lib
-ROOFIT_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/roofit/5.32.00-cms5/lib
-LIMIT_LIB=/home/hep/jm1103/LandS
+#MINE
+#ROOFIT_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/roofit/5.32.00-cms5/lib
+LIMIT_LIB=/vols/cms03/mc3909/LandS
 
 CXX=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/gcc/4.6.2/bin/g++
 
@@ -34,7 +38,7 @@ CXXFLAGS=-c -fPIC -ansi -g -DLinux
 
 all: $(ANALYSESOBJ) $(COREOBJ) $(OBJDIR)/fileobject_class.o $(OBJDIR)/delphesdictionary.o
 	@echo Building Library
-	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -L$(PWD) -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) -g -fPIC $(COREDIR)/python.cc -shared -lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMathMore -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode -rdynamic -pthread -m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
+	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -L$(PWD) -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) -g -fPIC $(COREDIR)/python.cc -shared -lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lDelphes -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMathMore -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode -rdynamic -pthread -m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
 	@echo --DONE--
 
 $(ANALYSESOBJ): $(ANALYSES)
@@ -43,7 +47,7 @@ $(ANALYSESOBJ): $(ANALYSES)
 
 $(COREOBJ): $(CORE)
 	@echo Compiling $(subst .o,.cc,$(subst $(OBJDIR),$(COREDIR),$@))
-	$(CXX) $(CXXFLAGS) $(subst .o,.cc,$(subst $(OBJDIR),$(COREDIR),$@)) -o $@ -pthread -m64 -I$(INCDIR) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC)
+	$(CXX) $(CXXFLAGS) $(subst .o,.cc,$(subst $(OBJDIR),$(COREDIR),$@)) -o $@ -pthread -m64 -I$(INCDIR) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -I$(ROOFIT_INC2)
 
 $(OBJDIR)/fileobject_class.o: $(COREDIR)/fileobject_class.cc
 	@echo Compiling $(COREDIR)/fileobject_class.cc
