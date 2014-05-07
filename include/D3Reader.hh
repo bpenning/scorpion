@@ -30,6 +30,7 @@ class D3Reader : public Reader
 public :
 
   D3Reader(TTree *tree);
+  D3Reader();
   ~D3Reader();
 
   void SetTree(TTree *tree) { fChain = tree; }
