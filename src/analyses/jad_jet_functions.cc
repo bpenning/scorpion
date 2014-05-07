@@ -11,6 +11,17 @@ std::vector <jjet> goodjetsSkim(const std::vector<jjet> & jet_collection,double 
     return mjetvec;
 }
 
+std::vector <jjet> goodbjetsSkim(const std::vector<jjet> & jet_collection,double ptcut, double etacut)
+{
+    std::vector<jjet> mjetvec;
+    for (int ii=0; ii<jet_collection.size();ii++)
+    {
+	if(jet_collection[ii].Pt() < ptcut || fabs(jet_collection[ii].Eta()) > etacut || !jet_collection[ii].Btag()) continue;
+	mjetvec.push_back(jet_collection[ii]);
+    }
+    return mjetvec;
+}
+
 //Bad Jet Collection (pt cut normal but eta cut reversed)
 std::vector <jjet> badjetsSkim(const std::vector<jjet> & jet_collection,double ptcut, double etacut)
 {

@@ -4,6 +4,7 @@
 #include "jad_jet_class.hh"
 #include "jad_lepton_class.hh"
 std::vector <jjet> goodjetsSkim(const std::vector <jjet> & jet_collection,double ptcut, double etacut);
+std::vector <jjet> goodbjetsSkim(const std::vector <jjet> & jet_collection,double ptcut, double etacut);
 std::vector <jjet> badjetsSkim(const std::vector <jjet> & jet_collection,double ptcut, double etacut);
 
 std::vector<jjet> goodjetsSkimDRcut(const std::vector<jjet> & jet_collection, const float & pt, const float & eta, const std::vector<jlepton> & lep, const double & drlim);

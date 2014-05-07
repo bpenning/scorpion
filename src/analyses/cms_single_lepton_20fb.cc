@@ -206,7 +206,7 @@ double calculateChi2(std::vector<LorentzVector>& jets, std::vector<float>& sigma
 			double c1 = minimizer->GetParameter(0);
 			if (c1!=c1) {
 				std::cout<<"[PartonCombinatorics::recoHadronicTop] ERROR: c1 parameter is NAN! Skipping this parton combination"
-					<<endl;
+					<<std::endl;
 				continue;
 			}
 			double c2 = fc2(c1, jets[i].mass2(), jets[j].mass2(), hadW.mass2());
@@ -316,7 +316,7 @@ double mt2w::get_mt2w()
 {
    if (!momenta_set)
    {
-       std::cout <<" Please set momenta first!" << endl;
+       std::cout <<" Please set momenta first!" << std::endl;
        return error_value;
    }
         

@@ -43,7 +43,7 @@ all: $(ANALYSESOBJ) $(COREOBJ) $(OBJDIR)/fileobject_class.o $(OBJDIR)/delphesdic
 		-L$(DELPHES_LIB) -L$(PWD) -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) \
 	   	-g -fPIC $(COREDIR)/python.cc -shared \
 		-lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lDelphes -lRint -lPostscript \
-		-lMatrix -lPhysics -lMathCore -lThread -lMathMore -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode \
+		-lMatrix -lPhysics -lMathCore -lThread -lMathMore -lGenVector -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode \
 	   	-rdynamic -pthread -m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
 	@echo --DONE--
 
