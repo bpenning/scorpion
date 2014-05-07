@@ -10,10 +10,11 @@ export ROOTSYS='/vols/cms03/mc3909/root/'
 
 MY_LD_LIBRARY_PATH=$ROOTSYS/lib:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/libjpg/8b/lib:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/python/2.6.4/lib:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/boost/1.47.0/lib:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib64:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/xz/5.0.3/lib:/vols/cms03/mc3909/LandS/:
 
-export LD_LIBRARY_PATH=$MY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$MY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH:/home/hep/mc3909/jaf_development/scorpion/
 export PATH=$ROOTSYS/bin:/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/python/2.6.4/bin/:$PATH
 #export PYTHONPATH=$ROOTSYS/lib:/home/hep/jm1103/development/delphes-stuff-rewrite-boost-makefile-gen-optimised-xsec/lib
-export PYTHONPATH=$ROOTSYS/lib:/home/hep/mc3909/jaf_development/scorpion/lib
+export PYTHONPATH=$ROOTSYS/lib:$(pwd)/lib:/home/hep/mc3909/jaf_development/scorpion/
+
 
 echo "LD_LIBRARY_PATH is:" $LD_LIBRARY_PATH
 echo "PYTHONPATH is:" $PYTHONPATH
