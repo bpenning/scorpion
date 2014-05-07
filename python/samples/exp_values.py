@@ -111,3 +111,12 @@ bgunc_ss8HighPt = DoubleVector([18.0, 3.5, 3.1, 2.1, 7.0, 4.0, 1.0, 1.5,
 data_ss8HighPt = IntVector([48, 11, 5, 2, 12, 11, 1, 3,
                             29, 5, 6, 2, 11, 2, 3, 7,
                             12, 1, 3, 7, 4, 1, 0, 2])
+
+bg_zerolep8 = DoubleVector([
+                           ])
+
+bgunc_zerolep8 = DoubleVector([
+                           ])
+
+data_zerolep8 = IntVector([
+                           ])

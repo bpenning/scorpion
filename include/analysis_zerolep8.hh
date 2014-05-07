@@ -1,5 +1,5 @@
-#ifndef __ANALYSISZEROLEPDOJ__
-#define __ANALYSISZEROLEPDOJ__
+#ifndef __ANALYSISZEROLEP8__
+#define __ANALYSISZEROLEP8__
 
 #include <iostream>
 #include <string>

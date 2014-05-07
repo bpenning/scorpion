@@ -1,6 +1,6 @@
 import libjad_DelphesAnalysis as j
 import imp
-types=imp.load_source('types','/home/hep/mc3909/jaf_development/scorpion/python/core/types.py')
+types=imp.load_source('types','../python/core/types.py')
 from types import *
 pmssm_219462978_cms7xsec=1.71952298774e-12
 pmssm_219462978_cms7filelist = StringVector(["/home/hep/mc3909/jaf_development/scorpion/delphes-output.root"])

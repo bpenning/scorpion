@@ -1,5 +1,5 @@
-#ifndef __ANALYSISSSB8__
-#define __ANALYSISSSB8__
+#ifndef __ANALYSISSS8HIGH__
+#define __ANALYSISSS8HIGH__
 
 #include <iostream>
 #include <algorithm>

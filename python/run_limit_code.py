@@ -62,8 +62,11 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,a
     # weather forecast (40/fb):
     alphat8_40b = j.AlphaTb8('alphaTb8_analysis40','CMS8', 59, 40.0, bg_at8b40, bgunc_at8b, data_at8b40, 'combined', calculateRno)
     ss8_40b = j.SSb8('SSb8_analysis40','CMS8', 1, 10.5, bg_ssb40, bgunc_ssb8, data_ssb40, 'combined', calculateRno)
-    ss8HighPt = j.SSb8('SSb8_analysis40','CMS8', 24, 19.5, bg_ss8HighPt, bgunc_ss8HighPt, data_ss8HighPt, 'combined', calculateRno)
-    ss8LowPt = j.SSb8('SSb8_analysis40','CMS8', 24, 19.5, bg_ss8LowPt, bgunc_ss8LowPt, data_ss8LowPt, 'combined', calculateRno)
+
+    # 20/fb 8 TeV searches
+    ss8HighPt = j.SS8high('SS8high_analysis20','CMS8', 24, 19.5, bg_ss8HighPt, bgunc_ss8HighPt, data_ss8HighPt, 'combined', calculateRno)
+    ss8LowPt = j.SS8low('SS8low_analysis20','CMS8', 24, 19.5, bg_ss8LowPt, bgunc_ss8LowPt, data_ss8LowPt, 'combined', calculateRno)
+    zerolep8 = j.ZeroLep8('SSb8_analysis40','CMS8', 48, 19.4, bg_zerolep8, bgunc_zerolep8, data_zerolep8, 'combined', calculateRno)
     
     mgr = j.AnalysisManager(outdir, geninfono) #bool for geninfo
     
