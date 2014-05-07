@@ -3,6 +3,11 @@
 #include <vector>
 #include "analysis_alphatb.hh"
 #include "analysis_monojet8.hh"
+#include "analysis_zerolep8.hh"
+#include "analysis_cms_single_lepton_20fb.hh"
+#include "analysis_ss8high.hh"
+#include "analysis_ss8low.hh"
+#include "analysis_cms_3_lepton_20fb.hh"
 #include "fileobject_class.hh"
 #include "filemap_class.hh"
 #include "filepair_class.hh"
