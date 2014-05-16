@@ -35,6 +35,9 @@ CmsSingleLepton20Fb::~CmsSingleLepton20Fb() {}
 void CmsSingleLepton20Fb::initHistos() {
   andir->cd();
   cut_flow_hist = new TH1D("cuts",";cuts;entries",7,0,7);
+  njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
+  nbjets = new TH1D("nbjets", ";N_{bjets};Entries",10,-0.5,9.5);
+  lepton_flavour = new TH1D("lepton_flavour", ";lepton flavour;Entries",2,0,2);
   //same histograms as in Fig. 2 1308.1586
   mt_hist= new TH1D("mt",";M_{T} [GeV];Entries",10 ,0 ,300);
   met_hist= new TH1D("met",";E_{T}^{miss} [GeV];Entries",10 ,100 ,350);
@@ -57,7 +60,7 @@ double CmsSingleLepton20Fb::get_mt2w(const jlepton  & lepton, const std::vector<
     btags[ijet]=jets[ijet].Btag();
   }
   //inputs from leptons
-  LorentzVector lepton_momentum(lepton.E(),lepton.Px(),lepton.Py(),lepton.Pz());
+  LorentzVector lepton_momentum(lepton.Px(),lepton.Py(),lepton.Pz(),lepton.E());
   //inputs from missing ET
   double met = etmis.Et();
   double metphi = etmis.Phi(); 
@@ -90,7 +93,7 @@ double CmsSingleLepton20Fb::get_htratio(const std::vector<jjet> & jets,const jje
   for(unsigned int ijet = 0; ijet < njets; ijet++) {
     et=jets[ijet].Pt();
     httot+=et;
-    if (std::abs(etmis.DeltaPhi(jets[ijet]))>TMath::Pi()/2){
+    if (std::abs(etmis.DeltaPhi(jets[ijet]))<TMath::Pi()/2){
       same_hemisphere_httot+=et;
     }
   }
@@ -109,13 +112,14 @@ void CmsSingleLepton20Fb::Run(const Reader * treereader, const Reader * gentreer
   std::vector<jlepton> allleptons=leptonSkim(treereader->GetElec(),treereader->GetMuon(), 5.0, 1.4442,5.0,2.1);
   //CMS-SUS-13-011 p.4: "Selected events are required to contain at least four jets with pt>30 GeV and |eta|<2.4."
   std::vector<jjet> jets=goodjetsSkim(treereader->GetJet(),30,2.4); 
-  std::vector<jjet> bjets=goodjetsSkim(treereader->GetJet(),30,2.4); 
+  std::vector<jjet> bjets=goodbjetsSkim(treereader->GetJet(),30,2.4); 
   //CMS-SUS-13-011 p.4: "We also reject ... , as well as a jet of pt>20 GeV consitent with the hadronic decay of a tau lepton"
   std::vector<jjet> taujets=goodjetsSkim(treereader->GetTauJet(),20,2.4); 
   jjet etmis=(treereader->GetMet())[0]; 
 
   double met=etmis.Et();
-
+  njets->Fill(jets.size());
+  nbjets->Fill(bjets.size());
   //preselection
   bool preselected=false;
   // one isolated lepton
@@ -150,13 +154,13 @@ void CmsSingleLepton20Fb::Run(const Reader * treereader, const Reader * gentreer
     //get 8 kinematic variables
     double mt2w=get_mt2w(lepton,jets,etmis);
     double chi2=get_chi2(jets);
-    double min_dphi=std::min(etmis.DeltaPhi(jets[0]),etmis.DeltaPhi(jets[1]));
+    double min_dphi=std::min(TMath::Abs(etmis.DeltaPhi(jets[0])),TMath::Abs(etmis.DeltaPhi(jets[1])));
     //FIXME: check if get_htratio has been defined correctly
     double htratio=get_htratio(jets,etmis);
     double leading_bjet_pt=bjets[0].Pt();
     double delta_R=lepton.DeltaR(bjets[0]);
     double lepton_pt=lepton.Pt();
-    double mt=(lepton+etmis).Mt();
+    double mt=TMath::Sqrt(2*etmis.Et()*lepton.Pt()*(1-TMath::Cos(lepton.DeltaPhi(etmis))));
     //fill histograms (cf. Fig. 2)
     mt_hist->Fill(mt,1000*weight);
     met_hist->Fill(met,1000*weight);
@@ -164,29 +168,31 @@ void CmsSingleLepton20Fb::Run(const Reader * treereader, const Reader * gentreer
     chi2_hist->Fill(chi2,1000*weight);
     htratio_hist->Fill(htratio,1000*weight);
     min_dphi_hist->Fill(min_dphi,1000*weight);
-    leading_bjet_pt_hist->Fill(leading_bjet_pt,1000*weight);
+    leading_bjet_pt_hist->Fill(leading_bjet_pt,10*weight);
     delta_R_hist->Fill(delta_R,1000*weight);
-    lepton_pt_hist->Fill(lepton_pt,1000*weight);
+    lepton_pt_hist->Fill(lepton_pt,10*weight);
+    //fill other histograms
+    lepton_flavour->Fill((lepton.Flavour()=="muon")+0.5);
     // stop->top neu; low DeltaM
-    if (met>150 && min_dphi>0.8 && chi2<5 ) mSigPred.at(0)+=weight;
-    if (met>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(1)+=weight;
-    if (met>250 && min_dphi>0.8 && chi2<5 ) mSigPred.at(2)+=weight;
-    if (met>300 && min_dphi>0.8 && chi2<5 ) mSigPred.at(3)+=weight;
-    // stop->top neu; high DeltaM
-    if (met>150 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(4)+=weight;
-    if (met>200 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(5)+=weight;
-    if (met>250 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(6)+=weight;
-    if (met>300 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(7)+=weight;
+//    if (met>150 && min_dphi>0.8 && chi2<5 ) mSigPred.at(0)+=weight;
+//    if (met>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(1)+=weight;
+//    if (met>250 && min_dphi>0.8 && chi2<5 ) mSigPred.at(2)+=weight;
+//    if (met>300 && min_dphi>0.8 && chi2<5 ) mSigPred.at(3)+=weight;
+//    // stop->top neu; high DeltaM
+//    if (met>150 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(4)+=weight;
+//    if (met>200 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(5)+=weight;
+//    if (met>250 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(6)+=weight;
+//    if (met>300 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(7)+=weight;
     // stop->bot char; low DeltaM
-    if (met>100 && min_dphi>0.8 ) mSigPred.at(8)+=weight;
-    if (met>150 && min_dphi>0.8 ) mSigPred.at(9)+=weight;
-    if (met>200 && min_dphi>0.8 ) mSigPred.at(10)+=weight;
-    if (met>250 && min_dphi>0.8 ) mSigPred.at(11)+=weight;
+    if (met>100 && min_dphi>0.8 ) mSigPred.at(0)+=weight;
+    if (met>150 && min_dphi>0.8 ) mSigPred.at(1)+=weight;
+    if (met>200 && min_dphi>0.8 ) mSigPred.at(2)+=weight;
+    if (met>250 && min_dphi>0.8 ) mSigPred.at(3)+=weight;
     // stop->bot char; high DeltaM
-    if (met>100 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(12)+=weight;
-    if (met>150 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(13)+=weight;
-    if (met>200 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(14)+=weight;
-    if (met>250 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(15)+=weight;
+    if (met>100 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(4)+=weight;
+    if (met>150 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(5)+=weight;
+    if (met>200 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(6)+=weight;
+    if (met>250 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(7)+=weight;
   }
   return;
 }
