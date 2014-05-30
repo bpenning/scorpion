@@ -1,6 +1,6 @@
 from math import log10
 
-def get_x_section_from_slha_file(slhafile):
+def get_stop_x_section_from_slha_file(slhafile):
     with open(slhafile,'r') as f:
         is_in_block_mass=False
         for line in f:
@@ -13,11 +13,28 @@ def get_x_section_from_slha_file(slhafile):
                 if is_in_block_mass:
                     try:
                         if int(words[0])==1000006:
-                            return get_x_section_from_mass(float(words[1]))
+                            return get_stop_x_section_from_mass(float(words[1]))
                     except ValueError:
                         pass
 
-def get_x_section_from_mass(mstop):
+def get_sbot_x_section_from_slha_file(slhafile):
+    with open(slhafile,'r') as f:
+        is_in_block_mass=False
+        for line in f:
+            words=line.split()
+            if len(words)>=2:
+                if words[0].upper()=='BLOCK' and words[1].upper()=='MASS':
+                    is_in_block_mass=True
+                elif words[0].upper=='BLOCK' and not words[1].upper=='MASS':
+                    is_in_block_mass=False
+                if is_in_block_mass:
+                    try:
+                        if int(words[0])==1000005:
+                            return get_stop_x_section_from_mass(float(words[1]))
+                    except ValueError:
+                        pass
+
+def get_stop_x_section_from_mass(mstop):
     for i, mstop_xsec in enumerate(data):
         m, xsec = mstop_xsec
         if m > mstop:
