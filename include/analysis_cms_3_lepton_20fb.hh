@@ -63,6 +63,14 @@ private:
     //Table 3: '"On-Z" refers to events with an e+e- or mu+mu- (OSSF) pair with dilepton mass between 75 and 105 GeV, while
     //"Above-Z" and "Below-Z" refer to events with an OSSF pair with mass above 105 Gev ofr 75 GeV, respectively'
     ossf_bools get_ossf_bools(const std::vector<std::pair<jlepton,jlepton> > & ossf_pairs,double mlll_min, double mlll_max);
+    TH1D * cut_flow_hist;
+    TH1D * njets;
+    TH1D * nleptons;
+    TH1D * nbjets;
+    TH1D * nossfpairs;
+    TH1D * ntaujets;
+    TH1D * met_hist;
+    TH1D * ht_hist;
 };
 
 #endif
