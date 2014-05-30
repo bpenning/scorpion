@@ -16,4 +16,6 @@ bool jjet::TauTag() const {
     return mIsTautagged;
 }
 
-
+void jjet::setZeroMass(){
+   SetXYZM(this->Px(),this->Py(),this->Pz(),0); 
+}
