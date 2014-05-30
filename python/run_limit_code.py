@@ -17,7 +17,8 @@ def filemap_from_dict(filemap_dict):
     pairmap[experiment]=pair
     return j.FileMap(internal_name, pairmap,1)
 
-def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,alphat12b=0,ss11b=0,alphat40b=0,ss40b=0,lp20b=0,ge3lp20b=0):
+def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
+        alphat12b=0,ss11b=0,alphat40b=0,ss40b=0,lp20b=0,ge3lp20b=0,mt220b=0):
     print('XSEC: {0} barn'.format(filemap_dict['xsec']))
     #jaf needs the directory to end in '/'
     if not outdir[:-1] =='/':
@@ -53,8 +54,11 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,a
 #    ss8_11b = j.SSb8('SSb8_analysis11','CMS8', 1, 10.5, bg_ssb8, bgunc_ssb8, data_ssb8, 'combined', calculateRno)
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b,bgunc_lp8_20b,data_lp8_20b,'combined',calculateRno)
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b,bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
-    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b,bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
-    data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
+    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',123,19.5,bg_zerolepmt2_8_20,
+            bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'combined',calculateRno)
+    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b,
+            bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
+#    data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
     ge3lp8_20b = j.Cms3Lepton20Fb('GE3LP_analysis20','CMS8',192,19.5,bg_cms3l8,
             bgunc_cms3l8,data_cms3l8,'combined',calculateRno)
 
@@ -101,6 +105,8 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,a
             mgr.add(lp8_20b)
         if ge3lp20b:
             mgr.add(ge3lp8_20b)
+        if mt220b:
+            mgr.add(mt2_20b)
     else:
          print "WRONG ENERGY"
          sys.exit(1) 

@@ -17,6 +17,7 @@ analyses={
         'all-7tev':['ss5b','os5b','lp5b','alphat7bb'],        
         'lp20b-only':['lp20b'],        
         'ge3lp20b-only':['ge3lp20b'],
+        'mt220b-only':['mt220b'],
         }
 
 def parse_args():

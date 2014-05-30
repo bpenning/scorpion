@@ -4,6 +4,7 @@
 #include "analysis_alphatb.hh"
 #include "analysis_monojet8.hh"
 #include "analysis_zerolep8.hh"
+#include "analysis_zerolepmt2_8_20.hh"
 #include "analysis_cms_single_lepton_20fb.hh"
 #include "analysis_ss8high.hh"
 #include "analysis_ss8low.hh"
@@ -144,6 +145,28 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
           const bool &
           >());
     ;
+    class_<ZeroLepMt2, bases<AnalysisBase> >("ZeroLepMt2", init<const std::string &, const std::string &, const unsigned int &>())
+      .def(init<
+          const std::string &,
+          const std::string &,
+          const unsigned int &,
+          const double &,
+          //const std::vector<int> &,
+          const std::vector<double> &
+          >())
+      .def(init<
+          const std::string &,
+          const std::string &,
+          const unsigned int &,
+          const double &,
+          const std::vector<double> &,
+          const std::vector<double> &,
+          const std::vector<int> &,
+          const std::string &,
+          const bool &
+          >());
+    ;
+
     class_<CmsSingleLepton20Fb, bases<AnalysisBase> >("CmsSingleLepton20Fb", init<const std::string &, const std::string &, const unsigned int &>())
       .def(init<
           const std::string &, 
