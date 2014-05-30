@@ -4,7 +4,9 @@ from python.make_filemap_dict import filemap_from_pythia6_single_diroctory
 from python.make_filemap_dict import filemap_from_pythia8_single_diroctory
 from python.run_limit_code import runlim
 from python.extract_CLs import print_and_save_CLs 
-from python.stop_xsections import get_x_section_from_slha_file
+from python.stop_xsections import get_stop_x_section_from_slha_file
+from python.stop_xsections import get_sbot_x_section_from_slha_file
+from python.gluino_xsections import get_gluino_x_section_from_slha_file
 
 pythia_versions={
         '6':{'filemap_function':filemap_from_pythia6_single_diroctory},
@@ -14,6 +16,7 @@ pythia_versions={
 analyses={
         'all-7tev':['ss5b','os5b','lp5b','alphat7bb'],        
         'lp20b-only':['lp20b'],        
+        'ge3lp20b-only':['ge3lp20b'],
         }
 
 def parse_args():
@@ -25,6 +28,10 @@ def parse_args():
             help='give xsec (in barns)')
     parser.add_option('--with-cms-stop-cross-section',
             help='provide slha file from which to extract mstop')
+    parser.add_option('--with-cms-sbot-cross-section',
+            help='provide slha file from which to extract msbot')
+    parser.add_option('--with-cms-gluino-cross-section',
+            help='provide slha file from which to extract mgluino')
     parser.add_option('--CM-energy',default=7,type=int)
     parser.add_option('--experiment',default='CMS7')
     parser.add_option('--rootfile',default='delphes-output.root')
@@ -44,11 +51,18 @@ if __name__=="__main__":
     com=args.CM_energy
     filemap_from_single_diroctory=pythia_versions[args.pythia_version]['filemap_function']
     filemap_dict=filemap_from_single_diroctory(pythia_delphes_dir,rootfile,experiment)
+    XSECFACTOR=3
     if args.with_cross_section:
         filemap_dict['xsec']=args.with_cross_section
     elif args.with_cms_stop_cross_section:
         slhafile=args.with_cms_stop_cross_section
-        filemap_dict['xsec']=get_x_section_from_slha_file(slhafile)
+        filemap_dict['xsec']=get_stop_x_section_from_slha_file(slhafile)
+    elif args.with_cms_sbot_cross_section:
+        slhafile=args.with_cms_sbot_cross_section
+        filemap_dict['xsec']=XSECFACTOR*get_sbot_x_section_from_slha_file(slhafile)
+    elif args.with_cms_gluino_cross_section:
+        slhafile=args.with_cms_gluino_cross_section
+        filemap_dict['xsec']=XSECFACTOR*get_gluino_x_section_from_slha_file(slhafile)
     analyses_kwargs={}
     for name in analyses[args.analyses]:
         analyses_kwargs[name]=True
