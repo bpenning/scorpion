@@ -109,12 +109,25 @@ std::vector<std::pair<jlepton,jlepton> > get_ossf_pairs(std::vector<jlepton> lep
      std::vector<std::pair<jlepton,jlepton> > ossf_pairs;
      std::vector<jlepton>::iterator l1_it;
      std::vector<jlepton>::iterator l2_it;
+     std::vector<std::vector<jlepton>::const_iterator> paired_leptons;
      for (l1_it=leptons.begin();l1_it!=leptons.end();l1_it++){
         for (l2_it=l1_it+1;l2_it!=leptons.end();l2_it++){
             //if opposite sign same flavour
-            if (l1_it->Charge()==-l1_it->Charge() && l1_it->Flavour()==l2_it->Flavour()){
-                std::pair<jlepton,jlepton> ossf_pair((*l1_it),(*l2_it));
-                ossf_pairs.push_back(ossf_pair);
+            if (l1_it->Charge()==-l2_it->Charge() && l1_it->Flavour()==l2_it->Flavour()){
+                bool isPaired=false;
+                std::vector<std::vector<jlepton>::const_iterator>::iterator lp_it;
+                for (lp_it=paired_leptons.begin();lp_it!=paired_leptons.end();lp_it++){
+                    if (*lp_it==l1_it || *lp_it==l2_it){
+                        isPaired=true;
+                        break;
+                    }
+                }
+                if (!isPaired){
+                    std::pair<jlepton,jlepton> ossf_pair((*l1_it),(*l2_it));
+                    ossf_pairs.push_back(ossf_pair);
+                    paired_leptons.push_back(l1_it);
+                    paired_leptons.push_back(l2_it);
+                }
             }
         }
      }
