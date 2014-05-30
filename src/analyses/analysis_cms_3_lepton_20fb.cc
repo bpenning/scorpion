@@ -31,6 +31,14 @@ Cms3Lepton20Fb::~Cms3Lepton20Fb() {}
 
 void Cms3Lepton20Fb::initHistos() {
   andir->cd();
+  cut_flow_hist = new TH1D("cuts",";cuts;entries",7,0,7);
+  nleptons = new TH1D("nleptons", ";N_{jets};Entries",10,-0.5,9.5);
+  njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
+  nbjets = new TH1D("nbjets", ";N_{bjets};Entries",10,-0.5,9.5);
+  nossfpairs = new TH1D("nossfpairs", ";N_{ossfpairs};Entries",10,-0.5,9.5);
+  ntaujets = new TH1D("ntaujets", ";N_{taujets};Entries",10,-0.5,9.5);
+  met_hist= new TH1D("met",";E_{T}^{miss} [GeV];Entries",10 ,0 ,500);
+  ht_hist= new TH1D("ht",";H_{T} [GeV];Entries",10 ,100 ,350);
 }
 
 ossf_bools Cms3Lepton20Fb::get_ossf_bools(const std::vector<std::pair<jlepton,jlepton> > & ossf_pairs, double m_ossf_min, double m_ossf_max){
@@ -58,7 +66,7 @@ bool Cms3Lepton20Fb::reject_ossf(const std::vector<jlepton> & leptons, double ml
   for (l1_it=leptons.begin();l1_it!=leptons.end();l1_it++){
      for (l2_it=l1_it+1;l2_it!=leptons.end();l2_it++){
          //if opposite sign same flavour
-         if (l1_it->Charge()==-l1_it->Charge() && l1_it->Flavour()==l2_it->Flavour()){
+         if (l1_it->Charge()==-l2_it->Charge() && l1_it->Flavour()==l2_it->Flavour()){
             for (l3_it=leptons.begin();l3_it!=leptons.end();l3_it++){
                 if ((l3_it!=l1_it) && (l3_it!=l2_it)){
                     double mlll=((*l1_it)+(*l2_it)+(*l3_it)).M(); 
@@ -91,14 +99,19 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
   std::vector<std::pair<jlepton,jlepton> > ossf_pairs=get_ossf_pairs(leptons);
 
   bool selected=false;
+  cut_flow_hist->Fill(0.5);
   //at least three reconstructed leptons, where by "lepton" we mean an electron, muon or tau candidate
   if (leptons.size()+taujets.size()>=3){
-    //at least one electron or muon candidate must satisfy pt>20 GeV
-    if (leptons[0].Pt()>20){
-      //at most one tau candidate
-      if (taujets.size()<=1){
+    cut_flow_hist->Fill(1.5);
+    //at most one tau candidate
+    if (taujets.size()<=1){
+      cut_flow_hist->Fill(2.5);
+      //at least one electron or muon candidate must satisfy pt>20 GeV
+      if (leptons[0].Pt()>20){
+         cut_flow_hist->Fill(3.5);
          //FIXME: can the third lepton be a tau?
          if (!reject_ossf(leptons,75,115)){
+            cut_flow_hist->Fill(4.5);
             selected=true;
          }
       }
@@ -115,6 +128,15 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
     bool on_Z=bools.on_Z;
     bool above_Z=bools.above_Z;
     bool below_Z=bools.below_Z;
+    // plot some of these variables
+
+    njets->Fill(jets.size());
+    nleptons->Fill(leptons.size()+taujets.size());
+    nbjets->Fill(N_b);
+    nossfpairs->Fill(ossf_pairs.size());
+    ntaujets->Fill(N_tau);
+    met_hist->Fill(met);
+    ht_hist->Fill(ht);
     //definition of signal regions: 
     //Table 2 CMS-SUS-13-002 divisions (HT>200 GeV; HT<200 GeV); rows (OSSF0 ... OSSF2); columns (N_tau=0,N_b=0 ... N_tau=1, N_b>=1)
     if (leptons.size()+taujets.size()>=4){
@@ -168,7 +190,6 @@ void Cms3Lepton20Fb::Run(const Reader * treereader, const Reader * gentreereader
                    else if ((N_tau==0) && (N_b>=1)) mSigPred.at(34)+=weight;
                    else if ((N_tau==1) && (N_b>=1)) mSigPred.at(35)+=weight;
                }
-           
            }else if (ossf_pairs.size()==2){
                if (met>100 && on_Z==false){
                    if ((N_tau==0) && (N_b==0)) mSigPred.at(36)+=weight;
