@@ -130,7 +130,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
     std::vector<jjet> zeroMgoodjets = goodjets;
 
-    for(std::vector<jjet>::iterator j=zeroMgoodjets.begin(); j!=zeroMgoodjets.end(); j++) j->zeroMass();
+    for(std::vector<jjet>::iterator j=zeroMgoodjets.begin(); j!=zeroMgoodjets.end(); j++) j->setZeroMass();
 
     for(unsigned j1=0; j1<zeroMgoodjets.size(); j1++){
       for(unsigned j2=j1+1; j2<zeroMgoodjets.size(); j2++){
@@ -175,8 +175,8 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
       for(std::vector<jjet>::const_iterator it=hemisphere2.begin(); it!=hemisphere2.end();it++) axis2+=*it;
 
       //Set the masses to 0
-      axis1.zeroMass();
-      axis2.zeroMass();
+      axis1.setZeroMass();
+      axis2.setZeroMass();
 
       //Reset the hemispheres
       hemisphere1.clear();
@@ -203,8 +203,8 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
     for(std::vector<jjet>::const_iterator it=hemisphere2.begin(); it!=hemisphere2.end();it++) jet2+=*it;
 
     //Set the masses to 0
-    jet1.zeroMass();
-    jet2.zeroMass();
+    jet1.setZeroMass();
+    jet2.setZeroMass();
 
     //Calculate mt2
     mt2_bisect::mt2 mt2_event;
