@@ -13,6 +13,7 @@
 #include "fileobject_class.hh"
 #include "jBlockClasses.hh"
 #include "TSimpleArray.hh"
+#include "zerolepmt2_functions.hh"
 #include "TH1.h"
 #include "TH2.h"
 #include "TMath.h"
@@ -50,15 +51,17 @@ public:
 
 private:
 
-  TH1D * leadingjetpt;
+  //TH1D * leadingjetpt;
   TH1D * hthist;
-  TH1D * mhthist;
-  TH1D * calomethist;
-  TH1D * athist;
-  TH1D * njets;
-  TH1D * mht_over_ht;
+  //TH1D * mhthist;
+  TH1D * methist;
+  //TH1D * athist;
+  //TH1D * njets;
+  //TH1D * mht_over_ht;
+  TH1D * cut_flow;
   TH1D * btagrate;
-  TH2D * calomet_vs_mht;
+  TH2D * met_vs_mht;
+  TH2D * low_ht_met_vs_mt2;
 
 };
 
