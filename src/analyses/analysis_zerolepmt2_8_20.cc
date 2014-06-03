@@ -62,12 +62,15 @@ ZeroLepMt2::ZeroLepMt2(const std::string & name,
     cut_flow = new TH1D("cut_flow",";;cuts",7,-0.5,6.5);
     low_ht_met_vs_mt2 = new TH2D("low_ht_met_vs_mt2",
             "low H_T;MET[GeV];M_{T2}[GeV]", 60, 0.0, 1500.0, 60, 0.0, 1500.0);
+    medium_ht_met_vs_mt2 = new TH2D("medium_ht_met_vs_mt2",
+            "medium H_T;MET[GeV];M_{T2}[GeV]", 60, 0.0, 1500.0, 60, 0.0, 1500.0);
+    high_ht_met_vs_mt2 = new TH2D("high_ht_met_vs_mt2",
+            "high H_T;MET[GeV];M_{T2}[GeV]", 60, 0.0, 1500.0, 60, 0.0, 1500.0);
   }
 
 void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
 
   //std::cout << "entries: " << treereader.GetEntries() << std::endl;
-    std::cout << "=====================================" << std::endl;
 
   andir->cd();
 
@@ -138,44 +141,8 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
     if(fabs(MET-vectorSum.Pt()) > 70.0) return;
 
-    //Calculate MT2, in this case we use massless pseudojets and a massless MET
-    //
-    //First we must find 2 pseudojets using the hemisphere association method, 
-    //seeded with the direction of the two jets with largest dijet invariant mass
-    //
-    //Method described in http://iopscience.iop.org/0954-3899/34/6/S01/pdf/0954-3899_34_6_S01.pdf
-
-    //Find the two jets that make the largest invariant mass
-
-    double maxInvMass = 0.0;
-    int jet1Index, jet2Index;
-
-
-//    for(std::vector<jjet>::iterator j=zeroMgoodjets.begin(); 
-//            j!=zeroMgoodjets.end(); j++) j->setZeroMass();
-    for(std::vector<jjet>::iterator j=goodjets.begin(); 
-            j!=goodjets.end(); j++){
-        std::cout << "  mass: " << j->M() << " momentum: " << j->P() << std::endl;;
-        j->setZeroMass();
-        std::cout << "    mass: " << j->M() << " momentum: " << j->P() << std::endl;;
-    }
-
-    for(unsigned j1=0; j1<goodjets.size(); j1++){
-      for(unsigned j2=j1+1; j2<goodjets.size(); j2++){
-
-        double invMass = (goodjets[j1]+goodjets[j2]).M();
-        if(invMass > maxInvMass){
-          maxInvMass = invMass;
-          jet1Index = j1;
-          jet2Index = j2;
-        }
-
-      }
-    }
-
-    //pseudoJet1 and jet2 are the seed jets
-    //find which hemisphere each of the other jets is associated with
-    
+    // to calculate MT2 we first need to construct two pseudo jets
+    // (see description in include/zerolepmt2_functions.hh)
     std::vector<int> pseudoJetsGrouping=getPseudoJetsGrouping(goodjets);
     jjet jet1,jet2;
     for (int i=0;i<pseudoJetsGrouping.size();i++){
@@ -206,8 +173,12 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
     int nJets = goodjets.size();
     //Low Ht region first
-//    if (HT<450 && HT < 750)
+    if (450 < HT && HT < 750)
         low_ht_met_vs_mt2->Fill(MET, Mt2, weight);
+    if (750 < HT && HT < 1200)
+        medium_ht_met_vs_mt2->Fill(MET, Mt2, weight);
+    if (1200 < HT )
+        high_ht_met_vs_mt2->Fill(MET, Mt2, weight);
     if(HT>450. && HT<750. && MET>=200.){
 
       if(nJets==2 && nBTags==0){
