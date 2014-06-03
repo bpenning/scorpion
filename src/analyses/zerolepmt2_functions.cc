@@ -1,7 +1,7 @@
 #include "zerolepmt2_functions.hh"
 std::vector<int> getPseudoJetsGrouping(std::vector<jjet> ){
     std::vector<int> Object_Group; 
-    int vsize = (int) Object.size();
+     int vsize = (int) Object.size();
 
   LogDebug("HemisphereAlgo") << " HemisphereAlgo method ";
   
