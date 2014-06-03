@@ -4,11 +4,16 @@
 #include "analysis_zerolepmt2_8_20.hh"
 
 double lundDistance(jjet testJet, jjet refJet){
-
-  double eTot=testJet.E()+refJet.E();
-  double dTheta = fabs(testJet.Theta()-refJet.Theta());
-  return (testJet.E()-testJet.P()*TMath::Cos(dTheta) )*testJet.E()/(eTot*eTot);
-
+  double Ei=refJet.E();
+  double Ek=testJet.E();
+  double pi=refJet.P();
+//  double eTot=testJet.E()+refJet.E();
+  //NOTE: cos(theta)=cos(-theta)
+  double dTheta = testJet.Theta()-refJet.Theta();
+//  return (refJet.E()-refJet.P()*TMath::Cos(dTheta) )*refJet.E()/(eTot*eTot);
+//  return (Ei-pi*TMath::Cos(dTheta))*Ei/((Ei+Ek)*(Ei+Ek));
+  double brackets = testJet*refJet/Ek;
+  return brackets*Ei/((Ei+Ek)*(Ei+Ek));
 }
 
 //constructor for object where you don't necessarily want to run a limit,
@@ -45,31 +50,36 @@ ZeroLepMt2::ZeroLepMt2(const std::string & name,
 
   void ZeroLepMt2::initHistos() {
     andir->cd();
-    leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
+//    leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
     hthist = new TH1D("hthist", ";H_{T} [GeV];Entries",250,-5.,2495.);
-    mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
-    calomethist = new TH1D("calomethist", ";CALO Missing E_{T} [GeV];Entries",200,-5.,1995.);
-    athist = new TH1D("athist", ";#alpha_{T};Normalised",200,-0.005,1.995);
-    njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
-    mht_over_ht = new TH1D("mht_over_ht",";MH_{T}/H_{T};Entries",200,-0.005, 1.995);
+//    mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
+    methist = new TH1D("methist", ";CALO Missing E_{T} [GeV];Entries",200,-5.,1995.);
+//    athist = new TH1D("athist", ";#alpha_{T};Normalised",200,-0.005,1.995);
+//    njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
+//    mht_over_ht = new TH1D("mht_over_ht",";MH_{T}/H_{T};Entries",200,-0.005, 1.995);
     btagrate = new TH1D("btagrate",";#b-tags;Entries",10,-0.5,9.5);
-    calomet_vs_mht = new TH2D("calomet_vs_mht",";caloMET;MHT",200,-5.,1995., 200,-5.,1995.);
+//    met_vs_mht = new TH2D("met_vs_mht",";MET;MHT",200,-5.,1995., 200,-5.,1995.);
+    cut_flow = new TH1D("cut_flow",";;cuts",7,-0.5,6.5);
+    low_ht_met_vs_mt2 = new TH2D("low_ht_met_vs_mt2",
+            "low H_T;MET[GeV];M_{T2}[GeV]", 60, 0.0, 1500.0, 60, 0.0, 1500.0);
   }
 
 void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
 
   //std::cout << "entries: " << treereader.GetEntries() << std::endl;
+    std::cout << "=====================================" << std::endl;
 
   andir->cd();
 
   mCounter+=weight; //keep a tally of all the files/events we are running over
+  cut_flow->Fill(0);
 
   //Get the required variables and fill the histograms
 
   std::vector<jjet> etmis = treereader->GetMet(); //Missing transverse energy array
   double MET = (etmis.size() == 1) ? etmis[0].E(): -1;
   if(MET < -0.5) std::cout << "MET error in 0 lepton search" << std::endl; 
-  calomethist->Fill(MET, weight);
+  methist->Fill(MET, weight);
 
   std::vector<jlepton> elecs = treereader->GetElec();
   std::vector<jlepton> muons = treereader->GetMuon();
@@ -90,21 +100,33 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
 
   //If the general conditions are passed
-  if(goodjets.size() >= 2 && leptons.size() == 0 &&
-      taus.size() == 0 && 
-      goodjets[0].Pt() > 100.0 && goodjets[1].Pt() > 100.0
-    ) {
+  bool selected=false;
+  if(goodjets.size() >= 2){
+      cut_flow->Fill(1);
+      if(leptons.size() == 0 && taus.size() == 0){ 
+          cut_flow->Fill(2);
+          if (  goodjets[0].Pt() > 100.0 && goodjets[1].Pt() > 100.0 ){
+            cut_flow->Fill(3);
+            if (MET>30){
+                cut_flow->Fill(4);
+                selected=true;
+            }
+          } 
+      }
+  }
+  if (selected){
 
     //Check the min difference in dPhi between 4 leading jets and MET
     bool dPhiRequirement = true;
     int iMax = (goodjets.size()<4) ? goodjets.size() : 4;
 
     for(unsigned i=0; i<iMax; ++i){
-      dPhiRequirement = (etmis[0].DeltaPhi(goodjets[i]) >= 0.3);
+      double dPhi=TMath::Abs(etmis[0].DeltaPhi(goodjets[i]));
+      dPhiRequirement = (dPhi>=0.3);
       if(!dPhiRequirement) break;
     }
-
     if(!dPhiRequirement) return;
+    cut_flow->Fill(5);
 
     //Check the difference between MET and vector sum of PT of all leptons and jets
 
@@ -128,14 +150,20 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
     double maxInvMass = 0.0;
     int jet1Index, jet2Index;
 
-    std::vector<jjet> zeroMgoodjets = goodjets;
 
-    for(std::vector<jjet>::iterator j=zeroMgoodjets.begin(); j!=zeroMgoodjets.end(); j++) j->setZeroMass();
+//    for(std::vector<jjet>::iterator j=zeroMgoodjets.begin(); 
+//            j!=zeroMgoodjets.end(); j++) j->setZeroMass();
+    for(std::vector<jjet>::iterator j=goodjets.begin(); 
+            j!=goodjets.end(); j++){
+        std::cout << "  mass: " << j->M() << " momentum: " << j->P() << std::endl;;
+        j->setZeroMass();
+        std::cout << "    mass: " << j->M() << " momentum: " << j->P() << std::endl;;
+    }
 
-    for(unsigned j1=0; j1<zeroMgoodjets.size(); j1++){
-      for(unsigned j2=j1+1; j2<zeroMgoodjets.size(); j2++){
+    for(unsigned j1=0; j1<goodjets.size(); j1++){
+      for(unsigned j2=j1+1; j2<goodjets.size(); j2++){
 
-        double invMass = (zeroMgoodjets[j1]+zeroMgoodjets[j2]).M();
+        double invMass = (goodjets[j1]+goodjets[j2]).M();
         if(invMass > maxInvMass){
           maxInvMass = invMass;
           jet1Index = j1;
@@ -148,63 +176,14 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
     //pseudoJet1 and jet2 are the seed jets
     //find which hemisphere each of the other jets is associated with
     
-    //Vectors to store the jets to be associated in a hemisphere
-    std::vector<jjet> hemisphere1, hemisphere2;
-    hemisphere1.push_back(goodjets[jet1Index]);
-    hemisphere2.push_back(goodjets[jet2Index]);
-
-    for(unsigned i=0; i<goodjets.size(); i++){
-      if(i==jet1Index || i==jet2Index) continue;
-      if(lundDistance(goodjets[i],goodjets[jet1Index]) <= lundDistance(goodjets[i],goodjets[jet2Index])) hemisphere1.push_back(goodjets[i]);
-      else hemisphere2.push_back(goodjets[i]);
-    }
-
-
-    //Keep track of which hemisphere a jet was in
-    std::vector<int> inHemisphere(goodjets.size(),0);
-
-    //Iterate until no jets change hemisphere
-    while(1){
-
-      bool changeHemisphere=false;
-
-      //Recalculate the axes and iterate
-      jjet axis1,axis2;
-
-      for(std::vector<jjet>::const_iterator it=hemisphere1.begin(); it!=hemisphere1.end();it++) axis1+=*it;
-      for(std::vector<jjet>::const_iterator it=hemisphere2.begin(); it!=hemisphere2.end();it++) axis2+=*it;
-
-      //Set the masses to 0
-      axis1.setZeroMass();
-      axis2.setZeroMass();
-
-      //Reset the hemispheres
-      hemisphere1.clear();
-      hemisphere2.clear();
-
-      //Associate the jets to the new hemispheres
-      for(unsigned i=0; i<goodjets.size(); i++){
-        if(lundDistance(goodjets[i],axis1) <= lundDistance(goodjets[i],axis2)){
-          hemisphere1.push_back(goodjets[i]);
-          if(inHemisphere[i]!=1) changeHemisphere=true;
-          inHemisphere[i]=1;
-        }else{
-          hemisphere2.push_back(goodjets[i]);
-          if(inHemisphere[i]!=2) changeHemisphere=true;
-          inHemisphere[i]=2;
-        }
-      }
-
-      if(!changeHemisphere) break;
-    }
-
+    std::vector<int> pseudoJetsGrouping=getPseudoJetsGrouping(goodjets);
     jjet jet1,jet2;
-    for(std::vector<jjet>::const_iterator it=hemisphere1.begin(); it!=hemisphere1.end();it++) jet1+=*it;
-    for(std::vector<jjet>::const_iterator it=hemisphere2.begin(); it!=hemisphere2.end();it++) jet2+=*it;
-
-    //Set the masses to 0
-    jet1.setZeroMass();
-    jet2.setZeroMass();
+    for (int i=0;i<pseudoJetsGrouping.size();i++){
+        if (pseudoJetsGrouping[i]==1)
+            jet1+=goodjets[i];
+        else
+            jet2+=goodjets[i];
+    }
 
     //Calculate mt2
     mt2_bisect::mt2 mt2_event;
@@ -227,6 +206,8 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
     int nJets = goodjets.size();
     //Low Ht region first
+//    if (HT<450 && HT < 750)
+        low_ht_met_vs_mt2->Fill(MET, Mt2, weight);
     if(HT>450. && HT<750. && MET>=200.){
 
       if(nJets==2 && nBTags==0){
