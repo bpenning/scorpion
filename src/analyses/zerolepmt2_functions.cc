@@ -225,7 +225,5 @@ std::vector<int> getPseudoJetsGrouping(std::vector<jjet> Object){
 
     
   }
-//  if (numLoop==100)
-//      std::cout << "NO CONVERGENCE OF HEMISPHERE ASSOCIATION METHOD" << std::endl;
     return Object_Group;
 }
