@@ -51,13 +51,19 @@ ZeroLepMt2::ZeroLepMt2(const std::string & name,
   void ZeroLepMt2::initHistos() {
     andir->cd();
 //    leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
-    hthist = new TH1D("hthist", ";H_{T} [GeV];Entries",250,-5.,2495.);
+    ht20hist = new TH1D("ht20hist", ";H_{T} [GeV];Entries",250,-5.,2495.);
+    ht40hist = new TH1D("ht40hist", ";H_{T} [GeV];Entries",250,-5.,2495.);
+    ht50hist = new TH1D("ht50hist", ";H_{T} [GeV];Entries",250,-5.,2495.);
+    mt2hist = new TH1D("mt2hist", ";M_{T2} [GeV];Entries",51, 0.0, 750.0);
 //    mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
     methist = new TH1D("methist", ";CALO Missing E_{T} [GeV];Entries",200,-5.,1995.);
-//    athist = new TH1D("athist", ";#alpha_{T};Normalised",200,-0.005,1.995);
-//    njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
+    njets20hist = new TH1D("njets20", ";N_{jets};Entries",10,-0.5,9.5);
+    njets40hist = new TH1D("njets40", ";N_{jets};Entries",10,-0.5,9.5);
+    njets50hist = new TH1D("njets50", ";N_{jets};Entries",10,-0.5,9.5);
 //    mht_over_ht = new TH1D("mht_over_ht",";MH_{T}/H_{T};Entries",200,-0.005, 1.995);
-    btagrate = new TH1D("btagrate",";#b-tags;Entries",10,-0.5,9.5);
+    btagrate20hist = new TH1D("btagrate20",";#b-tags;Entries",10,-0.5,9.5);
+    btagrate40hist = new TH1D("btagrate40",";#b-tags;Entries",10,-0.5,9.5);
+    btagrate50hist = new TH1D("btagrate50",";#b-tags;Entries",10,-0.5,9.5);
 //    met_vs_mht = new TH2D("met_vs_mht",";MET;MHT",200,-5.,1995., 200,-5.,1995.);
     cut_flow = new TH1D("cut_flow",";;cuts",7,-0.5,6.5);
     low_ht_met_vs_mt2 = new TH2D("low_ht_met_vs_mt2",
@@ -69,9 +75,6 @@ ZeroLepMt2::ZeroLepMt2(const std::string & name,
   }
 
 void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
-
-  //std::cout << "entries: " << treereader.GetEntries() << std::endl;
-
   andir->cd();
 
   mCounter+=weight; //keep a tally of all the files/events we are running over
@@ -80,81 +83,126 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
   //Get the required variables and fill the histograms
 
   std::vector<jjet> etmis = treereader->GetMet(); //Missing transverse energy array
-  double MET = (etmis.size() == 1) ? etmis[0].E(): -1;
-  if(MET < -0.5) std::cout << "MET error in 0 lepton search" << std::endl; 
-  methist->Fill(MET, weight);
+  double met = (etmis.size() == 1) ? etmis[0].E(): -1;
+  if(met < -0.5) std::cout << "MET error in 0 lepton search" << std::endl; 
+  methist->Fill(met, weight);
 
   std::vector<jlepton> elecs = treereader->GetElec();
   std::vector<jlepton> muons = treereader->GetMuon();
-
-  std::vector<jlepton> leptons = leptonSkim(elecs, muons, 10.0, 2.4, 10.0, 2.4, 1.4442, 1.566);
-  std::vector<jlepton> leptons20 = leptonSkim(elecs, muons, 20.0, 2.4, 20.0, 2.4, 1.4442, 1.566);
-
+  std::vector<jlepton> leptons = leptonSkim(elecs, muons, 10.0, 2.4, 10.0, 2.4);
+  std::vector<jlepton> leptons20 = leptonSkim(elecs, muons, 20.0, 2.4, 20.0, 2.4);
   std::vector<jjet> taus = goodjetsSkim(treereader->GetTauJet(), 20.0, 2.3);
+  //AN2013_215_v10 p.17 "L1FastJet and L2L3 corrected pf-CHS (charged hadron 
+  //subracted)-jets with pT > 40 GeV and |η | < 2.4.
+  std::vector<jjet> goodjets40 = goodjetsSkim(treereader->GetJet(), 40.0, 2.4);
+  //For the HT calculation pf-CHS-jets with pT > 50 GeV and |η | < 3.0 are used.
+  // This choice is done such that the HT trigger is fully eﬃcient at an oﬄine 
+  // HT > 750 GeV.
+  std::vector<jjet> goodjets50 = goodjetsSkim(treereader->GetJet(), 50.0, 3.0);
+  //For the HTmiss and hemisphere calculation we use pf-CHS-jets with pT > 20 
+  //GeV and |η | < 2.4, that pass the loose jet ID. With this choice we have the
+  //smallest bias of the MT2 distribution in QCD events.
+  std::vector<jjet> goodjets20 = goodjetsSkim(treereader->GetJet(), 20.0, 2.4);
 
-  std::vector<jjet> goodjets = goodjetsSkim(treereader->GetJet(), 40.0, 2.4);
-  std::vector<jjet> jets20 = goodjetsSkim(treereader->GetJet(), 20.0, 2.4);
-  double HT = getht(goodjets);
-
-  double nBTags = getnbtags(goodjets);
-
-  hthist->Fill(HT, weight);
-  btagrate->Fill(nBTags, weight);
-
+  //HT used in the analysis
+  double ht = getht(goodjets50);
+  //all values of HT for sanity check
+  double ht20 = getht(goodjets20);
+  double ht40 = getht(goodjets40);
+  double ht50 = getht(goodjets50);
+  ht20hist->Fill(ht20, weight);
+  ht40hist->Fill(ht40, weight);
+  ht50hist->Fill(ht50, weight);
+  //#b-tags used in the analysis
+  int nBTags = getnbtags(goodjets40);
+  //all b-tag values for sanity check
+  int nBTags20 = getnbtags(goodjets20);
+  int nBTags40 = getnbtags(goodjets40);
+  int nBTags50 = getnbtags(goodjets50);
+  btagrate20hist->Fill(nBTags20, weight);
+  btagrate40hist->Fill(nBTags40, weight);
+  btagrate50hist->Fill(nBTags50, weight);
+  //# jets
+  int nJets = goodjets40.size();
+  // all #jets for sanity check
+  int nJets20 = goodjets20.size();
+  int nJets40 = goodjets40.size();
+  int nJets50 = goodjets50.size();
+  njets20hist->Fill(nJets20, weight);
+  njets40hist->Fill(nJets40, weight);
+  njets50hist->Fill(nJets50, weight);
 
   //If the general conditions are passed
   bool selected=false;
-  if(goodjets.size() >= 2){
+  // CMS PAS SUS-13-019 p4. and p5.
+  // "At least two good jets are required ,,, "
+  if(nJets >= 2){
       cut_flow->Fill(1);
-      if(leptons.size() == 0 && taus.size() == 0){ 
+      // "... the two leading jets with pt>100 GeV."
+      if (goodjets40[0].Pt() > 100.0 && goodjets40[1].Pt() > 100.0){
           cut_flow->Fill(2);
-          if (  goodjets[0].Pt() > 100.0 && goodjets[1].Pt() > 100.0 ){
-            cut_flow->Fill(3);
-            if (MET>30){
-                cut_flow->Fill(4);
-                selected=true;
-            }
+          // "Events with possible contributions from beam halo processes, 
+          // anomalous calorimeter or traking noise are rejected. In order to 
+          // reject events with an important contribution of soft and/or forward
+          // jets to the momentum imbalance, a maximum difference of 70 GeV is 
+          // imposed between the MET vector and the vector sum of the pt of all
+          // leptons and jets candidates with pt>20 passing the jet ID."
+          TLorentzVector vectorSum = TLorentzVector();
+          for(std::vector<jjet>::const_iterator j=goodjets20.begin(); 
+                  j!=goodjets20.end(); j++) 
+              vectorSum+=(TLorentzVector) *j;
+          for(std::vector<jjet>::const_iterator t=taus.begin(); 
+                  t!=taus.end(); t++) 
+              vectorSum+=(TLorentzVector) *t;
+          for(std::vector<jlepton>::const_iterator l=leptons.begin(); 
+                  l!=leptons.end(); l++) 
+              vectorSum += (TLorentzVector) *l;
+          if(fabs(met-vectorSum.Pt()) < 70.0){
+              cut_flow->Fill(3);
+              //"It has been argued previously that MT2 is protected against jet
+              // energy mismeasurement in dijet events. In multijet evens such 
+              // mismeasurement can lead to hemispheres not being back-to-back 
+              // and resultsing in larger values of MT2. To protect against this
+              // effect a minimum difference in azimuth phi between any of the 
+              // four leading jets and the MET, deltaphi >=0.3, is required."
+              bool dPhiRequirement = true;
+              int iMax = (nJets<4) ? nJets : 4;
+              for(unsigned i=0; i<iMax; ++i){
+                double dPhi=TMath::Abs(etmis[0].DeltaPhi(goodjets40[i]));
+                dPhiRequirement = (dPhi>=0.3);
+                if(!dPhiRequirement) break;
+              }
+              if(dPhiRequirement){ 
+                  cut_flow->Fill(4);
+                  //"Finally, events are vetoed if they contain and isolated 
+                  //electron, muon or tau, to suppress the contributions from 
+                  //W(l nu)+jets, Z(ll)+jets, and top backgrounds."
+                  if(leptons.size() == 0 && taus.size() == 0){ 
+                      cut_flow->Fill(5);
+                      selected=true;
+                  }
+              }
           } 
       }
   }
   if (selected){
 
-    //Check the min difference in dPhi between 4 leading jets and MET
-    bool dPhiRequirement = true;
-    int iMax = (goodjets.size()<4) ? goodjets.size() : 4;
-
-    for(unsigned i=0; i<iMax; ++i){
-      double dPhi=TMath::Abs(etmis[0].DeltaPhi(goodjets[i]));
-      dPhiRequirement = (dPhi>=0.3);
-      if(!dPhiRequirement) break;
-    }
-    if(!dPhiRequirement) return;
-    cut_flow->Fill(5);
-
-    //Check the difference between MET and vector sum of PT of all leptons and jets
-
-    TLorentzVector vectorSum = TLorentzVector();
-
-    for(std::vector<jjet>::const_iterator j=goodjets.begin(); j!=goodjets.end(); j++) vectorSum+=(TLorentzVector) *j;
-    for(std::vector<jjet>::const_iterator t=taus.begin(); t!=taus.end(); t++) vectorSum+=(TLorentzVector) *t;
-    for(std::vector<jlepton>::const_iterator l=leptons.begin(); l!=leptons.end(); l++) vectorSum += (TLorentzVector) *l;
-
-    if(fabs(MET-vectorSum.Pt()) > 70.0) return;
-
     // to calculate MT2 we first need to construct two pseudo jets
     // (see description in include/zerolepmt2_functions.hh)
-    std::vector<int> pseudoJetsGrouping=getPseudoJetsGrouping(goodjets);
+    std::vector<int> pseudoJetsGrouping=getPseudoJetsGrouping(goodjets20);
     jjet jet1,jet2;
     for (int i=0;i<pseudoJetsGrouping.size();i++){
         if (pseudoJetsGrouping[i]==1)
-            jet1+=goodjets[i];
+            jet1+=goodjets20[i];
         else
-            jet2+=goodjets[i];
+            jet2+=goodjets20[i];
     }
 
     //Calculate mt2
     mt2_bisect::mt2 mt2_event;
 
+    // CMS PAS SUS-13-019 p5. "Massless pseudo-jets have been used as input to 
+    // MT2 and zero test mass, as this was found..."
     double pa[3],pb[3],pmiss[3];
     pa[0]=0.;
     pb[0]=0.;
@@ -167,19 +215,20 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
     pmiss[2]=etmis[0].Py();
 
     mt2_event.set_momenta( pa, pb, pmiss );
+    // zero test mass
     mt2_event.set_mn( 0. );
 
     double Mt2 = mt2_event.get_mt2();       
+    mt2hist->Fill(Mt2,weight);
 
-    int nJets = goodjets.size();
     //Low Ht region first
-    if (450 < HT && HT < 750)
-        low_ht_met_vs_mt2->Fill(MET, Mt2, weight);
-    if (750 < HT && HT < 1200)
-        medium_ht_met_vs_mt2->Fill(MET, Mt2, weight);
-    if (1200 < HT )
-        high_ht_met_vs_mt2->Fill(MET, Mt2, weight);
-    if(HT>450. && HT<750. && MET>=200.){
+    if (450 < ht && ht < 750)
+        low_ht_met_vs_mt2->Fill(met, Mt2, weight);
+    if (750 < ht && ht < 1200)
+        medium_ht_met_vs_mt2->Fill(met, Mt2, weight);
+    if (1200 < ht )
+        high_ht_met_vs_mt2->Fill(met, Mt2, weight);
+    if(ht>450. && ht<750. && met>=200.){
 
       if(nJets==2 && nBTags==0){
 
@@ -253,7 +302,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
       }
 
-    }else if(HT>=750. && HT<1200.){
+    }else if(ht>=750. && ht<1200.){
 
       if(nJets==2 && nBTags==0){
 
@@ -334,7 +383,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
       }
 
-    }else if(HT>=1200.){
+    }else if(ht>=1200.){
 
       if(nJets==2 && nBTags==0){
 
