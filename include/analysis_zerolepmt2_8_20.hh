@@ -52,16 +52,25 @@ public:
 private:
 
   //TH1D * leadingjetpt;
-  TH1D * hthist;
+  TH1D * ht20hist;
+  TH1D * ht40hist;
+  TH1D * ht50hist;
   //TH1D * mhthist;
   TH1D * methist;
+  TH1D * mt2hist;
   //TH1D * athist;
-  //TH1D * njets;
+  TH1D * njets20hist;
+  TH1D * njets40hist;
+  TH1D * njets50hist;
   //TH1D * mht_over_ht;
   TH1D * cut_flow;
-  TH1D * btagrate;
+  TH1D * btagrate20hist;
+  TH1D * btagrate40hist;
+  TH1D * btagrate50hist;
   TH2D * met_vs_mht;
   TH2D * low_ht_met_vs_mt2;
+  TH2D * medium_ht_met_vs_mt2;
+  TH2D * high_ht_met_vs_mt2;
 
 };
 
