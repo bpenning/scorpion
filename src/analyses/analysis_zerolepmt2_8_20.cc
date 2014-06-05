@@ -222,7 +222,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
     mt2hist->Fill(Mt2,weight);
 
     //Low Ht region first
-    if (450 < ht && ht < 750)
+    if (450 < ht && ht < 750 && met>=200.0)
         low_ht_met_vs_mt2->Fill(met, Mt2, weight);
     if (750 < ht && ht < 1200)
         medium_ht_met_vs_mt2->Fill(met, Mt2, weight);
@@ -266,8 +266,8 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
         if(Mt2>=200. && Mt2 < 250.) mSigPred.at(22)+=weight;
         else if(Mt2>=250. && Mt2 < 310.) mSigPred.at(23)+=weight;
         else if(Mt2>=310. && Mt2 < 380.) mSigPred.at(24)+=weight;
-        else if(Mt2>=380. && Mt2 < 450.) mSigPred.at(25)+=weight;
-        else if(Mt2>=450. && Mt2 < 550.) mSigPred.at(26)+=weight;
+        else if(Mt2>=380. && Mt2 < 460.) mSigPred.at(25)+=weight;
+        else if(Mt2>=460. && Mt2 < 550.) mSigPred.at(26)+=weight;
         else if(Mt2>=550.) mSigPred.at(27)+=weight;
 
       }else if(nJets>=3 && nJets<=5 && nBTags==2){
@@ -302,7 +302,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
       }
 
-    }else if(ht>=750. && ht<1200.){
+    }else if(ht>=750. && ht<1200. && met>30){
 
       if(nJets==2 && nBTags==0){
 
@@ -383,7 +383,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
       }
 
-    }else if(ht>=1200.){
+    }else if(ht>=1200. && met>30){
 
       if(nJets==2 && nBTags==0){
 
@@ -435,7 +435,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
       }else if(nJets>=6 && nBTags==2){
 
-        if(Mt2>=120. && Mt2 < 200.) mSigPred.at(120)+=weight;
+        if(Mt2>=130. && Mt2 < 200.) mSigPred.at(120)+=weight;
         else if(Mt2>=200.) mSigPred.at(121)+=weight;
 
       }else if(nJets>=3 && nBTags>=3){
