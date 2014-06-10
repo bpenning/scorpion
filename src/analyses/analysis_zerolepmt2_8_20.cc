@@ -228,225 +228,421 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
         medium_ht_met_vs_mt2->Fill(met, Mt2, weight);
     if (1200 < ht )
         high_ht_met_vs_mt2->Fill(met, Mt2, weight);
+
+    bool nominalSignalRegions=true;
+    bool stopSignalRegions=false;
+    bool gluinoSignalRegions=false;
+
+    if (nominalSignalRegions){
+      if(ht>450. && ht<750. && met>=200.){
+  
+        if(nJets==2 && nBTags==0){
+  
+          if(Mt2>=200. && Mt2 < 240.) mSigPred.at(0)+=weight;
+          else if(Mt2>=240. && Mt2 < 290.) mSigPred.at(1)+=weight;
+          else if(Mt2>=290. && Mt2 < 350.) mSigPred.at(2)+=weight;
+          else if(Mt2>=350. && Mt2 < 420.) mSigPred.at(3)+=weight;
+          else if(Mt2>=420. && Mt2 < 490.) mSigPred.at(4)+=weight;
+          else if(Mt2>=490. && Mt2 < 570.) mSigPred.at(5)+=weight;
+          else if(Mt2>=570. && Mt2 < 650.) mSigPred.at(6)+=weight;
+          else if(Mt2>=650.) mSigPred.at(7)+=weight;
+  
+        }else if(nJets==2 && nBTags>=1){
+  
+          if(Mt2>=200. && Mt2 < 250.) mSigPred.at(8)+=weight;
+          else if(Mt2>=250. && Mt2 < 310.) mSigPred.at(9)+=weight;
+          else if(Mt2>=310. && Mt2 < 380.) mSigPred.at(10)+=weight;
+          else if(Mt2>=380. && Mt2 < 450.) mSigPred.at(11)+=weight;
+          else if(Mt2>=450. && Mt2 < 550.) mSigPred.at(12)+=weight;
+          else if(Mt2>=550.) mSigPred.at(13)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==0){
+  
+          if(Mt2>=200. && Mt2 < 240.) mSigPred.at(14)+=weight;
+          else if(Mt2>=240. && Mt2 < 290.) mSigPred.at(15)+=weight;
+          else if(Mt2>=290. && Mt2 < 350.) mSigPred.at(16)+=weight;
+          else if(Mt2>=350. && Mt2 < 420.) mSigPred.at(17)+=weight;
+          else if(Mt2>=420. && Mt2 < 490.) mSigPred.at(18)+=weight;
+          else if(Mt2>=490. && Mt2 < 570.) mSigPred.at(19)+=weight;
+          else if(Mt2>=570. && Mt2 < 650.) mSigPred.at(20)+=weight;
+          else if(Mt2>=650.) mSigPred.at(21)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==1){
+  
+          if(Mt2>=200. && Mt2 < 250.) mSigPred.at(22)+=weight;
+          else if(Mt2>=250. && Mt2 < 310.) mSigPred.at(23)+=weight;
+          else if(Mt2>=310. && Mt2 < 380.) mSigPred.at(24)+=weight;
+          else if(Mt2>=380. && Mt2 < 460.) mSigPred.at(25)+=weight;
+          else if(Mt2>=460. && Mt2 < 550.) mSigPred.at(26)+=weight;
+          else if(Mt2>=550.) mSigPred.at(27)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==2){
+  
+          if(Mt2>=200. && Mt2 < 250.) mSigPred.at(28)+=weight;
+          else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(29)+=weight;
+          else if(Mt2>=325. && Mt2 < 425.) mSigPred.at(30)+=weight;
+          else if(Mt2>=425.) mSigPred.at(31)+=weight;
+  
+        }else if(nJets>=6 && nBTags==0){
+  
+          if(Mt2>=200. && Mt2 < 280.) mSigPred.at(32)+=weight;
+          else if(Mt2>=280. && Mt2 < 380.) mSigPred.at(33)+=weight;
+          else if(Mt2>=380.) mSigPred.at(34)+=weight;
+  
+        }else if(nJets>=6 && nBTags==1){
+  
+          if(Mt2>=200. && Mt2 < 250.) mSigPred.at(35)+=weight;
+          else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(36)+=weight;
+          else if(Mt2>=325.) mSigPred.at(37)+=weight;
+  
+        }else if(nJets>=6 && nBTags==2){
+  
+          if(Mt2>=200. && Mt2 < 250.) mSigPred.at(38)+=weight;
+          else if(Mt2>=250. && Mt2 < 300.) mSigPred.at(39)+=weight;
+          else if(Mt2>=300.) mSigPred.at(40)+=weight;
+  
+        }else if(nJets>=3 && nBTags>=3){
+  
+          if(Mt2>=200. && Mt2 < 280.) mSigPred.at(41)+=weight;
+          else if(Mt2>=280.) mSigPred.at(42)+=weight;
+  
+        }
+  
+      }else if(ht>=750. && ht<1200. && met>30){
+  
+        if(nJets==2 && nBTags==0){
+  
+          if(Mt2>=125. && Mt2 < 150.) mSigPred.at(43)+=weight;
+          else if(Mt2>=150. && Mt2 < 180.) mSigPred.at(44)+=weight;
+          else if(Mt2>=180. && Mt2 < 220.) mSigPred.at(45)+=weight;
+          else if(Mt2>=220. && Mt2 < 270.) mSigPred.at(46)+=weight;
+          else if(Mt2>=270. && Mt2 < 325.) mSigPred.at(47)+=weight;
+          else if(Mt2>=325. && Mt2 < 425.) mSigPred.at(48)+=weight;
+          else if(Mt2>=425. && Mt2 < 580.) mSigPred.at(49)+=weight;
+          else if(Mt2>=580. && Mt2 < 780.) mSigPred.at(50)+=weight;
+          else if(Mt2>=780.) mSigPred.at(51)+=weight;
+  
+        }else if(nJets==2 && nBTags>=1){
+  
+          if(Mt2>=100. && Mt2 < 135.) mSigPred.at(52)+=weight;
+          else if(Mt2>=135. && Mt2 < 170.) mSigPred.at(53)+=weight;
+          else if(Mt2>=170. && Mt2 < 260.) mSigPred.at(54)+=weight;
+          else if(Mt2>=260. && Mt2 < 450.) mSigPred.at(55)+=weight;
+          else if(Mt2>=450.) mSigPred.at(56)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==0){
+  
+          if(Mt2>=160. && Mt2 < 185.) mSigPred.at(57)+=weight;
+          else if(Mt2>=185. && Mt2 < 215.) mSigPred.at(58)+=weight;
+          else if(Mt2>=215. && Mt2 < 250.) mSigPred.at(59)+=weight;
+          else if(Mt2>=250. && Mt2 < 300.) mSigPred.at(60)+=weight;
+          else if(Mt2>=300. && Mt2 < 370.) mSigPred.at(61)+=weight;
+          else if(Mt2>=370. && Mt2 < 480.) mSigPred.at(62)+=weight;
+          else if(Mt2>=480. && Mt2 < 640.) mSigPred.at(63)+=weight;
+          else if(Mt2>=640. && Mt2 < 800.) mSigPred.at(64)+=weight;
+          else if(Mt2>=800.) mSigPred.at(65)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==1){
+  
+          if(Mt2>=150. && Mt2 < 175.) mSigPred.at(66)+=weight;
+          else if(Mt2>=175. && Mt2 < 210.) mSigPred.at(67)+=weight;
+          else if(Mt2>=210. && Mt2 < 270.) mSigPred.at(68)+=weight;
+          else if(Mt2>=270. && Mt2 < 380.) mSigPred.at(69)+=weight;
+          else if(Mt2>=380. && Mt2 < 600.) mSigPred.at(70)+=weight;
+          else if(Mt2>=600.) mSigPred.at(71)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==2){
+  
+          if(Mt2>=130. && Mt2 < 160.) mSigPred.at(72)+=weight;
+          else if(Mt2>=160. && Mt2 < 200.) mSigPred.at(73)+=weight;
+          else if(Mt2>=200. && Mt2 < 270.) mSigPred.at(74)+=weight;
+          else if(Mt2>=270. && Mt2 < 370.) mSigPred.at(75)+=weight;
+          else if(Mt2>=370.) mSigPred.at(76)+=weight;
+  
+        }else if(nJets>=6 && nBTags==0){
+  
+          if(Mt2>=160. && Mt2 < 200.) mSigPred.at(77)+=weight;
+          else if(Mt2>=200. && Mt2 < 250.) mSigPred.at(78)+=weight;
+          else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(79)+=weight;
+          else if(Mt2>=325. && Mt2 < 425.) mSigPred.at(80)+=weight;
+          else if(Mt2>=425.) mSigPred.at(81)+=weight;
+  
+        }else if(nJets>=6 && nBTags==1){
+  
+          if(Mt2>=150. && Mt2 < 190.) mSigPred.at(82)+=weight;
+          else if(Mt2>=190. && Mt2 < 250.) mSigPred.at(83)+=weight;
+          else if(Mt2>=250. && Mt2 < 350.) mSigPred.at(84)+=weight;
+          else if(Mt2>=350.) mSigPred.at(85)+=weight;
+  
+        }else if(nJets>=6 && nBTags==2){
+  
+          if(Mt2>=130. && Mt2 < 170.) mSigPred.at(86)+=weight;
+          else if(Mt2>=170. && Mt2 < 220.) mSigPred.at(87)+=weight;
+          else if(Mt2>=220. && Mt2 < 300.) mSigPred.at(88)+=weight;
+          else if(Mt2>=300.) mSigPred.at(89)+=weight;
+  
+        }else if(nJets>=3 && nBTags>=3){
+  
+          if(Mt2>=125. && Mt2 < 175.) mSigPred.at(90)+=weight;
+          else if(Mt2>=175. && Mt2 < 275.) mSigPred.at(91)+=weight;
+          else if(Mt2>=275.) mSigPred.at(92)+=weight;
+  
+        }
+  
+      }else if(ht>=1200. && met>30){
+  
+        if(nJets==2 && nBTags==0){
+  
+          if(Mt2>=120. && Mt2 < 150.) mSigPred.at(93)+=weight;
+          else if(Mt2>=150. && Mt2 < 200.) mSigPred.at(94)+=weight;
+          else if(Mt2>=200. && Mt2 < 260.) mSigPred.at(95)+=weight;
+          else if(Mt2>=260. && Mt2 < 350.) mSigPred.at(96)+=weight;
+          else if(Mt2>=350. && Mt2 < 550.) mSigPred.at(97)+=weight;
+          else if(Mt2>=550.) mSigPred.at(98)+=weight;
+  
+        }else if(nJets==2 && nBTags>=1){
+  
+          if(Mt2>=100. && Mt2 < 180.) mSigPred.at(99)+=weight;
+          else if(Mt2>=180.) mSigPred.at(100)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==0){
+  
+          if(Mt2>=160. && Mt2 < 185.) mSigPred.at(101)+=weight;
+          else if(Mt2>=185. && Mt2 < 220.) mSigPred.at(102)+=weight;
+          else if(Mt2>=220. && Mt2 < 270.) mSigPred.at(103)+=weight;
+          else if(Mt2>=270. && Mt2 < 350.) mSigPred.at(104)+=weight;
+          else if(Mt2>=350. && Mt2 < 450.) mSigPred.at(105)+=weight;
+          else if(Mt2>=450. && Mt2 < 650.) mSigPred.at(106)+=weight;
+          else if(Mt2>=650.) mSigPred.at(107)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==1){
+  
+          if(Mt2>=150. && Mt2 < 180.) mSigPred.at(108)+=weight;
+          else if(Mt2>=180. && Mt2 < 230.) mSigPred.at(109)+=weight;
+          else if(Mt2>=230. && Mt2 < 350.) mSigPred.at(110)+=weight;
+          else if(Mt2>=350.) mSigPred.at(111)+=weight;
+  
+        }else if(nJets>=3 && nJets<=5 && nBTags==2){
+  
+          if(Mt2>=130. && Mt2 < 200.) mSigPred.at(112)+=weight;
+          else if(Mt2>=200.) mSigPred.at(113)+=weight;
+  
+        }else if(nJets>=6 && nBTags==0){
+  
+          if(Mt2>=160. && Mt2 < 200.) mSigPred.at(114)+=weight;
+          else if(Mt2>=200. && Mt2 < 300.) mSigPred.at(115)+=weight;
+          else if(Mt2>=300.) mSigPred.at(116)+=weight;
+  
+        }else if(nJets>=6 && nBTags==1){
+  
+          if(Mt2>=150. && Mt2 < 200.) mSigPred.at(117)+=weight;
+          else if(Mt2>=200. && Mt2 < 300.) mSigPred.at(118)+=weight;
+          else if(Mt2>=300.) mSigPred.at(119)+=weight;
+  
+        }else if(nJets>=6 && nBTags==2){
+  
+          if(Mt2>=130. && Mt2 < 200.) mSigPred.at(120)+=weight;
+          else if(Mt2>=200.) mSigPred.at(121)+=weight;
+  
+        }else if(nJets>=3 && nBTags>=3){
+  
+          if(Mt2>=125.) mSigPred.at(122)+=weight;
+  
+        }
+  
+      }
+
+
+
+//
+//  TESTING figure 12 c
+//
+// 
+  }else if (stopSignalRegions){
+    
     if(ht>450. && ht<750. && met>=200.){
 
-      if(nJets==2 && nBTags==0){
+      if(nJets>=3 && nJets<=5 && nBTags==1){
 
-        if(Mt2>=200. && Mt2 < 240.) mSigPred.at(0)+=weight;
-        else if(Mt2>=240. && Mt2 < 290.) mSigPred.at(1)+=weight;
-        else if(Mt2>=290. && Mt2 < 350.) mSigPred.at(2)+=weight;
-        else if(Mt2>=350. && Mt2 < 420.) mSigPred.at(3)+=weight;
-        else if(Mt2>=420. && Mt2 < 490.) mSigPred.at(4)+=weight;
-        else if(Mt2>=490. && Mt2 < 570.) mSigPred.at(5)+=weight;
-        else if(Mt2>=570. && Mt2 < 650.) mSigPred.at(6)+=weight;
-        else if(Mt2>=650.) mSigPred.at(7)+=weight;
-
-      }else if(nJets==2 && nBTags>=1){
-
-        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(8)+=weight;
-        else if(Mt2>=250. && Mt2 < 310.) mSigPred.at(9)+=weight;
-        else if(Mt2>=310. && Mt2 < 380.) mSigPred.at(10)+=weight;
-        else if(Mt2>=380. && Mt2 < 450.) mSigPred.at(11)+=weight;
-        else if(Mt2>=450. && Mt2 < 550.) mSigPred.at(12)+=weight;
-        else if(Mt2>=550.) mSigPred.at(13)+=weight;
-
-      }else if(nJets>=3 && nJets<=5 && nBTags==0){
-
-        if(Mt2>=200. && Mt2 < 240.) mSigPred.at(14)+=weight;
-        else if(Mt2>=240. && Mt2 < 290.) mSigPred.at(15)+=weight;
-        else if(Mt2>=290. && Mt2 < 350.) mSigPred.at(16)+=weight;
-        else if(Mt2>=350. && Mt2 < 420.) mSigPred.at(17)+=weight;
-        else if(Mt2>=420. && Mt2 < 490.) mSigPred.at(18)+=weight;
-        else if(Mt2>=490. && Mt2 < 570.) mSigPred.at(19)+=weight;
-        else if(Mt2>=570. && Mt2 < 650.) mSigPred.at(20)+=weight;
-        else if(Mt2>=650.) mSigPred.at(21)+=weight;
-
-      }else if(nJets>=3 && nJets<=5 && nBTags==1){
-
-        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(22)+=weight;
-        else if(Mt2>=250. && Mt2 < 310.) mSigPred.at(23)+=weight;
-        else if(Mt2>=310. && Mt2 < 380.) mSigPred.at(24)+=weight;
-        else if(Mt2>=380. && Mt2 < 460.) mSigPred.at(25)+=weight;
-        else if(Mt2>=460. && Mt2 < 550.) mSigPred.at(26)+=weight;
-        else if(Mt2>=550.) mSigPred.at(27)+=weight;
+        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(0)+=weight;
+        else if(Mt2>=250. && Mt2 < 310.) mSigPred.at(1)+=weight;
+        else if(Mt2>=310. && Mt2 < 380.) mSigPred.at(2)+=weight;
+        else if(Mt2>=380. && Mt2 < 460.) mSigPred.at(3)+=weight;
+        else if(Mt2>=460. && Mt2 < 550.) mSigPred.at(4)+=weight;
+        else if(Mt2>=550.) mSigPred.at(5)+=weight;
 
       }else if(nJets>=3 && nJets<=5 && nBTags==2){
 
-        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(28)+=weight;
-        else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(29)+=weight;
-        else if(Mt2>=325. && Mt2 < 425.) mSigPred.at(30)+=weight;
-        else if(Mt2>=425.) mSigPred.at(31)+=weight;
-
-      }else if(nJets>=6 && nBTags==0){
-
-        if(Mt2>=200. && Mt2 < 280.) mSigPred.at(32)+=weight;
-        else if(Mt2>=280. && Mt2 < 380.) mSigPred.at(33)+=weight;
-        else if(Mt2>=380.) mSigPred.at(34)+=weight;
+        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(6)+=weight;
+        else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(7)+=weight;
+        else if(Mt2>=325. && Mt2 < 425.) mSigPred.at(8)+=weight;
+        else if(Mt2>=425.) mSigPred.at(9)+=weight;
 
       }else if(nJets>=6 && nBTags==1){
 
-        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(35)+=weight;
-        else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(36)+=weight;
-        else if(Mt2>=325.) mSigPred.at(37)+=weight;
+        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(10)+=weight;
+        else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(11)+=weight;
+        else if(Mt2>=325.) mSigPred.at(12)+=weight;
 
       }else if(nJets>=6 && nBTags==2){
 
-        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(38)+=weight;
-        else if(Mt2>=250. && Mt2 < 300.) mSigPred.at(39)+=weight;
-        else if(Mt2>=300.) mSigPred.at(40)+=weight;
+        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(13)+=weight;
+        else if(Mt2>=250. && Mt2 < 300.) mSigPred.at(14)+=weight;
+        else if(Mt2>=300.) mSigPred.at(15)+=weight;
 
       }else if(nJets>=3 && nBTags>=3){
 
-        if(Mt2>=200. && Mt2 < 280.) mSigPred.at(41)+=weight;
-        else if(Mt2>=280.) mSigPred.at(42)+=weight;
+        if(Mt2>=200. && Mt2 < 280.) mSigPred.at(16)+=weight;
+        else if(Mt2>=280.) mSigPred.at(17)+=weight;
 
       }
 
     }else if(ht>=750. && ht<1200. && met>30){
 
-      if(nJets==2 && nBTags==0){
 
-        if(Mt2>=125. && Mt2 < 150.) mSigPred.at(43)+=weight;
-        else if(Mt2>=150. && Mt2 < 180.) mSigPred.at(44)+=weight;
-        else if(Mt2>=180. && Mt2 < 220.) mSigPred.at(45)+=weight;
-        else if(Mt2>=220. && Mt2 < 270.) mSigPred.at(46)+=weight;
-        else if(Mt2>=270. && Mt2 < 325.) mSigPred.at(47)+=weight;
-        else if(Mt2>=325. && Mt2 < 425.) mSigPred.at(48)+=weight;
-        else if(Mt2>=425. && Mt2 < 580.) mSigPred.at(49)+=weight;
-        else if(Mt2>=580. && Mt2 < 780.) mSigPred.at(50)+=weight;
-        else if(Mt2>=780.) mSigPred.at(51)+=weight;
+      if(nJets>=3 && nJets<=5 && nBTags==1){
 
-      }else if(nJets==2 && nBTags>=1){
-
-        if(Mt2>=100. && Mt2 < 135.) mSigPred.at(52)+=weight;
-        else if(Mt2>=135. && Mt2 < 170.) mSigPred.at(53)+=weight;
-        else if(Mt2>=170. && Mt2 < 260.) mSigPred.at(54)+=weight;
-        else if(Mt2>=260. && Mt2 < 450.) mSigPred.at(55)+=weight;
-        else if(Mt2>=450.) mSigPred.at(56)+=weight;
-
-      }else if(nJets>=3 && nJets<=5 && nBTags==0){
-
-        if(Mt2>=160. && Mt2 < 185.) mSigPred.at(57)+=weight;
-        else if(Mt2>=185. && Mt2 < 215.) mSigPred.at(58)+=weight;
-        else if(Mt2>=215. && Mt2 < 250.) mSigPred.at(59)+=weight;
-        else if(Mt2>=250. && Mt2 < 300.) mSigPred.at(60)+=weight;
-        else if(Mt2>=300. && Mt2 < 370.) mSigPred.at(61)+=weight;
-        else if(Mt2>=370. && Mt2 < 480.) mSigPred.at(62)+=weight;
-        else if(Mt2>=480. && Mt2 < 640.) mSigPred.at(63)+=weight;
-        else if(Mt2>=640. && Mt2 < 800.) mSigPred.at(64)+=weight;
-        else if(Mt2>=800.) mSigPred.at(65)+=weight;
-
-      }else if(nJets>=3 && nJets<=5 && nBTags==1){
-
-        if(Mt2>=150. && Mt2 < 175.) mSigPred.at(66)+=weight;
-        else if(Mt2>=175. && Mt2 < 210.) mSigPred.at(67)+=weight;
-        else if(Mt2>=210. && Mt2 < 270.) mSigPred.at(68)+=weight;
-        else if(Mt2>=270. && Mt2 < 380.) mSigPred.at(69)+=weight;
-        else if(Mt2>=380. && Mt2 < 600.) mSigPred.at(70)+=weight;
-        else if(Mt2>=600.) mSigPred.at(71)+=weight;
+        if(Mt2>=150. && Mt2 < 175.) mSigPred.at(18)+=weight;
+        else if(Mt2>=175. && Mt2 < 210.) mSigPred.at(19)+=weight;
+        else if(Mt2>=210. && Mt2 < 270.) mSigPred.at(20)+=weight;
+        else if(Mt2>=270. && Mt2 < 380.) mSigPred.at(21)+=weight;
+        else if(Mt2>=380. && Mt2 < 600.) mSigPred.at(22)+=weight;
+        else if(Mt2>=600.) mSigPred.at(23)+=weight;
 
       }else if(nJets>=3 && nJets<=5 && nBTags==2){
 
-        if(Mt2>=130. && Mt2 < 160.) mSigPred.at(72)+=weight;
-        else if(Mt2>=160. && Mt2 < 200.) mSigPred.at(73)+=weight;
-        else if(Mt2>=200. && Mt2 < 270.) mSigPred.at(74)+=weight;
-        else if(Mt2>=270. && Mt2 < 370.) mSigPred.at(75)+=weight;
-        else if(Mt2>=370.) mSigPred.at(76)+=weight;
-
-      }else if(nJets>=6 && nBTags==0){
-
-        if(Mt2>=160. && Mt2 < 200.) mSigPred.at(77)+=weight;
-        else if(Mt2>=200. && Mt2 < 250.) mSigPred.at(78)+=weight;
-        else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(79)+=weight;
-        else if(Mt2>=325. && Mt2 < 425.) mSigPred.at(80)+=weight;
-        else if(Mt2>=425.) mSigPred.at(81)+=weight;
+        if(Mt2>=130. && Mt2 < 160.) mSigPred.at(24)+=weight;
+        else if(Mt2>=160. && Mt2 < 200.) mSigPred.at(25)+=weight;
+        else if(Mt2>=200. && Mt2 < 270.) mSigPred.at(26)+=weight;
+        else if(Mt2>=270. && Mt2 < 370.) mSigPred.at(27)+=weight;
+        else if(Mt2>=370.) mSigPred.at(28)+=weight;
 
       }else if(nJets>=6 && nBTags==1){
 
-        if(Mt2>=150. && Mt2 < 190.) mSigPred.at(82)+=weight;
-        else if(Mt2>=190. && Mt2 < 250.) mSigPred.at(83)+=weight;
-        else if(Mt2>=250. && Mt2 < 350.) mSigPred.at(84)+=weight;
-        else if(Mt2>=350.) mSigPred.at(85)+=weight;
+        if(Mt2>=150. && Mt2 < 190.) mSigPred.at(29)+=weight;
+        else if(Mt2>=190. && Mt2 < 250.) mSigPred.at(30)+=weight;
+        else if(Mt2>=250. && Mt2 < 350.) mSigPred.at(31)+=weight;
+        else if(Mt2>=350.) mSigPred.at(32)+=weight;
 
       }else if(nJets>=6 && nBTags==2){
 
-        if(Mt2>=130. && Mt2 < 170.) mSigPred.at(86)+=weight;
-        else if(Mt2>=170. && Mt2 < 220.) mSigPred.at(87)+=weight;
-        else if(Mt2>=220. && Mt2 < 300.) mSigPred.at(88)+=weight;
-        else if(Mt2>=300.) mSigPred.at(89)+=weight;
+        if(Mt2>=130. && Mt2 < 170.) mSigPred.at(33)+=weight;
+        else if(Mt2>=170. && Mt2 < 220.) mSigPred.at(34)+=weight;
+        else if(Mt2>=220. && Mt2 < 300.) mSigPred.at(35)+=weight;
+        else if(Mt2>=300.) mSigPred.at(36)+=weight;
 
       }else if(nJets>=3 && nBTags>=3){
 
-        if(Mt2>=125. && Mt2 < 175.) mSigPred.at(90)+=weight;
-        else if(Mt2>=175. && Mt2 < 275.) mSigPred.at(91)+=weight;
-        else if(Mt2>=275.) mSigPred.at(92)+=weight;
+        if(Mt2>=125. && Mt2 < 175.) mSigPred.at(37)+=weight;
+        else if(Mt2>=175. && Mt2 < 275.) mSigPred.at(38)+=weight;
+        else if(Mt2>=275.) mSigPred.at(39)+=weight;
 
       }
 
     }else if(ht>=1200. && met>30){
 
-      if(nJets==2 && nBTags==0){
+      if(nJets>=3 && nJets<=5 && nBTags==1){
 
-        if(Mt2>=120. && Mt2 < 150.) mSigPred.at(93)+=weight;
-        else if(Mt2>=150. && Mt2 < 200.) mSigPred.at(94)+=weight;
-        else if(Mt2>=200. && Mt2 < 260.) mSigPred.at(95)+=weight;
-        else if(Mt2>=260. && Mt2 < 350.) mSigPred.at(96)+=weight;
-        else if(Mt2>=350. && Mt2 < 550.) mSigPred.at(97)+=weight;
-        else if(Mt2>=550.) mSigPred.at(98)+=weight;
-
-      }else if(nJets==2 && nBTags>=1){
-
-        if(Mt2>=100. && Mt2 < 180.) mSigPred.at(99)+=weight;
-        else if(Mt2>=180.) mSigPred.at(100)+=weight;
-
-      }else if(nJets>=3 && nJets<=5 && nBTags==0){
-
-        if(Mt2>=160. && Mt2 < 185.) mSigPred.at(101)+=weight;
-        else if(Mt2>=185. && Mt2 < 220.) mSigPred.at(102)+=weight;
-        else if(Mt2>=220. && Mt2 < 270.) mSigPred.at(103)+=weight;
-        else if(Mt2>=270. && Mt2 < 350.) mSigPred.at(104)+=weight;
-        else if(Mt2>=350. && Mt2 < 450.) mSigPred.at(105)+=weight;
-        else if(Mt2>=450. && Mt2 < 650.) mSigPred.at(106)+=weight;
-        else if(Mt2>=650.) mSigPred.at(107)+=weight;
-
-      }else if(nJets>=3 && nJets<=5 && nBTags==1){
-
-        if(Mt2>=150. && Mt2 < 180.) mSigPred.at(108)+=weight;
-        else if(Mt2>=180. && Mt2 < 230.) mSigPred.at(109)+=weight;
-        else if(Mt2>=230. && Mt2 < 350.) mSigPred.at(110)+=weight;
-        else if(Mt2>=350.) mSigPred.at(111)+=weight;
+        if(Mt2>=150. && Mt2 < 180.) mSigPred.at(40)+=weight;
+        else if(Mt2>=180. && Mt2 < 230.) mSigPred.at(41)+=weight;
+        else if(Mt2>=230. && Mt2 < 350.) mSigPred.at(42)+=weight;
+        else if(Mt2>=350.) mSigPred.at(43)+=weight;
 
       }else if(nJets>=3 && nJets<=5 && nBTags==2){
 
-        if(Mt2>=130. && Mt2 < 200.) mSigPred.at(112)+=weight;
-        else if(Mt2>=200.) mSigPred.at(113)+=weight;
-
-      }else if(nJets>=6 && nBTags==0){
-
-        if(Mt2>=160. && Mt2 < 200.) mSigPred.at(114)+=weight;
-        else if(Mt2>=200. && Mt2 < 300.) mSigPred.at(115)+=weight;
-        else if(Mt2>=300.) mSigPred.at(116)+=weight;
+        if(Mt2>=130. && Mt2 < 200.) mSigPred.at(44)+=weight;
+        else if(Mt2>=200.) mSigPred.at(45)+=weight;
 
       }else if(nJets>=6 && nBTags==1){
 
-        if(Mt2>=150. && Mt2 < 200.) mSigPred.at(117)+=weight;
-        else if(Mt2>=200. && Mt2 < 300.) mSigPred.at(118)+=weight;
-        else if(Mt2>=300.) mSigPred.at(119)+=weight;
+        if(Mt2>=150. && Mt2 < 200.) mSigPred.at(46)+=weight;
+        else if(Mt2>=200. && Mt2 < 300.) mSigPred.at(47)+=weight;
+        else if(Mt2>=300.) mSigPred.at(48)+=weight;
 
       }else if(nJets>=6 && nBTags==2){
 
-        if(Mt2>=130. && Mt2 < 200.) mSigPred.at(120)+=weight;
-        else if(Mt2>=200.) mSigPred.at(121)+=weight;
+        if(Mt2>=130. && Mt2 < 200.) mSigPred.at(49)+=weight;
+        else if(Mt2>=200.) mSigPred.at(50)+=weight;
 
       }else if(nJets>=3 && nBTags>=3){
 
-        if(Mt2>=125.) mSigPred.at(122)+=weight;
+        if(Mt2>=125.) mSigPred.at(51)+=weight;
 
       }
 
     }
+//
+//  TESTING figure 13 c
+//
+// 
+  }else if (gluinoSignalRegions){
+    if(ht>450. && ht<750. && met>=200.){
+
+      if(nJets>=6 && nBTags==1){
+
+        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(0)+=weight;
+        else if(Mt2>=250. && Mt2 < 325.) mSigPred.at(1)+=weight;
+        else if(Mt2>=325.) mSigPred.at(2)+=weight;
+
+      }else if(nJets>=6 && nBTags==2){
+
+        if(Mt2>=200. && Mt2 < 250.) mSigPred.at(3)+=weight;
+        else if(Mt2>=250. && Mt2 < 300.) mSigPred.at(4)+=weight;
+        else if(Mt2>=300.) mSigPred.at(5)+=weight;
+
+      }else if(nJets>=3 && nBTags>=3){
+
+        if(Mt2>=200. && Mt2 < 280.) mSigPred.at(6)+=weight;
+        else if(Mt2>=280.) mSigPred.at(7)+=weight;
+
+      }
+
+    }else if(ht>=750. && ht<1200. && met>30){
+
+      if(nJets>=6 && nBTags==1){
+
+        if(Mt2>=150. && Mt2 < 190.) mSigPred.at(8)+=weight;
+        else if(Mt2>=190. && Mt2 < 250.) mSigPred.at(9)+=weight;
+        else if(Mt2>=250. && Mt2 < 350.) mSigPred.at(10)+=weight;
+        else if(Mt2>=350.) mSigPred.at(11)+=weight;
+
+      }else if(nJets>=6 && nBTags==2){
+
+        if(Mt2>=130. && Mt2 < 170.) mSigPred.at(12)+=weight;
+        else if(Mt2>=170. && Mt2 < 220.) mSigPred.at(13)+=weight;
+        else if(Mt2>=220. && Mt2 < 300.) mSigPred.at(14)+=weight;
+        else if(Mt2>=300.) mSigPred.at(15)+=weight;
+
+      }else if(nJets>=3 && nBTags>=3){
+
+        if(Mt2>=125. && Mt2 < 175.) mSigPred.at(16)+=weight;
+        else if(Mt2>=175. && Mt2 < 275.) mSigPred.at(17)+=weight;
+        else if(Mt2>=275.) mSigPred.at(18)+=weight;
+
+      }
+
+    }else if(ht>=1200. && met>30){
 
 
+      if(nJets>=6 && nBTags==1){
+
+        if(Mt2>=150. && Mt2 < 200.) mSigPred.at(19)+=weight;
+        else if(Mt2>=200. && Mt2 < 300.) mSigPred.at(20)+=weight;
+        else if(Mt2>=300.) mSigPred.at(21)+=weight;
+
+      }else if(nJets>=6 && nBTags==2){
+
+        if(Mt2>=130. && Mt2 < 200.) mSigPred.at(22)+=weight;
+        else if(Mt2>=200.) mSigPred.at(23)+=weight;
+
+      }else if(nJets>=3 && nBTags>=3){
+
+        if(Mt2>=125.) mSigPred.at(24)+=weight;
+
+      }
+
+    }
+   }
   } 
   return;
 }
