@@ -56,6 +56,14 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b,bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
     mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',123,19.5,bg_zerolepmt2_8_20,
             bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'combined',calculateRno)
+#    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',52,19.5,bg_zerolepmt2_8_20_stop_test,
+#            bgunc_zerolepmt2_8_20_stop_test,data_zerolepmt2_8_20_stop_test,'combined',calculateRno)
+#    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',25,19.5,bg_zerolepmt2_8_20_gluino_test,
+#            bgunc_zerolepmt2_8_20_gluino_test,data_zerolepmt2_8_20_gluino_test,'combined',calculateRno)
+#    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',25,19.5,bg_zerolepmt2_8_20_gluino_test,
+#            bgunc_zerolepmt2_8_20_gluino_test,data_zerolepmt2_8_20_gluino_test,'individual',calculateRno)
+#    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',123,19.5,bg_zerolepmt2_8_20,
+#            bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'individual',calculateRno)
     lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b,
             bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
 #    data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
