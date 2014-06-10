@@ -3,18 +3,6 @@
 
 #include "analysis_zerolepmt2_8_20.hh"
 
-double lundDistance(jjet testJet, jjet refJet){
-  double Ei=refJet.E();
-  double Ek=testJet.E();
-  double pi=refJet.P();
-//  double eTot=testJet.E()+refJet.E();
-  //NOTE: cos(theta)=cos(-theta)
-  double dTheta = testJet.Theta()-refJet.Theta();
-//  return (refJet.E()-refJet.P()*TMath::Cos(dTheta) )*refJet.E()/(eTot*eTot);
-//  return (Ei-pi*TMath::Cos(dTheta))*Ei/((Ei+Ek)*(Ei+Ek));
-  double brackets = testJet*refJet/Ek;
-  return brackets*Ei/((Ei+Ek)*(Ei+Ek));
-}
 
 //constructor for object where you don't necessarily want to run a limit,
 //but rather just run the analysis, look at distributions, see what survives
