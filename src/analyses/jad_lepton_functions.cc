@@ -1,12 +1,25 @@
 #include "jad_lepton_functions.hh"
 #include "TMath.h"
     //Normal Jet Collection (eta and pt cuts)
-    std::vector <jlepton> goodleptons(const std::vector <jlepton> & lepton_collection,double ptcut, double etacut, const float & etaw1, const float & etaw2)
+    std::vector <jlepton> goodleptons(const std::vector <jlepton> & lepton_collection,
+            const double &ptcut, const double & etacut, const float & etaw1, const float & etaw2)
     {
 	std::vector<jlepton> mleptonvec;
 	for (int ii=0; ii<lepton_collection.size();ii++)
 	{
 	    if(!(lepton_collection[ii].IsolFlag()) || lepton_collection[ii].Pt() < ptcut || fabs(lepton_collection[ii].Eta()) > etacut || (fabs(lepton_collection[ii].Eta()) > etaw1 && fabs(lepton_collection[ii].Eta()) < etaw2)) continue;
+	    mleptonvec.push_back(lepton_collection[ii]);
+	}
+	return mleptonvec;
+    }
+
+    std::vector <jlepton> goodleptonsNoIso(const std::vector <jlepton> & lepton_collection,
+            const double &ptcut, const double & etacut, const float & etaw1, const float & etaw2)
+    {
+	std::vector<jlepton> mleptonvec;
+	for (int ii=0; ii<lepton_collection.size();ii++)
+	{
+	    if( lepton_collection[ii].Pt() < ptcut || fabs(lepton_collection[ii].Eta()) > etacut || (fabs(lepton_collection[ii].Eta()) > etaw1 && fabs(lepton_collection[ii].Eta()) < etaw2)) continue;
 	    mleptonvec.push_back(lepton_collection[ii]);
 	}
 	return mleptonvec;
