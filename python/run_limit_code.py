@@ -18,7 +18,8 @@ def filemap_from_dict(filemap_dict):
     return j.FileMap(internal_name, pairmap,1)
 
 def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
-        alphat12b=0,ss11b=0,alphat40b=0,ss40b=0,lp20b=0,ge3lp20b=0,mt220b=0):
+        alphat12b=0,ss11b=0,alphat40b=0,ss40b=0,lp20b=0,ge3lp20b=0,mt220b=0,
+        ss820b=0):
     print('XSEC: {0} barn'.format(filemap_dict['xsec']))
     #jaf needs the directory to end in '/'
     if not outdir[:-1] =='/':
@@ -66,6 +67,10 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #            bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'individual',calculateRno)
     lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b,
             bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
+#    ss8_20b = j.SS8high('SS_analysis20','CMS8',24,19.5,bg_ss8HighPt,
+#            bgunc_ss8HighPt,data_ss8HighPt,'combined',calculateRno)
+    ss8_20b = j.SS8high('SS_analysis20','CMS8',8,19.5,bg_ss8HighPtBtag2,
+            bgunc_ss8HighPtBtag2,data_ss8HighPtBtag2,'combined',calculateRno)
 #    data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
     ge3lp8_20b = j.Cms3Lepton20Fb('GE3LP_analysis20','CMS8',192,19.5,bg_cms3l8,
             bgunc_cms3l8,data_cms3l8,'combined',calculateRno)
@@ -87,7 +92,7 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    ss8LowPt = j.SS8low('SS8low_analysis20','CMS8', 24, 19.5, bg_ss8LowPt, bgunc_ss8LowPt, data_ss8LowPt, 'combined', calculateRno)
 #    zerolep8 = j.ZeroLep8('SSb8_analysis40','CMS8', 48, 19.4, bg_zerolep8, bgunc_zerolep8, data_zerolep8, 'combined', calculateRno)
     
-    mgr = j.AnalysisManager(outdir, geninfono) #bool for geninfo
+    mgr = j.AnalysisManager(outdir, geninfoyes) #bool for geninfo
     
     if com == 7:
 #        if ss5b:
@@ -111,6 +116,8 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #             mgr.add(ss8_40b)
         if lp20b:
             mgr.add(lp8_20b)
+        if ss820b:
+            mgr.add(ss8_20b)
         if ge3lp20b:
             mgr.add(ge3lp8_20b)
         if mt220b:
