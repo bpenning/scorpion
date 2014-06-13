@@ -18,6 +18,7 @@ analyses={
         'lp20b-only':['lp20b'],        
         'ge3lp20b-only':['ge3lp20b'],
         'mt220b-only':['mt220b'],
+        'ss820b-only':['ss820b'],
         }
 
 def parse_args():
