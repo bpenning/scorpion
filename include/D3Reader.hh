@@ -65,7 +65,7 @@ private:
   const TClonesArray * ETMIS;
 
   const TClonesArray * GENPARTICLE;
-  //const TClonesArray * GENEVENT;
+//  const TClonesArray * GENEVENT;
 };
 
 #endif // D3Reader_h
