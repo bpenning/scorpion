@@ -4,7 +4,10 @@
 #include "jad_jet_class.hh"
 #include <utility>
 
-std::vector <jlepton> goodleptons(const std::vector <jlepton> & lepton_collection,double ptcut, double etacut, const float & etaw1, const float & etaw2);
+std::vector <jlepton> goodleptons(const std::vector <jlepton> & lepton_collection,
+            const double &ptcut, const double & etacut, const float & etaw1, const float & etaw2);
+std::vector <jlepton> goodleptonsNoIso(const std::vector <jlepton> & lepton_collection,
+            const double &ptcut, const double & etacut, const float & etaw1, const float & etaw2);
 std::vector <jlepton> goodleptons(const std::vector <jlepton> & lepton_collection,double ptcut, double etacut);
 std::vector <jlepton> badleptons(std::vector <jlepton> & lepton_collection,double ptcut, double etacut);
 
