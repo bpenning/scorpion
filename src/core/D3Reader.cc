@@ -38,10 +38,10 @@ D3Reader::D3Reader(TTree *tree) :
     MUON   = this->UseBranch("Muon");
     ETMIS  = this->UseBranch("MissingET"); 
 //Add this info later as takes time
-/*
-    GENEVENT = this->UseBranch("Event");
+
+//    GENEVENT = this->UseBranch("Event");
     GENPARTICLE = this->UseBranch("Particle");
-*/
+
 }
 
 //------------------------------------------------------------------------------
