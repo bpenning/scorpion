@@ -55,22 +55,27 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    ss8_11b = j.SSb8('SSb8_analysis11','CMS8', 1, 10.5, bg_ssb8, bgunc_ssb8, data_ssb8, 'combined', calculateRno)
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b,bgunc_lp8_20b,data_lp8_20b,'combined',calculateRno)
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b,bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
-    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',123,19.5,bg_zerolepmt2_8_20,
-            bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'combined',calculateRno)
-#    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',52,19.5,bg_zerolepmt2_8_20_stop_test,
-#            bgunc_zerolepmt2_8_20_stop_test,data_zerolepmt2_8_20_stop_test,'combined',calculateRno)
+#    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',123,19.5,bg_zerolepmt2_8_20,
+#            bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'combined',calculateRno)
+    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',52,19.5,bg_zerolepmt2_8_20_stop_test,
+            bgunc_zerolepmt2_8_20_stop_test,data_zerolepmt2_8_20_stop_test,'combined',calculateRno)
 #    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',25,19.5,bg_zerolepmt2_8_20_gluino_test,
 #            bgunc_zerolepmt2_8_20_gluino_test,data_zerolepmt2_8_20_gluino_test,'combined',calculateRno)
 #    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',25,19.5,bg_zerolepmt2_8_20_gluino_test,
 #            bgunc_zerolepmt2_8_20_gluino_test,data_zerolepmt2_8_20_gluino_test,'individual',calculateRno)
 #    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',123,19.5,bg_zerolepmt2_8_20,
 #            bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'individual',calculateRno)
-    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b,
-            bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
-#    ss8_20b = j.SS8high('SS_analysis20','CMS8',24,19.5,bg_ss8HighPt,
-#            bgunc_ss8HighPt,data_ss8HighPt,'combined',calculateRno)
-    ss8_20b = j.SS8high('SS_analysis20','CMS8',8,19.5,bg_ss8HighPtBtag2,
-            bgunc_ss8HighPtBtag2,data_ss8HighPtBtag2,'combined',calculateRno)
+#    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b_all,
+#            bgunc_lp8_20b_all,data_lp8_20b_all,'individual',calculateRno)
+#    data_lp8_20b_t2tt=IntVector([int(round(x)) for x in bg_lp8_20b_t2tt])
+    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b_t2tt,
+            bgunc_lp8_20b_t2tt,data_lp8_20b_t2tt,'individual',calculateRno)
+#    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b_t2bbww,
+#            bgunc_lp8_20b_t2bbww,data_lp8_20b_t2bbww,'individual',calculateRno)
+    ss8_20b = j.SS8high('SS_analysis20','CMS8',24,19.5,bg_ss8HighPt,
+            bgunc_ss8HighPt,data_ss8HighPt,'combined',calculateRno)
+#    ss8_20b = j.SS8high('SS_analysis20','CMS8',8,19.5,bg_ss8HighPtBtag2,
+#            bgunc_ss8HighPtBtag2,data_ss8HighPtBtag2,'combined',calculateRno)
 #    data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
     ge3lp8_20b = j.Cms3Lepton20Fb('GE3LP_analysis20','CMS8',192,19.5,bg_cms3l8,
             bgunc_cms3l8,data_cms3l8,'combined',calculateRno)
@@ -92,7 +97,7 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    ss8LowPt = j.SS8low('SS8low_analysis20','CMS8', 24, 19.5, bg_ss8LowPt, bgunc_ss8LowPt, data_ss8LowPt, 'combined', calculateRno)
 #    zerolep8 = j.ZeroLep8('SSb8_analysis40','CMS8', 48, 19.4, bg_zerolep8, bgunc_zerolep8, data_zerolep8, 'combined', calculateRno)
     
-    mgr = j.AnalysisManager(outdir, geninfoyes) #bool for geninfo
+    mgr = j.AnalysisManager(outdir, geninfono) #bool for geninfo
     
     if com == 7:
 #        if ss5b:
