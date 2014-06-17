@@ -34,14 +34,22 @@ SS8high::~SS8high() {}
 void SS8high::initHistos() {
   andir->cd();
   ptleadinglep = new TH1D("ptleadinglep",";leading p_{T} [GeV];",100, -5.0, 995.0);
-  ptchargeonevschargetwo = new TH2D("ptchargeonevschargetwo",";charge leading lep;charge sub-leading lep",2, -0.5, 1.5, 2, -0.5, 1.5);
+  ptchargeonevschargetwo = new TH2D("ptchargeonevschargetwo",";charge leading lep;charge sub-leading lep",3, -1.5, 1.5, 3, -1.5, 1.5);
   njethist = new TH1D("njethist",";N_{Jets};",20, -0.5, 19.5);
   hthist = new TH1D("hthist",";H_{T} [GeV];",250, -5.0, 2495.0);
   methist = new TH1D("methist",";E_{T}^{miss} [GeV];", 100, -5.0, 995.0);
   leadingjetpt = new TH1D("leadingjetpt",";leading-jet p_{T} [GeV];",100, -5.0, 995.0);
+  leadingbjetpt = new TH1D("leadingbjetpt",";leading-bjet p_{T} [GeV];",100, -5.0, 995.0);
   numbjets = new TH1D("numbjets",";#b-tags;", 10, -0.5, 9.5);
   sfinvmass = new TH1D("sfinvmass",";M_{SF} [GeV];", 1000, -0.5, 999.5);
   drjetcombo = new TH1D("drjetcombo",";#DeltaR;",500, -0.005, 4.995);
+  double leptonEfficiencyBinEdges[]={10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0, 65.0, 80.0, 100.0};
+  genelectronshist = new TH1D("genelectronshist",";gen electron $p_T$ (GeV);Efficiency",9,leptonEfficiencyBinEdges);
+  recelectronshist = new TH1D("recelectronshist",";gen electron $p_T$ (GeV);Efficiency",9,leptonEfficiencyBinEdges);
+  genmuonshist = new TH1D("genmuonshist",";gen muon $p_T$ (GeV);Efficiency",9,leptonEfficiencyBinEdges);
+  recmuonshist = new TH1D("recmuonshist",";gen muon $p_T$ (GeV);Efficiency",9,leptonEfficiencyBinEdges);
+  genbjetshist = new TH1D("genbjetshist",";gen bjet $p_T$ (GeV);Efficiency",56,40.0,600.0);
+  recbjetshist = new TH1D("recbjetshist",";gen bjet $p_T$ (GeV);Efficiency",56,40.0,600.0);
 }
 
 void SS8high::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
@@ -56,6 +64,60 @@ void SS8high::Run(const Reader * treereader, const Reader * gentreereader, const
   
   std::vector<jlepton> leptons = leptonSkim(elecs, muons, 5.0, 2.4, 5.0, 2.4, 1.4442, 1.566);
   std::vector<jjet> goodjets = goodjetsSkim(treereader->GetJet(), 40.0, 2.4);
+  std::vector<jjet> goodbjets = goodbjetsSkim(treereader->GetJet(), 40.0, 2.4);
+
+  //Cross check for b-tag efficiency and muon/electron selection efficiencies
+  std::vector<jlepton> recElectrons = goodleptons(elecs,10.0, 2.4, 1.4442, 1.566);
+  std::vector<jparticle> genElectrons = getGenParticles(
+          gentreereader->GetGenParticle(), 11, 3, 10.0, 2.4);
+  std::vector<jlepton> recMuons = goodleptons(muons,10.0, 2.4);
+  std::vector<jparticle> genMuons = getGenParticles(
+          gentreereader->GetGenParticle(), 13, 3, 10.0, 2.4);
+  std::vector<jjet> recBjets = goodbjetsSkim(treereader->GetJet(), 40.0, 2.4);
+  std::vector<jparticle> genBjets = getGenParticles(
+          gentreereader->GetGenParticle(), 5, 3, 40.0, 2.4);
+
+  std::vector<jparticle>::const_iterator genElectron;
+  std::vector<jlepton>::const_iterator recElectron;
+  for (genElectron=genElectrons.begin();genElectron!=genElectrons.end();genElectron++){
+    double minDeltaR=1e9;
+    for (recElectron=recElectrons.begin();recElectron!=recElectrons.end();recElectron++){
+      double deltaR=recElectron->DeltaR(*genElectron);
+      if (deltaR<minDeltaR)
+        minDeltaR=deltaR;
+    }
+    genelectronshist->Fill(genElectron->Pt());
+    if (minDeltaR<0.5)
+      recelectronshist->Fill(genElectron->Pt());
+  }
+
+  std::vector<jparticle>::const_iterator genMuon;
+  std::vector<jlepton>::const_iterator recMuon;
+  for (genMuon=genMuons.begin();genMuon!=genMuons.end();genMuon++){
+    double minDeltaR=1e9;
+    for (recMuon=recMuons.begin();recMuon!=recMuons.end();recMuon++){
+      double deltaR=recMuon->DeltaR(*genMuon);
+      if (deltaR<minDeltaR)
+        minDeltaR=deltaR;
+    }
+    genmuonshist->Fill(genMuon->Pt());
+    if (minDeltaR<0.5)
+      recmuonshist->Fill(genMuon->Pt());
+  }
+
+  std::vector<jparticle>::const_iterator genBjet;
+  std::vector<jjet>::const_iterator recBjet;
+  for (genBjet=genBjets.begin();genBjet!=genBjets.end();genBjet++){
+    double minDeltaR=1e9;
+    for (recBjet=recBjets.begin();recBjet!=recBjets.end();recBjet++){
+      double deltaR=recBjet->DeltaR(*genBjet);
+      if (deltaR<minDeltaR)
+        minDeltaR=deltaR;
+    }
+    genbjetshist->Fill(genBjet->Pt());
+    if (minDeltaR<0.5)
+      recbjetshist->Fill(genBjet->Pt());
+  }
 
   //plot dr of each jet with every other jet
   for(unsigned int i=0; i<goodjets.size(); i++) {
@@ -116,182 +178,241 @@ void SS8high::Run(const Reader * treereader, const Reader * gentreereader, const
               methist->Fill(MET, weight);
               unsigned int numbtags = getnbtags(goodjets); 
               numbjets->Fill(numbtags, weight);
+              if (numbtags>=1)
+                leadingbjetpt->Fill(goodbjets[0].Pt(), weight);
 
-              // Add events to signal regions
+              //the simplified use a selection of the signal models
+              enum SignalRegionsSelection {SRall,SRbTag2,SRbTag12};
+              SignalRegionsSelection signalRegions=SRall;
+              if (signalRegions==SRall){
 
-              //B tag 0 signal regions
-              if(numbtags == 0 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT >= 200.0 && HT  <= 400.0) {
-                mSigPred.at(0)+=weight;
-              }
-              else if(numbtags == 0 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  > 400.0) {
-                mSigPred.at(1)+=weight;
-              }
-              else if(numbtags == 0 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=4  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(2)+=weight;
-              }
-              else if(numbtags == 0 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=4  &&
-                  HT  > 400.0) {
-                mSigPred.at(3)+=weight;
-              }
-              else if(numbtags == 0 &&  
-                  MET > 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(4)+=weight;
-              }
-              else if(numbtags == 0 &&  
-                  MET > 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  > 400.0) {
-                mSigPred.at(5)+=weight;
-              }
-              else if(numbtags == 0 &&  
-                  MET > 120.0 && 
-                  numjets >=4  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(6)+=weight;
-              }
-              else if(numbtags == 0 &&  
-                  MET > 120.0 && 
-                  numjets >=4  &&
-                  HT  > 400.0) {
-                mSigPred.at(7)+=weight;
-              }
-              //Btag 1 signal regions
-              else if(numbtags == 1 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT >= 200.0 && HT  <= 400.0) {
-                mSigPred.at(8)+=weight;
-              }
-              else if(numbtags == 1 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  > 400.0) {
-                mSigPred.at(9)+=weight;
-              }
-              else if(numbtags == 1 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=4  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(10)+=weight;
-              }
-              else if(numbtags == 1 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=4  &&
-                  HT  > 400.0) {
-                mSigPred.at(11)+=weight;
-              }
-              else if(numbtags == 1 &&  
-                  MET > 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(12)+=weight;
-              }
-              else if(numbtags == 1 &&  
-                  MET > 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  > 400.0) {
-                mSigPred.at(13)+=weight;
-              }
-              else if(numbtags == 1 &&  
-                  MET > 120.0 && 
-                  numjets >=4  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(14)+=weight;
-              }
-              else if(numbtags == 1 &&  
-                  MET > 120.0 && 
-                  numjets >=4  &&
-                  HT  > 400.0) {
-                mSigPred.at(15)+=weight;
-              }
-              //B tag >= 2 signal regions
-              else if(numbtags >= 2 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT >= 200.0 && HT  <= 400.0) {
-                mSigPred.at(16)+=weight;
-              }
-              else if(numbtags >= 2 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  > 400.0) {
-                mSigPred.at(17)+=weight;
-              }
-              else if(numbtags >= 2 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=4  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(18)+=weight;
-              }
-              else if(numbtags >= 2 &&  
-                  MET >= 50.0 && MET <= 120.0 && 
-                  numjets >=4  &&
-                  HT  > 400.0) {
-                mSigPred.at(19)+=weight;
-              }
-              else if(numbtags >= 2 &&  
-                  MET > 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(20)+=weight;
-              }
-              else if(numbtags >= 2 &&  
-                  MET > 120.0 && 
-                  numjets >=2 && numjets <=3  &&
-                  HT  > 400.0) {
-                mSigPred.at(21)+=weight;
-              }
-              else if(numbtags >= 2 &&  
-                  MET > 120.0 && 
-                  numjets >=4  &&
-                  HT  >= 200.0 && HT <=400.0) {
-                mSigPred.at(22)+=weight;
-              }
-              else if(numbtags >= 2 &&  
-                  MET > 120.0 && 
-                  numjets >=4  &&
-                  HT  > 400.0) {
-                mSigPred.at(23)+=weight;
-              }
+                // Add events to signal regions
 
-              // 	      //use this snippet to perform studies that optimise for a given bin
-              // 	      if(MET > 0.0 && HT > 80.0 && numbtags >= 2) {
-              // 		mSigPred.at(0)+=weight;
-              // 	      }
-              // 	      if(MET > 30.0 && HT > 80.0 && numbtags >= 2) {
-              // 		mSigPred.at(1)+=weight;
-              // 	      }
-              // 	      if(MET > 120.0 && HT > 200.0 && numbtags >= 2 && numjets >= 4) {
-              // 		mSigPred.at(2)+=weight;
-              // 	      }
-              // 	      if(MET > 50.0 && HT > 200.0 && numbtags >= 2 && numjets >= 4) {
-              // 		mSigPred.at(3)+=weight;
-              // 	      }
-              // 	      if(MET > 50.0 && HT > 320.0 && numbtags >= 2 && numjets >= 4) {
-              // 		mSigPred.at(4)+=weight;		
-              // 	      }
-              // 	      if(MET > 120.0 && HT > 320.0 && numbtags >= 2 && numjets >= 4) {
-              // 		mSigPred.at(5)+=weight;
-              // 	      }
-              // 	      if(MET > 50.0 && HT > 200.0 && numbtags >= 3 && numjets >= 3) {
-              // 		mSigPred.at(6)+=weight;
-              // 	      }
-              // 	      if(MET > 0.0 && HT > 320.0 && numbtags >=2 && numjets >= 4) {
-              // 		mSigPred.at(7)+=weight;
-              // 	      }
+                //B tag 0 signal regions
+                if(numbtags == 0 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT >= 200.0 && HT  <= 400.0) {
+                  mSigPred.at(0)+=weight;
+                }
+                else if(numbtags == 0 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  > 400.0) {
+                  mSigPred.at(1)+=weight;
+                }
+                else if(numbtags == 0 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=4  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(2)+=weight;
+                }
+                else if(numbtags == 0 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=4  &&
+                    HT  > 400.0) {
+                  mSigPred.at(3)+=weight;
+                }
+                else if(numbtags == 0 &&  
+                    MET > 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(4)+=weight;
+                }
+                else if(numbtags == 0 &&  
+                    MET > 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  > 400.0) {
+                  mSigPred.at(5)+=weight;
+                }
+                else if(numbtags == 0 &&  
+                    MET > 120.0 && 
+                    numjets >=4  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(6)+=weight;
+                }
+                else if(numbtags == 0 &&  
+                    MET > 120.0 && 
+                    numjets >=4  &&
+                    HT  > 400.0) {
+                  mSigPred.at(7)+=weight;
+                }
+                //Btag 1 signal regions
+                else if(numbtags == 1 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT >= 200.0 && HT  <= 400.0) {
+                  mSigPred.at(8)+=weight;
+                }
+                else if(numbtags == 1 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  > 400.0) {
+                  mSigPred.at(9)+=weight;
+                }
+                else if(numbtags == 1 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=4  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(10)+=weight;
+                }
+                else if(numbtags == 1 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=4  &&
+                    HT  > 400.0) {
+                  mSigPred.at(11)+=weight;
+                }
+                else if(numbtags == 1 &&  
+                    MET > 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(12)+=weight;
+                }
+                else if(numbtags == 1 &&  
+                    MET > 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  > 400.0) {
+                  mSigPred.at(13)+=weight;
+                }
+                else if(numbtags == 1 &&  
+                    MET > 120.0 && 
+                    numjets >=4  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(14)+=weight;
+                }
+                else if(numbtags == 1 &&  
+                    MET > 120.0 && 
+                    numjets >=4  &&
+                    HT  > 400.0) {
+                  mSigPred.at(15)+=weight;
+                }
+                //B tag >= 2 signal regions
+                else if(numbtags >= 2 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT >= 200.0 && HT  <= 400.0) {
+                  mSigPred.at(16)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  > 400.0) {
+                  mSigPred.at(17)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=4  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(18)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=4  &&
+                    HT  > 400.0) {
+                  mSigPred.at(19)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET > 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(20)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET > 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  > 400.0) {
+                  mSigPred.at(21)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET > 120.0 && 
+                    numjets >=4  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(22)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET > 120.0 && 
+                    numjets >=4  &&
+                    HT  > 400.0) {
+                  mSigPred.at(23)+=weight;
+                }
+
+                // 	      //use this snippet to perform studies that optimise for a given bin
+                // 	      if(MET > 0.0 && HT > 80.0 && numbtags >= 2) {
+                // 		mSigPred.at(0)+=weight;
+                // 	      }
+                // 	      if(MET > 30.0 && HT > 80.0 && numbtags >= 2) {
+                // 		mSigPred.at(1)+=weight;
+                // 	      }
+                // 	      if(MET > 120.0 && HT > 200.0 && numbtags >= 2 && numjets >= 4) {
+                // 		mSigPred.at(2)+=weight;
+                // 	      }
+                // 	      if(MET > 50.0 && HT > 200.0 && numbtags >= 2 && numjets >= 4) {
+                // 		mSigPred.at(3)+=weight;
+                // 	      }
+                // 	      if(MET > 50.0 && HT > 320.0 && numbtags >= 2 && numjets >= 4) {
+                // 		mSigPred.at(4)+=weight;		
+                // 	      }
+                // 	      if(MET > 120.0 && HT > 320.0 && numbtags >= 2 && numjets >= 4) {
+                // 		mSigPred.at(5)+=weight;
+                // 	      }
+                // 	      if(MET > 50.0 && HT > 200.0 && numbtags >= 3 && numjets >= 3) {
+                // 		mSigPred.at(6)+=weight;
+                // 	      }
+                // 	      if(MET > 0.0 && HT > 320.0 && numbtags >=2 && numjets >= 4) {
+                // 		mSigPred.at(7)+=weight;
+                // 	      }
+              }
+              else if(signalRegions==SRbTag2){
+                //B tag >= 2 signal regions
+                if(numbtags >= 2 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT >= 200.0 && HT  <= 400.0) {
+                  mSigPred.at(0)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  > 400.0) {
+                  mSigPred.at(1)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=4  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(2)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET >= 50.0 && MET <= 120.0 && 
+                    numjets >=4  &&
+                    HT  > 400.0) {
+                  mSigPred.at(3)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET > 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(4)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET > 120.0 && 
+                    numjets >=2 && numjets <=3  &&
+                    HT  > 400.0) {
+                  mSigPred.at(5)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET > 120.0 && 
+                    numjets >=4  &&
+                    HT  >= 200.0 && HT <=400.0) {
+                  mSigPred.at(6)+=weight;
+                }
+                else if(numbtags >= 2 &&  
+                    MET > 120.0 && 
+                    numjets >=4  &&
+                    HT  > 400.0) {
+                  mSigPred.at(7)+=weight;
+                }
+              }
             }
           }
         }
