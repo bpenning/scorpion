@@ -173,26 +173,55 @@ void CmsSingleLepton20Fb::Run(const Reader * treereader, const Reader * gentreer
     lepton_pt_hist->Fill(lepton_pt,10*weight);
     //fill other histograms
     lepton_flavour->Fill((lepton.Flavour()=="muon")+0.5);
-    // stop->top neu; low DeltaM
-//    if (met>150 && min_dphi>0.8 && chi2<5 ) mSigPred.at(0)+=weight;
-//    if (met>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(1)+=weight;
-//    if (met>250 && min_dphi>0.8 && chi2<5 ) mSigPred.at(2)+=weight;
-//    if (met>300 && min_dphi>0.8 && chi2<5 ) mSigPred.at(3)+=weight;
-//    // stop->top neu; high DeltaM
-//    if (met>150 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(4)+=weight;
-//    if (met>200 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(5)+=weight;
-//    if (met>250 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(6)+=weight;
-//    if (met>300 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(7)+=weight;
-    // stop->bot char; low DeltaM
-    if (met>100 && min_dphi>0.8 ) mSigPred.at(0)+=weight;
-    if (met>150 && min_dphi>0.8 ) mSigPred.at(1)+=weight;
-    if (met>200 && min_dphi>0.8 ) mSigPred.at(2)+=weight;
-    if (met>250 && min_dphi>0.8 ) mSigPred.at(3)+=weight;
-    // stop->bot char; high DeltaM
-    if (met>100 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(4)+=weight;
-    if (met>150 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(5)+=weight;
-    if (met>200 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(6)+=weight;
-    if (met>250 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(7)+=weight;
+    //choose which signal regions to use
+    enum SignalRegionsSelection {SRall,SRT2tt,SRT2bbww};
+    SignalRegionsSelection signalRegions=SRT2tt;
+    if (signalRegions==SRall){
+      // stop->top neu; low DeltaM
+      if (met>150 && min_dphi>0.8 && chi2<5 ) mSigPred.at(0)+=weight;
+      if (met>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(1)+=weight;
+      if (met>250 && min_dphi>0.8 && chi2<5 ) mSigPred.at(2)+=weight;
+      if (met>300 && min_dphi>0.8 && chi2<5 ) mSigPred.at(3)+=weight;
+      // stop->top neu; high DeltaM
+      if (met>150 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(4)+=weight;
+      if (met>200 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(5)+=weight;
+      if (met>250 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(6)+=weight;
+      if (met>300 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(7)+=weight;
+      // stop->bot char; low DeltaM
+      if (met>100 && min_dphi>0.8 ) mSigPred.at(8)+=weight;
+      if (met>150 && min_dphi>0.8 ) mSigPred.at(9)+=weight;
+      if (met>200 && min_dphi>0.8 ) mSigPred.at(10)+=weight;
+      if (met>250 && min_dphi>0.8 ) mSigPred.at(11)+=weight;
+      // stop->bot char; high DeltaM
+      if (met>100 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(12)+=weight;
+      if (met>150 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(13)+=weight;
+      if (met>200 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(14)+=weight;
+      if (met>250 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(15)+=weight;
+    }
+    else if (signalRegions=SRT2tt){
+      // stop->top neu; low DeltaM
+      if (met>150 && min_dphi>0.8 && chi2<5 ) mSigPred.at(0)+=weight;
+      if (met>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(1)+=weight;
+      if (met>250 && min_dphi>0.8 && chi2<5 ) mSigPred.at(2)+=weight;
+      if (met>300 && min_dphi>0.8 && chi2<5 ) mSigPred.at(3)+=weight;
+      // stop->top neu; high DeltaM
+      if (met>150 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(4)+=weight;
+      if (met>200 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(5)+=weight;
+      if (met>250 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(6)+=weight;
+      if (met>300 && mt2w>200 && min_dphi>0.8 && chi2<5 ) mSigPred.at(7)+=weight;
+    }
+    else if (signalRegions=SRT2bbww){
+      // stop->bot char; low DeltaM
+      if (met>100 && min_dphi>0.8 ) mSigPred.at(0)+=weight;
+      if (met>150 && min_dphi>0.8 ) mSigPred.at(1)+=weight;
+      if (met>200 && min_dphi>0.8 ) mSigPred.at(2)+=weight;
+      if (met>250 && min_dphi>0.8 ) mSigPred.at(3)+=weight;
+      // stop->bot char; high DeltaM
+      if (met>100 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(4)+=weight;
+      if (met>150 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(5)+=weight;
+      if (met>200 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(6)+=weight;
+      if (met>250 && mt2w>200 && min_dphi>0.8 && leading_bjet_pt>100 ) mSigPred.at(7)+=weight;
+    }
   }
   return;
 }
