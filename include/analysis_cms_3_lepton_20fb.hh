@@ -52,12 +52,9 @@ public:
   void initHistos();
 
 private:
-    //(p3 CMS-SUS-13-003)"Events with an OSSF pair outside the Z boson mass region (75<m_OSSF<115), but that satisfy 
-    //75<m_(OSSF+lepton)<115 are liekly te arise from final-state radiation from Z-boson decay producs,
-    //followed by conversion of the photon to a charged lepton pair. Events that meet this condition are
-    //rejected if they also exhibit kinematic characteristics consistent with background from events with a Z
-    //boson and jets" 
-    bool reject_ossf(const std::vector<jlepton> & leptons,double mlll_min, double mlll_max);
+  //  bool reject_ossf(const std::vector<jlepton> & leptons,double mlll_min, double mlll_max);
+    bool reject_ossf(const std::vector<std::pair<jlepton,jlepton> >& ossf_pairs,
+           std::vector<jlepton> leptons);
     //CMS-SUS-13-002 Table 2: '"On-Z" refers to events with at least one e+e- or mu+mu- (OSSF) pair with dilepton mass between
     //75 and 115 GeV, while "Off-Z" refers to events with one or two OSSF pairs, none of which fall in thes mass range'
     //Table 3: '"On-Z" refers to events with an e+e- or mu+mu- (OSSF) pair with dilepton mass between 75 and 105 GeV, while
