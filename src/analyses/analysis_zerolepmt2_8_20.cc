@@ -43,6 +43,7 @@ ZeroLepMt2::ZeroLepMt2(const std::string & name,
     ht40hist = new TH1D("ht40hist", ";H_{T} [GeV];Entries",250,-5.,2495.);
     ht50hist = new TH1D("ht50hist", ";H_{T} [GeV];Entries",250,-5.,2495.);
     mt2hist = new TH1D("mt2hist", ";M_{T2} [GeV];Entries",51, 0.0, 750.0);
+    mt2histlarge = new TH1D("mt2histlarge", ";M_{T2} [GeV];Entries",50, 0.0, 2000.0);
 //    mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
     methist = new TH1D("methist", ";CALO Missing E_{T} [GeV];Entries",200,-5.,1995.);
     njets20hist = new TH1D("njets20", ";N_{jets};Entries",10,-0.5,9.5);
@@ -208,6 +209,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 
     double Mt2 = mt2_event.get_mt2();       
     mt2hist->Fill(Mt2,weight);
+    mt2histlarge->Fill(Mt2,weight);
 
     //Low Ht region first
     if (450 < ht && ht < 750 && met>=200.0)
@@ -217,11 +219,13 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
     if (1200 < ht )
         high_ht_met_vs_mt2->Fill(met, Mt2, weight);
 
-    bool nominalSignalRegions=true;
-    bool stopSignalRegions=false;
-    bool gluinoSignalRegions=false;
+//    bool nominalSignalRegions=true;
+//    bool stopSignalRegions=false;
+//    bool gluinoSignalRegions=false;
+    enum SignalRegionsSelection {SRall,SRT2tt,SRT1tttt};
+    SignalRegionsSelection signalRegions=SRT2tt;
 
-    if (nominalSignalRegions){
+    if (signalRegions==SRall){
       if(ht>450. && ht<750. && met>=200.){
   
         if(nJets==2 && nBTags==0){
@@ -446,7 +450,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 //  TESTING figure 12 c
 //
 // 
-  }else if (stopSignalRegions){
+  }else if (signalRegions==SRT2tt){
     
     if(ht>450. && ht<750. && met>=200.){
 
@@ -563,7 +567,7 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
 //  TESTING figure 13 c
 //
 // 
-  }else if (gluinoSignalRegions){
+  }else if (signalRegions==SRT1tttt){
     if(ht>450. && ht<750. && met>=200.){
 
       if(nJets>=6 && nBTags==1){
