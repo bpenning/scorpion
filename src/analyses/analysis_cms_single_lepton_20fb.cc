@@ -106,7 +106,7 @@ void CmsSingleLepton20Fb::Run(const Reader * treereader, const Reader * gentreer
 
   mCounter+=weight; //keep a tally of all the files/events we are running over
 
-  //CMS-SUS-13-011 p.3: "Events are required to have an electron (muon) with pt>10 (25) GeV. Electrons are required to lie in the barrel region of the ECAL
+  //CMS-SUS-13-011 p.3: "Events are required to have an electron (muon) with pt>30 (25) GeV. Electrons are required to lie in the barrel region of the ECAL
   //(|eta|<1.4442) while muons are considered up to |eta|<2.1."
   std::vector<jlepton> leptons=leptonSkim(treereader->GetElec(),treereader->GetMuon(), 30, 1.4442,25.0,2.1);
   std::vector<jlepton> allleptons=leptonSkim(treereader->GetElec(),treereader->GetMuon(), 5.0, 1.4442,5.0,2.1);
