@@ -48,8 +48,10 @@
 	return mleptonvec;
     }
     //Generic leptons (with veto window for electrons)
-    std::vector<jlepton> leptonSkim(std::vector<jlepton> & elec,std::vector<jlepton> & muon, const float & pte, const float & etae, const float & ptm, const float & etam, const float & etaw1,const float & etaw2) {
-
+std::vector<jlepton> leptonSkim(const std::vector<jlepton> & elec, 
+        const std::vector<jlepton> & muon, const float & pte, 
+        const float & etae, const float & ptm, const float & etam, 
+        const float & etaw1,const float & etaw2) {
 	std::vector<jlepton> leptons;
 
 	for (int ii=0; ii<elec.size();ii++)
@@ -67,7 +69,7 @@
 
 	std::sort(leptons.begin(), leptons.end(), std::greater<jlepton>()); //operators defined in the jlepton class
 	return leptons;
-    }
+}
 
     std::vector<jlepton> leptonSkim(const std::vector<jlepton> & elec, const std::vector<jlepton> & muon, 
             const double & pte, const double & etae, const double & ptm, const double & etam) {
@@ -147,4 +149,28 @@ std::vector<std::pair<jlepton,jlepton> > get_ossf_pairs(std::vector<jlepton> lep
      return ossf_pairs;
 }
 
+std::vector<jlepton> leptonChargeSkim(const std::vector<jlepton> & elec,
+        const std::vector<jlepton> & muon, const float & pte, 
+        const float & etae, const float & ptm, const float & etam, 
+        const float & etaw1, const float & etaw2, int charge){
+    if (!(charge==1 || charge == -1))
+        std::cout << "ERROR: LEPTON IS ASKED FOR NON-UNIT CHARGE" << std::endl;
+	std::vector<jlepton> leptons;
+	for (int ii=0; ii<elec.size();ii++)	{
+	    if(elec[ii].Pt() < pte || !elec[ii].IsolFlag() || 
+                fabs(elec[ii].Eta()) > etae || (fabs(elec[ii].Eta()) > etaw1 &&
+                fabs(elec[ii].Eta()) < etaw2 ) || elec[ii].Charge() != charge) 
+            continue;
+	    leptons.push_back(elec[ii]);
+	}
 
+	for (int ii=0; ii<muon.size();ii++)	{
+	    if(muon[ii].Pt()<ptm || !muon[ii].IsolFlag() || fabs(muon[ii].Eta()) > etam
+                || muon[ii].Charge() != charge) 
+            continue;
+	    leptons.push_back(muon[ii]);
+	}
+
+	std::sort(leptons.begin(), leptons.end(), std::greater<jlepton>()); //operators defined in the jlepton class
+	return leptons;
+}
