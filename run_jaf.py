@@ -18,6 +18,7 @@ analyses={
         'all-7tev':['ss5b','os5b','lp5b','alphat7bb'],        
         'os5b-only':['os5b'],
         'lp20b-only':['lp20b'],        
+        'monojet20b-only':['monojet20b'],        
         'ge3lp20b-only':['ge3lp20b'],
         'mt220b-only':['mt220b'],
         'ss820b-only':['ss820b'],

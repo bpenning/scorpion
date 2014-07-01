@@ -19,7 +19,7 @@ def filemap_from_dict(filemap_dict):
 
 def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
         alphat12b=0,ss11b=0,alphat40b=0,ss40b=0,lp20b=0,ge3lp20b=0,mt220b=0,
-        ss820b=0):
+        ss820b=0,monojet20b=0):
     print('XSEC: {0} barn'.format(filemap_dict['xsec']))
     #jaf needs the directory to end in '/'
     if not outdir[:-1] =='/':
@@ -47,6 +47,7 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    atlas5 = j.ATLAS5('ATLAS5 analysis','ATLAS', 11, 4.710, bg_atlas5, bgunc_atlas5, data_atlas5, 'individual', calculateRno)
 #    lp5 = j.LP('LP_analysis5','CMS7', 18, 4.7, bg_lp5, bgunc_lp5, data_lp5, 'combined', calculateRno)
 #    monojet5 = j.MonoJet('MonoJet_analysis75','CMS', 4, 5.0, bg_monojet5, bgunc_monojet5, data_monojet5, 'individual', calculateRno)
+    monojet20 = j.MonoJet8('MonoJet20_analysis20','CMS8', 7, 19.5, bg_monojet20, bgunc_monojet20, data_monojet20, 'individual', calculateRno)
     os5 = j.CmsOs5Fb('OS_analysis5','CMS7', 6, 4.98, bg_os5, bgunc_os5, 
             data_os5, 'combined', calculateRno)
 #    ss5 = j.SS('SS_analysis5','CMS7', 3, 4.98, bg_ss5, bgunc_ss5, data_ss5, 'combined', calculateRno)
@@ -121,6 +122,8 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #             mgr.add(alphat8_40b)
 #        if ss40b:
 #             mgr.add(ss8_40b)
+        if monojet20b:
+            mgr.add(monojet20)
         if lp20b:
             mgr.add(lp8_20b)
         if ss820b:
