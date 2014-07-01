@@ -47,7 +47,8 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    atlas5 = j.ATLAS5('ATLAS5 analysis','ATLAS', 11, 4.710, bg_atlas5, bgunc_atlas5, data_atlas5, 'individual', calculateRno)
 #    lp5 = j.LP('LP_analysis5','CMS7', 18, 4.7, bg_lp5, bgunc_lp5, data_lp5, 'combined', calculateRno)
 #    monojet5 = j.MonoJet('MonoJet_analysis75','CMS', 4, 5.0, bg_monojet5, bgunc_monojet5, data_monojet5, 'individual', calculateRno)
-#    os5 = j.OS('OS_analysis5','CMS7', 6, 4.98, bg_os5, bgunc_os5, data_os5, 'combined', calculateRno)
+    os5 = j.CmsOs5Fb('OS_analysis5','CMS7', 6, 4.98, bg_os5, bgunc_os5, 
+            data_os5, 'combined', calculateRno)
 #    ss5 = j.SS('SS_analysis5','CMS7', 3, 4.98, bg_ss5, bgunc_ss5, data_ss5, 'combined', calculateRno)
     
     # 8 TeV analyses
@@ -68,10 +69,11 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b_all,
 #            bgunc_lp8_20b_all,data_lp8_20b_all,'individual',calculateRno)
 #    data_lp8_20b_t2tt=IntVector([int(round(x)) for x in bg_lp8_20b_t2tt])
-    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b_t2tt,
-            bgunc_lp8_20b_t2tt,data_lp8_20b_t2tt,'individual',calculateRno)
-#    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b_t2bbww,
-#            bgunc_lp8_20b_t2bbww,data_lp8_20b_t2bbww,'individual',calculateRno)
+#    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b_t2tt,
+#            bgunc_lp8_20b_t2tt,data_lp8_20b_t2tt,'individual',calculateRno)
+    data_lp8_20b_t2bbww=IntVector([int(round(x)) for x in bg_lp8_20b_t2bbww])
+    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b_t2bbww,
+            bgunc_lp8_20b_t2bbww,data_lp8_20b_t2bbww,'individual',calculateRno)
     ss8_20b = j.SS8high('SS_analysis20','CMS8',24,19.5,bg_ss8HighPt,
             bgunc_ss8HighPt,data_ss8HighPt,'combined',calculateRno)
 #    ss8_20b = j.SS8high('SS_analysis20','CMS8',8,19.5,bg_ss8HighPtBtag2,
@@ -102,8 +104,8 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
     if com == 7:
 #        if ss5b:
 #              mgr.add(ss5)
-#        if os5b:
-#             mgr.add(os5)
+        if os5b:
+             mgr.add(os5)
 #        if lp5b:
 #             mgr.add(lp5)
         if alphat7b:
