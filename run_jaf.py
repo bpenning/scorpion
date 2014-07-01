@@ -2,6 +2,7 @@
 import optparse
 from python.make_filemap_dict import filemap_from_pythia6_single_diroctory 
 from python.make_filemap_dict import filemap_from_pythia8_single_diroctory
+from python.make_filemap_dict import filemap_from_dmchain_single_directory
 from python.run_limit_code import runlim
 from python.extract_CLs import print_and_save_CLs 
 from python.stop_xsections import get_stop_x_section_from_slha_file
@@ -26,6 +27,8 @@ def parse_args():
     parser=optparse.OptionParser()
     parser.add_option('--pythia-delphes-dir',
             help='output dir of pythia-delphes')
+    parser.add_option('--dmchain-dir',
+            help='output dir of pythia-delphes')
     parser.add_option('--jaf-output-dir')
     parser.add_option('--with-cross-section',type=float,
             help='give xsec (in barns)')
@@ -48,14 +51,25 @@ def parse_args():
 if __name__=="__main__":
     args=parse_args()
     pythia_delphes_dir=args.pythia_delphes_dir
+    dmchain_dir=args.dmchain_dir
     experiment=args.experiment
     rootfile=args.rootfile
     jaf_output_dir=args.jaf_output_dir
     com=args.CM_energy
+    xsec=args.with_cross_section
     filemap_from_single_diroctory=pythia_versions[args.pythia_version]['filemap_function']
-    filemap_dict=filemap_from_single_diroctory(pythia_delphes_dir,rootfile,experiment)
-    if args.with_cross_section:
-        filemap_dict['xsec']=args.with_cross_section
+    filemap_dict=None
+    if pythia_delphes_dir:
+        filemap_dict=filemap_from_single_diroctory(pythia_delphes_dir,rootfile,experiment)
+        if xsec:
+            filemap_dict['xsec']=args.with_cross_section
+    elif dmchain_dir :
+        if xsec:
+            filemap_dict=filemap_from_dmchain_single_directory(dmchain_dir,
+                    rootfile,experiment,xsec)
+        else:
+            print('Please provide cross section using: --with-cross-section')
+            exit()
     elif args.with_cms_stop_cross_section:
         slhafile=args.with_cms_stop_cross_section
         filemap_dict['xsec']=get_stop_x_section_from_slha_file(slhafile)
