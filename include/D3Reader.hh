@@ -21,6 +21,7 @@
 #include "jad_jet_class.hh"
 #include "jad_particle_class.hh"
 #include "jad_lepton_class.hh"
+#include "jad_photon_class.hh"
 #include "jad_object_class.hh"
 
 #include <map>
@@ -45,6 +46,8 @@ public :
   std::vector<jjet> GetMet() const;
   std::vector<jlepton> GetElec() const;
   std::vector<jlepton> GetMuon() const;
+  std::vector<jphoton> GetPhoton() const;
+  double GetWeight() const;
 
 private:
 
@@ -59,13 +62,13 @@ private:
 
   const TClonesArray * JET;   
   const TClonesArray * TAUJET;
-  //const TClonesArray * PHOTON;
+  const TClonesArray * PHOTON;
   const TClonesArray * ELEC; 
   const TClonesArray * MUON; 
   const TClonesArray * ETMIS;
 
   const TClonesArray * GENPARTICLE;
-  //const TClonesArray * GENEVENT;
+  const TClonesArray * GENEVENT;
 };
 
 #endif // D3Reader_h

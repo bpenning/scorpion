@@ -18,6 +18,7 @@ def parse_args():
     parser.add_option('--experiment',default='CMS7')
     parser.add_option('--rootfile',default='delphes-output.root')
     parser.add_option('--pythia-version',choices=pythia_versions.keys(),default='8')
+    parser.add_option('--gen-info',action="store_true")
     options, args=parser.parse_args()
     return options
 
@@ -27,12 +28,15 @@ if __name__=="__main__":
     experiment=args.experiment
     rootfile=args.rootfile
     jaf_output_dir=args.jaf_output_dir
+    gen_info = args.gen_info
     com=args.CM_energy
     filemap_from_single_diroctory=pythia_versions[args.pythia_version]['filemap_function']
     filemap_dict=filemap_from_single_diroctory(pythia_delphes_dir,rootfile,experiment)
     if args.with_cross_section:
         filemap_dict['xsec']=args.with_cross_section
-    runlim(jaf_output_dir,filemap_dict,com,ss5b=1,os5b=1,lp5b=1,alphat7bb=1)
-    print_and_save_CLs(jaf_output_dir,filemap_dict['internal_name'])
+    runlim(jaf_output_dir,filemap_dict,com,gen_info,ss5b=1,os5b=1,lp5b=1,alphat7bb=1)
+    #print_and_save_CLs(jaf_output_dir,filemap_dict['internal_name'])
+    print_and_save_CLs(jaf_output_dir,"delphes-output_CMS8_MonoJet_analysis8",filemap_dict['xsec'])
+    
 
 
