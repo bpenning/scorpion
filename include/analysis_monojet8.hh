@@ -54,6 +54,7 @@ private:
 
   TH1D * leadingjetpt;
   TH1D * calomet;
+  TH1D * cutflow;
 };
 
 #endif
