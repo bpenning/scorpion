@@ -8,7 +8,8 @@ class jobject : public TLorentzVector{
 	enum jobjectType {
 	    mlepton,
 	    mjet,
-	    mparticle
+	    mparticle,
+	    mphoton
 	};
 
 	jobject();

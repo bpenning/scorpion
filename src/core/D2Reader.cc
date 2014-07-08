@@ -19,7 +19,7 @@ D2Reader::D2Reader(TTree *tree) :
   if(!anstring.compare(tree->GetName())) {
     JET    = this->UseBranch("Jet");
     TAUJET = this->UseBranch("TauJet");
-    //PHOTON = this->UseBranch("Photon");
+    PHOTON = this->UseBranch("Photon");
     ELEC   = this->UseBranch("Electron");
     MUON   = this->UseBranch("Muon");
     ETMIS  = this->UseBranch("ETmis"); 
@@ -204,6 +204,20 @@ std::vector<jlepton> D2Reader::GetMuon() const {
     return muon_collection;
 }
 
+std::vector<jphoton> D2Reader::GetPhoton() const {
+    std::vector<jphoton> photon_collection; 
+
+    TIter itPhoton((TCollection*)PHOTON);
+    TRootPhoton *photon;
+    itPhoton.Reset();
+
+    while( photon = ((TRootPhoton*) itPhoton.Next()) ) {
+	photon_collection.push_back(jphoton(photon->Px, photon->Py, photon->Pz, photon->E));
+    }
+
+    std::sort(photon_collection.begin(), photon_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+    return photon_collection;
+}
 std::vector<jjet> D2Reader::GetMet() const {
 
     std::vector<jjet> etmiss_collection;
@@ -246,7 +260,7 @@ std::vector<jparticle> D2Reader::GetGenParticle() const {
     std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return particle_collection;
 }
-/*
-   const TClonesArray * D2Reader::GenEvent() const {
-   return GENEVENT;
-   }*/
+double D2Reader::GetWeight() const {
+//Dummy for compatability 
+    return 1.0;
+}

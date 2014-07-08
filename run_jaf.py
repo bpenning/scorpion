@@ -85,5 +85,3 @@ if __name__=="__main__":
         analyses_kwargs[name]=True
     runlim(jaf_output_dir,filemap_dict,com,**analyses_kwargs)
 #    print_and_save_CLs(jaf_output_dir,filemap_dict['internal_name'])
-
-

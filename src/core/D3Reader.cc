@@ -33,10 +33,11 @@ D3Reader::D3Reader(TTree *tree) :
   std::string anstring = "Analysis";
     JET    = this->UseBranch("Jet");
 //    TAUJET = this->UseBranch("TauJet");
-    //PHOTON = this->UseBranch("Photon");
+    PHOTON = this->UseBranch("Photon");
     ELEC   = this->UseBranch("Electron");
     MUON   = this->UseBranch("Muon");
     ETMIS  = this->UseBranch("MissingET"); 
+    GENEVENT  = this->UseBranch("Event"); 
 //Add this info later as takes time
 
 //    GENEVENT = this->UseBranch("Event");
@@ -197,6 +198,18 @@ std::vector<jlepton> D3Reader::GetMuon() const {
     std::sort(muon_collection.begin(), muon_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return muon_collection;
 }
+std::vector<jphoton> D3Reader::GetPhoton() const {
+    std::vector<jphoton> photon_collection; 
+
+    for(int i = 0; i < PHOTON->GetEntries(); ++i)
+    {
+	Photon *photon = (Photon*) PHOTON->At(i);
+	photon_collection.push_back(jphoton(photon->P4().Px(), photon->P4().Py(), photon->P4().Pz(), photon->P4().E()));
+    }
+
+    std::sort(photon_collection.begin(), photon_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+    return photon_collection;
+}
 
 std::vector<jjet> D3Reader::GetMet() const {
     std::vector<jjet> etmiss_collection;
@@ -232,6 +245,14 @@ std::vector<jparticle> D3Reader::GetGenParticle() const {
     }
     std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return particle_collection;
+}
+double D3Reader::GetWeight() const {
+    if (GENEVENT->GetEntries()>0)
+    {
+	HepMCEvent *event = (HepMCEvent *)GENEVENT->At(0); 
+	return event->Weight;
+    } 
+    return 1.0;
 }
 
 //   const TClonesArray * D2Reader::GenEvent() const {

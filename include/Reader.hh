@@ -7,6 +7,7 @@
 #include "jad_jet_class.hh"
 #include "jad_particle_class.hh"
 #include "jad_lepton_class.hh"
+#include "jad_photon_class.hh"
 #include "jad_object_class.hh"
 #include "jBlockClasses.hh"
 
@@ -21,9 +22,10 @@ public :
   virtual std::vector<jjet> GetTauJet() const = 0;
   virtual std::vector<jlepton> GetElec() const = 0;
   virtual std::vector<jlepton> GetMuon() const = 0;
+  virtual std::vector<jphoton> GetPhoton() const = 0;
   virtual std::vector<jjet> GetMet() const = 0;
   virtual std::vector<jparticle> GetGenParticle() const = 0;
-  //std::vector<jjet> GenEvent() const;
+  virtual double GetWeight() const = 0;
 
 };
 
