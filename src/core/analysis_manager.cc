@@ -157,7 +157,6 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 
 	Reader *mytreereader;
 	Reader *gentreereader;
-
 	std::cout << fileobj.GetReader() << std::endl;
 	TChain chainRec("Analysis");
 	TChain chainGen("GEN");
@@ -179,6 +178,7 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 
 	    //Use (virtu = &d2tempgen;
 	}
+
 	else if (fileobj.GetReader()==1)
 	{
 
@@ -192,12 +192,12 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 	    gentreereader= new D3Reader(&chainGen1);
 
 	}
-
 	unsigned int numevents = mytreereader->GetEntries();
 	std::cout << "there are " << numevents << " events." << std::endl; 
 	//loop over all events:
 	for(unsigned int event=0; event<numevents; event++) {
 	    mytreereader->ReadEntry(event);	  
+
 	    if(mLoadGenInfo) {
 		// JM: added functionality in the manager to turn on/off generator info
 		// Added to manager since you will not achieve speedup if adding to individual search (overhead in reading the event, not analysing it)
@@ -205,21 +205,23 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 		// However, best to run twice in this instance if you want speed up
 		gentreereader->ReadEntry(event);
 	    }
+	    double event_weight = gentreereader->GetWeight();
 	    //loop over all analyses that depend on this experiment
 	    for(std::vector<AnalysisBase *>::const_iterator jj=(ii->second).begin(); jj != (ii->second).end(); jj++) {
 		//std::cout << "running analysis: " << (*jj)->GetName() << std::endl;
-		double weight = (1.0E+015 * (*jj)->GetLuminosity())  / (numevents / fileobj.GetCrossSection(ii->first));
+		double weight = (1.0E+015 * (*jj)->GetLuminosity()*event_weight)  / (numevents / fileobj.GetCrossSection(ii->first));
 		//Run analysis
 		(*jj)->Run(mytreereader, gentreereader, weight);
 	    }
 	}
+	delete mytreereader;
+	delete gentreereader;
 
     }
 
   } else {
       std::cerr << "couldn't find data in file... quitting" << std::endl;
   }
-
   return;
 
 }

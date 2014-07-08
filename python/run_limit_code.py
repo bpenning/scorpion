@@ -140,4 +140,3 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
     mgr.run(FileMapVector([filemap]), "")
     mgr.limit(0.20, writestatfileyes, docomboyes, calculateRcombono)
     mgr.write()
-  
