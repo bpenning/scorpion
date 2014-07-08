@@ -17,6 +17,19 @@ def filemap_from_pythia6_single_diroctory(dir,rootfile,experiment):
             'experiment':experiment,
             }
 
+def filemap_from_dmchain_single_directory(dir,rootfile,experiment,xsec):
+    #to be robust against giving the absolute path to the rootfile
+    rootfile=os.path.basename(rootfile)
+    rootfile_path=os.path.join(dir,rootfile)
+    internal_name,_=os.path.splitext(rootfile)
+    return {
+            'xsec':xsec,
+            'rootfiles':[rootfile_path],
+            'internal_name':internal_name,
+            'experiment':experiment,
+            }
+    
+
 def filemap_from_pythia8_single_diroctory(dir,rootfile,experiment):
     #get xsection
     pythialog=os.path.join(dir,'pythia-output.log')

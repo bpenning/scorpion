@@ -20,6 +20,7 @@
 #include "jad_particle_class.hh"
 #include "jad_jet_functions.hh"
 #include "jad_lepton_functions.hh"
+#include "jad_particle_functions.hh"
 #include "pair_info.hh"
 
 
@@ -58,11 +59,18 @@ private:
   TH1D * hthist;
   TH1D * methist;
   TH1D * leadingjetpt;  
+  TH1D * leadingbjetpt;  
   TH1D * sfinvmass;
   TH1D * ptleadinglep;
   TH2D * ptchargeonevschargetwo;
   TH1D * numbjets;
   TH1D * drjetcombo;
+  TH1D * genelectronshist;
+  TH1D * recelectronshist;
+  TH1D * genmuonshist;
+  TH1D * recmuonshist;
+  TH1D * genbjetshist;
+  TH1D * recbjetshist;
 };
 
 #endif

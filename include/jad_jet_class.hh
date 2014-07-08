@@ -12,6 +12,7 @@ public:
 
   bool Btag() const;
   bool TauTag() const;
+  void setZeroMass(); 
 
 private:
 

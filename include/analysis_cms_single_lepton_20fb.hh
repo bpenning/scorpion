@@ -65,6 +65,9 @@ private:
   TH1D * leading_bjet_pt_hist;
   TH1D * delta_R_hist;
   TH1D * lepton_pt_hist;
+  TH1D * njets;
+  TH1D * nbjets;
+  TH1D * lepton_flavour;
 };
 
 #endif
