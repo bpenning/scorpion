@@ -64,6 +64,7 @@ void MonoJet8::initHistos() {
   cutflow = new TH1D("cutflow",";cut;entries",5,-0.5,4.5);
   njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
   calomet = new TH1D("calomet",";E_{T}^{miss} [GeV];Entries",30,250,1000);
+  event_weight= new TH1D("event_weight",";cut;entries",1000,1500e9,2500e9);
 }
 
 void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
@@ -86,20 +87,22 @@ void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, cons
      
 
   njets->Fill(goodjets.size());
-	cutflow->Fill(0);
+	
+	cutflow->Fill(0., weight);
+	event_weight->Fill(weight);
   if(goodjets.size() <= 2 && goodjets.size() > 0 && mu.size() == 0 && ele.size() == 0) {
-		cutflow->Fill(1);
+		cutflow->Fill(1., weight);
       if(goodjets[0].Pt() > 110.0 && fabs(goodjets[0].Eta()) < 2.4) {
-			cutflow->Fill(2);
+			cutflow->Fill(2., weight);
 	  if(checkforsecondjetphi(goodjets, 2.5) || goodjets.size()==1) { 
-				cutflow->Fill(3);
+				cutflow->Fill(3., weight);
 	      leadingjetpt->Fill(goodjets[0].Pt(), weight);
 	      calomet->Fill(calo_met, weight);
 	      if(calo_met > 250.0) { mSigPred.at(0)+=weight; }
 	      if(calo_met > 300.0) { mSigPred.at(1)+=weight; }
 	      if(calo_met > 350.0) { mSigPred.at(2)+=weight; }
 	      if(calo_met > 400.0) { mSigPred.at(3)+=weight;
-                                     cutflow->Fill(4); }
+                                     cutflow->Fill(4., weight); }
 	      if(calo_met > 450.0) { mSigPred.at(4)+=weight; }
 	      if(calo_met > 500.0) { mSigPred.at(5)+=weight; }
 	      if(calo_met > 550.0) { mSigPred.at(6)+=weight; }

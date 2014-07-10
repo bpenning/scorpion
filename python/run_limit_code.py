@@ -100,7 +100,7 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    ss8LowPt = j.SS8low('SS8low_analysis20','CMS8', 24, 19.5, bg_ss8LowPt, bgunc_ss8LowPt, data_ss8LowPt, 'combined', calculateRno)
 #    zerolep8 = j.ZeroLep8('SSb8_analysis40','CMS8', 48, 19.4, bg_zerolep8, bgunc_zerolep8, data_zerolep8, 'combined', calculateRno)
     
-    mgr = j.AnalysisManager(outdir, geninfono) #bool for geninfo
+    mgr = j.AnalysisManager(outdir, geninfoyes) #bool for geninfo
     
     if com == 7:
 #        if ss5b:
