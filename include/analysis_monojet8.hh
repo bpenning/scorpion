@@ -57,7 +57,7 @@ private:
   TH1D * event_weight;
 
   TH1D * cutflow;
-
+  TH1D * event_weight;
   TH1D * njets;
 
 };
