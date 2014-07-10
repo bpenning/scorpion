@@ -61,9 +61,11 @@ void MonoJet8::initHistos() {
   andir->cd();
   leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
   calomet = new TH1D("calomet",";E_{T}^{miss} [GeV];Entries",200,-5.,1995.);
+  event_weight = new TH1D("event_weight",";weight;entries",1000,1940e9,1960e9);
   cutflow = new TH1D("cutflow",";cut;entries",5,-0.5,4.5);
   njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
   calomet = new TH1D("calomet",";E_{T}^{miss} [GeV];Entries",30,250,1000);
+  event_weight->SetBit(TH1::kCanRebin);
 }
 
 void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
@@ -85,6 +87,7 @@ void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, cons
 
   njets->Fill(goodjets.size());
 	cutflow->Fill(0);
+	event_weight->Fill(weight);
   if(goodjets.size() <= 2 && goodjets.size() > 0 && mu.size() == 0 && ele.size() == 0) {
 		cutflow->Fill(1);
       if(goodjets[0].Pt() > 110.0 && fabs(goodjets[0].Eta()) < 2.4) {
