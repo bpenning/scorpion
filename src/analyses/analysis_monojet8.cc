@@ -65,7 +65,8 @@ void MonoJet8::initHistos() {
   cutflow = new TH1D("cutflow",";cut;entries",5,-0.5,4.5);
   event_weight = new TH1D("event_weight",";weight_num;entries",1000,1940e9,1960e9);
   njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
-  calomet = new TH1D("calomet",";E_{T}^{miss} [GeV];Entries",30,250,1000);
+  calomet = new TH1D("calomet",";E_{T}^{miss} [GeV];Entries",30,250,1000); 
+
   event_weight->SetBit(TH1::kCanRebin);
 }
 
@@ -84,9 +85,13 @@ void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, cons
   std::vector<jjet> taujets=goodjetsSkim(treereader->GetTauJet(), 20.0, 2.3); //check for jets which we should analyse
   std::vector<jjet> etmis = treereader->GetMet(); //Missing transverse energy array
   double calo_met = (etmis.size() == 1) ? etmis[0].E(): -1;
+
+
      
  
   njets->Fill(goodjets.size());
+
+
 	cutflow->Fill(0.,weight);
         event_weight->Fill(weight); 
   if(goodjets.size() <= 2 && goodjets.size() > 0 && mu.size() == 0 && ele.size() == 0) {
@@ -95,13 +100,16 @@ void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, cons
 			cutflow->Fill(2.,weight);
 	  if(checkforsecondjetphi(goodjets, 2.5) || goodjets.size()==1) { 
                         cutflow->Fill(3.,weight);
+
 	      leadingjetpt->Fill(goodjets[0].Pt(), weight);
 	      calomet->Fill(calo_met, weight);
 	      if(calo_met > 250.0) { mSigPred.at(0)+=weight; }
 	      if(calo_met > 300.0) { mSigPred.at(1)+=weight; }
 	      if(calo_met > 350.0) { mSigPred.at(2)+=weight; }
 	      if(calo_met > 400.0) { mSigPred.at(3)+=weight;
-                                     cutflow->Fill(4.,weight); }
+
+                                     cutflow->Fill(4., weight); }
+
 	      if(calo_met > 450.0) { mSigPred.at(4)+=weight; }
 	      if(calo_met > 500.0) { mSigPred.at(5)+=weight; }
 	      if(calo_met > 550.0) { mSigPred.at(6)+=weight; }
@@ -120,3 +128,4 @@ void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, cons
 
   return;
 }
+
