@@ -22,6 +22,7 @@ analyses={
         'ge3lp20b-only':['ge3lp20b'],
         'mt220b-only':['mt220b'],
         'ss820b-only':['ss820b'],
+	'alphat-only':['alphat7bb'],
         }
 
 def parse_args():

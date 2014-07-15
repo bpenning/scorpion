@@ -111,8 +111,8 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #             mgr.add(lp5)
         if alphat7b:
              mgr.add(alphat7_5)
-#        if alphat7bb:
-#             mgr.add(alphat7_5b)
+        if alphat7bb:
+             mgr.add(alphat7_5b)
     elif com == 8:
 #        if alphat12b:
 #             mgr.add(alphat8_12b)

@@ -49,7 +49,7 @@ public:
 
 private:
 
-  TH1I * cut_sel;
+  TH1D * cut_sel;
   TH1D * leadingjetpt;
   TH1D * hthist;
   TH1D * mhthist;
@@ -71,6 +71,7 @@ private:
   TH1D * jet1pt;
   TH1D * jet2pt;
   TH1D * deltaphi;
+  TH1D * event_weight;
 
 };
 

@@ -35,7 +35,7 @@ AlphaTb::~AlphaTb() {}
 
 void AlphaTb::initHistos() {
   andir->cd();
-  cut_sel = new TH1I("cut_selection","cut;Entries",6,-0.5,5.5);
+  cut_sel = new TH1D("cut_selection","cut;Entries",7,-0.5,6.5);
   leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
   hthist = new TH1D("hthist", ";H_{T} [GeV];Entries",250,-5.,2495.);
   mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
@@ -57,6 +57,9 @@ void AlphaTb::initHistos() {
   calomet_vs_mht = new TH2D("calomet_vs_mht",";caloMET;MHT",200,-5.,1995., 200,-5.,1995.);
   ht_vs_mht_pre_alphaT = new TH2D("ht_vs_mht_pre_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
   ht_vs_mht_post_alphaT = new TH2D("ht_vs_mht_post_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
+  event_weight = new TH1D("event_weight",";weight;entries",1000,1940e9,1960e9);
+  event_weight->SetBit(TH1::kCanRebin);
+
 }
 
 void AlphaTb::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
@@ -90,10 +93,14 @@ void AlphaTb::Run(const Reader * treereader, const Reader * gentreereader, const
   bjets->Fill(badjets.size());
   ejets->Fill(ele.size());
   mjets->Fill(mu.size());
+  
+
+  event_weight->Fill (weight);
+  cut_sel->Fill(0.,weight);
 
   energy_sums esums = make_energy_sums(goodjets275, goodjets325, goodjets375);
   if(badjets.size() == 0 && ele.size() == 0 && mu.size() == 0) {
-      cut_sel-> AddBinContent(1);
+      cut_sel->Fill(1., weight);
 
       //some histograms:
       //if(fabs(goodjets275[0]->Eta) < 2.4) { leadingjetpt->Fill(goodjets275[0]->PT); }
@@ -101,7 +108,7 @@ void AlphaTb::Run(const Reader * treereader, const Reader * gentreereader, const
       //if(goodjets[0]->PT > 100.0 && fabs(goodjets[0]->Eta) < 2.4) {
       //  if(goodjets[1]->PT> 100.0) {
       if(esums.pass_quality_cuts) { //this cut contains njets>=2, HT check requirements and leading/sub-leading requirements
-	  cut_sel-> AddBinContent(2);
+	  cut_sel->Fill(2.,weight);
 	  njets->Fill(esums.njets, weight);
 	  btagrate->Fill(esums.nbtags, weight);
 	  //for alpha_t:
@@ -127,7 +134,7 @@ void AlphaTb::Run(const Reader * treereader, const Reader * gentreereader, const
 	  ht_vs_mht_pre_alphaT->Fill(esums.total_ht, esums.total_mht, weight);
 
 	  if(esums.total_ht > 275.0) {
-	      cut_sel-> AddBinContent(3);
+	      cut_sel->Fill(3.,weight);
 	      //at this point, need to fill mht / met histogram.
 	      //double mht_x1 = 0.0;
 	      //double mht_y1 = 0.0;
@@ -154,7 +161,7 @@ void AlphaTb::Run(const Reader * treereader, const Reader * gentreereader, const
 	      calomet_vs_mht->Fill(calo_met, esums.total_mht, weight);
 
 	      if(esums.total_mht/calo_met < 1.25) {
-		  cut_sel-> AddBinContent(4);
+		  cut_sel->Fill(4.,weight);
 		  std::vector<bool> pseudo;
 		  double alpha_t = alphat(esums.etvec, esums.pxvec, esums.pyvec, pseudo, true);
 		  if ( pseudo.size() == esums.etvec.size() ) {
@@ -178,10 +185,10 @@ void AlphaTb::Run(const Reader * treereader, const Reader * gentreereader, const
 			      athist5jets->Fill(alpha_t , weight);
 			      break;
 		      }
-		      cut_sel-> AddBinContent(5);
+		      cut_sel-> Fill(5., weight);
 		      athist->Fill(alpha_t, weight);
 		      if(alpha_t > 0.55) {
-			  cut_sel-> AddBinContent(6);
+			  cut_sel-> Fill(6.,weight);
 			  //btagrate->Fill(esums.nbtags, weight);
 			  ht_vs_mht_post_alphaT->Fill(esums.total_ht, esums.total_mht, weight);
 			  if(esums.nbtags == 0) {
