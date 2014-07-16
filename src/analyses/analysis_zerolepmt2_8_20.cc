@@ -38,14 +38,17 @@ ZeroLepMt2::ZeroLepMt2(const std::string & name,
 
   void ZeroLepMt2::initHistos() {
     andir->cd();
-//    leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
+    leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries", 200, 0.0, 
+            2500.0);
+    leadingbjetpt = new TH1D("leadingbjetpt", ";P_{T} [GeV];Entries",200, 0.0, 
+            2000.0);
     ht20hist = new TH1D("ht20hist", ";H_{T} [GeV];Entries",250,-5.,2495.);
     ht40hist = new TH1D("ht40hist", ";H_{T} [GeV];Entries",250,-5.,2495.);
     ht50hist = new TH1D("ht50hist", ";H_{T} [GeV];Entries",250,-5.,2495.);
     mt2hist = new TH1D("mt2hist", ";M_{T2} [GeV];Entries",51, 0.0, 750.0);
     mt2histlarge = new TH1D("mt2histlarge", ";M_{T2} [GeV];Entries",50, 0.0, 2000.0);
-//    mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
-    methist = new TH1D("methist", ";CALO Missing E_{T} [GeV];Entries",200,-5.,1995.);
+    hthist = new TH1D("hthist", ";Missing H_{T} [GeV];Entries", 200, 0.0, 3000.0);
+    methist = new TH1D("methist", "; Missing E_{T} [GeV];Entries", 200, 0.0, 2500.0);
     njets20hist = new TH1D("njets20", ";N_{jets};Entries",10,-0.5,9.5);
     njets40hist = new TH1D("njets40", ";N_{jets};Entries",10,-0.5,9.5);
     njets50hist = new TH1D("njets50", ";N_{jets};Entries",10,-0.5,9.5);
@@ -74,7 +77,6 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
   std::vector<jjet> etmis = treereader->GetMet(); //Missing transverse energy array
   double met = (etmis.size() == 1) ? etmis[0].E(): -1;
   if(met < -0.5) std::cout << "MET error in 0 lepton search" << std::endl; 
-  methist->Fill(met, weight);
 
   std::vector<jlepton> elecs = treereader->GetElec();
   std::vector<jlepton> muons = treereader->GetMuon();
@@ -92,6 +94,8 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
   //GeV and |η | < 2.4, that pass the loose jet ID. With this choice we have the
   //smallest bias of the MT2 distribution in QCD events.
   std::vector<jjet> goodjets20 = goodjetsSkim(treereader->GetJet(), 20.0, 2.4);
+  //get bjets
+  std::vector<jjet> goodbjets40 = goodbjetsSkim(treereader->GetJet(), 40.0, 2.4);
 
   //HT used in the analysis
   double ht = getht(goodjets50);
@@ -175,6 +179,11 @@ void ZeroLepMt2::Run(const Reader * treereader, const Reader * gentreereader, co
       }
   }
   if (selected){
+    leadingjetpt->Fill(goodjets40[0].Pt(), weight);
+    if (goodbjets40.size()>0)
+      leadingbjetpt->Fill(goodbjets40[0].Pt(), weight);
+    methist->Fill(met,weight);
+    hthist->Fill(ht,weight);
 
     // to calculate MT2 we first need to construct two pseudo jets
     // (see description in include/zerolepmt2_functions.hh)
