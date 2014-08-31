@@ -61,6 +61,7 @@ void MonoJet8::initHistos() {
   andir->cd();
   leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
   calomet = new TH1D("calomet",";E_{T}^{miss} [GeV];Entries",200,-5.,1995.);
+  cutflow = new TH1D("cutflow",";cut flow;Entries",4,-0.5,3.5);
 }
 
 void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, const double & weight) {
@@ -79,11 +80,15 @@ void MonoJet8::Run(const Reader * treereader, const Reader * gentreereader, cons
   std::vector<jjet> etmis = treereader->GetMet(); //Missing transverse energy array
   double calo_met = (etmis.size() == 1) ? etmis[0].E(): -1;
 
+  cutflow->Fill(0);
   if(goodjets.size() <= 2 && goodjets.size() > 0 && mu.size() == 0 && ele.size() == 0) {
+      cutflow->Fill(1);
 
       if(goodjets[0].Pt() > 110.0 && fabs(goodjets[0].Eta()) < 2.4) {
+          cutflow->Fill(2);
 
 	  if(checkforsecondjetphi(goodjets, 2.5) || goodjets.size()==1) { 
+          cutflow->Fill(3);
 
 	      leadingjetpt->Fill(goodjets[0].Pt(), weight);
 	      calomet->Fill(calo_met, weight);
