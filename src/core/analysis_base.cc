@@ -195,6 +195,11 @@ void AnalysisBase::SetName(const std::string & newname) {
   return;
 }
 
+void AnalysisBase::SetFitMode(const std::string & newFitMode) {
+  mFitMode = newFitMode;
+  return;
+}
+
 void AnalysisBase::SetExperiment(const std::string & newexp) {
   mExperiment = newexp;
   return;

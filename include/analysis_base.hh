@@ -48,6 +48,7 @@ public:
   void initDir(TDirectory * file, const std::string & ifilename);
 
   void SetName(const std::string & newname);
+  void SetFitMode(const std::string & newname);
   void SetExperiment(const std::string & newexp);
   void SetLuminosity(const double & newlumi);
   void SetDataYields(const std::vector<int> & datayields);
