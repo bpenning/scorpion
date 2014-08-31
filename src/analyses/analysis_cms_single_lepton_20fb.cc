@@ -175,7 +175,7 @@ void CmsSingleLepton20Fb::Run(const Reader * treereader, const Reader * gentreer
     lepton_flavour->Fill((lepton.Flavour()=="muon")+0.5);
     //choose which signal regions to use
     enum SignalRegionsSelection {SRall,SRT2tt,SRT2bbww};
-    SignalRegionsSelection signalRegions=SRT2tt;
+    SignalRegionsSelection signalRegions = SRall;
     if (signalRegions==SRall){
       // stop->top neu; low DeltaM
       if (met>150 && min_dphi>0.8 && chi2<5 ) mSigPred.at(0)+=weight;
