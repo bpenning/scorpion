@@ -22,6 +22,7 @@ analyses={
         'ge3lp20b-only':['ge3lp20b'],
         'mt220b-only':['mt220b'],
         'ss820b-only':['ss820b'],
+        'alphat-only':['alphat7bb'],
         }
 
 def parse_args():
@@ -39,6 +40,7 @@ def parse_args():
             help='provide slha file from which to extract msbot')
     parser.add_option('--with-cms-gluino-cross-section',
             help='provide slha file from which to extract mgluino')
+    parser.add_option('--xsec-factor', type=float, default=1)
     parser.add_option('--CM-energy',default=7,type=int)
     parser.add_option('--experiment',default='CMS7')
     parser.add_option('--rootfile',default='delphes-output.root')
@@ -60,6 +62,7 @@ if __name__=="__main__":
     xsec=args.with_cross_section
     filemap_from_single_diroctory=pythia_versions[args.pythia_version]['filemap_function']
     filemap_dict=None
+    xsec_factor = args.xsec_factor
     if pythia_delphes_dir:
         filemap_dict=filemap_from_single_diroctory(pythia_delphes_dir,rootfile,experiment)
         if xsec:
@@ -71,18 +74,20 @@ if __name__=="__main__":
         else:
             print('Please provide cross section using: --with-cross-section')
             exit()
-    elif args.with_cms_stop_cross_section:
+    if args.with_cms_stop_cross_section:
         slhafile=args.with_cms_stop_cross_section
         filemap_dict['xsec']=get_stop_x_section_from_slha_file(slhafile)
     elif args.with_cms_sbot_cross_section:
         slhafile=args.with_cms_sbot_cross_section
         filemap_dict['xsec']=get_sbot_x_section_from_slha_file(slhafile)
     elif args.with_cms_gluino_cross_section:
+        print
         slhafile=args.with_cms_gluino_cross_section
         filemap_dict['xsec']=get_gluino_x_section_from_slha_file(slhafile)
     analyses_kwargs={}
     for name in analyses[args.analyses]:
         analyses_kwargs[name]=True
+    filemap_dict['xsec']=xsec_factor*filemap_dict['xsec']
     runlim(jaf_output_dir,filemap_dict,com,**analyses_kwargs)
 #    print_and_save_CLs(jaf_output_dir,filemap_dict['internal_name'])
 
