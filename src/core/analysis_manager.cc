@@ -77,7 +77,7 @@ bool AnalysisManager::checkDataExists(const FileMap & file) {
 
 bool AnalysisManager::checkFitMode(const std::string & mode) {
 
-  if(mode == "combined" || mode == "individual") {
+  if(mode == "combined" || mode == "individual" || mode == "strongest") {
     return true;
   }
   return false;
@@ -256,14 +256,53 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
 		std::vector<double> bgyields = (*an)->GetBackgroundPrediction();
 		std::vector<double> bguncert = (*an)->GetBGUncert();
 
+        std::vector<fitparams> fitresults; 
+
+
+        if ((*an)->GetFitMode() == "strongest") {
+          //Set data yields to background  
+          datayields.clear();
+          std::vector<double>::iterator bgIt;
+          for (bgIt=bgyields.begin(); bgIt!=bgyields.end(); bgIt++){
+            datayields.push_back(int(round(*bgIt)));
+          }
+          //Calculate limits
+          std::vector<fitparams> fitresults = LimitCode("individual", 
+             signalyields, signal_uncertainty, bgyields, bguncert, 
+             datayields, (*an)->CalculateR());
+          int maxClsIndex = 0;
+          double maxCls = 0.0;
+          //find the maximum index
+          for (unsigned int i=0; i<fitresults.size(); i++){
+            double cls = fitresults[i].cls;
+            if (cls > maxCls){
+              maxClsIndex = i;
+              maxCls = cls;
+            }
+          }
+          //set data to the strongest expected limit
+		  datayields[0] = datayields[maxClsIndex];
+		  signalyields[0] = signalyields[maxClsIndex];
+		  bgyields[0] = bgyields[maxClsIndex];
+		  bguncert[0] = bguncert[maxClsIndex];
+		  datayields.erase( datayields.begin()+1, datayields.end());
+		  signalyields.erase( signalyields.begin()+1, signalyields.end());
+		  bgyields.erase( bgyields.begin()+1, bgyields.end());
+		  bguncert.erase( bguncert.begin()+1, bguncert.end());
+          (*an)->SetFitMode("combined");
+        }
 		//check if data file needs to be written out (for debug or use with Higgs Limit code)
 		if(savestatfile) {
 		    //std::cout << "current dir is " << (*an)->GetCurrDir() << std::endl;
-		    SaveStatFile((*an)->GetFitMode(), (*an)->GetNumBins(), signalyields, signal_uncertainty, bgyields, bguncert, datayields, (*an)->GetCurrDir());
+		    SaveStatFile((*an)->GetFitMode(), (*an)->GetNumBins(), 
+                signalyields, signal_uncertainty, bgyields, bguncert, datayields, 
+                (*an)->GetCurrDir());
 		}
 
 		//now run the limit code
-		std::vector<fitparams> fitresults = LimitCode((*an)->GetFitMode(), signalyields, signal_uncertainty, bgyields, bguncert, datayields, (*an)->CalculateR());
+		fitresults = LimitCode((*an)->GetFitMode(), 
+                signalyields, signal_uncertainty, bgyields, bguncert, 
+                datayields, (*an)->CalculateR());
 
 		//now loop over the vector of results
 		for(std::vector<fitparams>::const_iterator fp=fitresults.begin(); fp!=fitresults.end(); fp++) {

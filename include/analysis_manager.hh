@@ -7,6 +7,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <cmath>
 #include "D2Reader.hh"
 #include "D3Reader.hh"
 #include "Reader.hh"
