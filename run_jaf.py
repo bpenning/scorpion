@@ -23,6 +23,7 @@ analyses={
         'mt220b-only':['mt220b'],
         'ss820b-only':['ss820b'],
         'alphat-only':['alphat7bb'],
+        'all-8tev': ['monojet20b', 'mt220b', 'lp20b', 'ss820b', 'ge3lp20b'],
         }
 
 def parse_args():
