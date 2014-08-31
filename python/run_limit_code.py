@@ -47,7 +47,6 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    atlas5 = j.ATLAS5('ATLAS5 analysis','ATLAS', 11, 4.710, bg_atlas5, bgunc_atlas5, data_atlas5, 'individual', calculateRno)
 #    lp5 = j.LP('LP_analysis5','CMS7', 18, 4.7, bg_lp5, bgunc_lp5, data_lp5, 'combined', calculateRno)
 #    monojet5 = j.MonoJet('MonoJet_analysis75','CMS', 4, 5.0, bg_monojet5, bgunc_monojet5, data_monojet5, 'individual', calculateRno)
-    monojet20 = j.MonoJet8('MonoJet20_analysis20','CMS8', 7, 19.5, bg_monojet20, bgunc_monojet20, data_monojet20, 'individual', calculateRno)
     os5 = j.CmsOs5Fb('OS_analysis5','CMS7', 6, 4.98, bg_os5, bgunc_os5, 
             data_os5, 'combined', calculateRno)
 #    ss5 = j.SS('SS_analysis5','CMS7', 3, 4.98, bg_ss5, bgunc_ss5, data_ss5, 'combined', calculateRno)
@@ -57,8 +56,6 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #    ss8_11b = j.SSb8('SSb8_analysis11','CMS8', 1, 10.5, bg_ssb8, bgunc_ssb8, data_ssb8, 'combined', calculateRno)
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b,bgunc_lp8_20b,data_lp8_20b,'combined',calculateRno)
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b,bgunc_lp8_20b,data_lp8_20b,'individual',calculateRno)
-    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',123,19.5,bg_zerolepmt2_8_20,
-            bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'combined',calculateRno)
 #    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',52,19.5,bg_zerolepmt2_8_20_stop_test,
 #            bgunc_zerolepmt2_8_20_stop_test,data_zerolepmt2_8_20_stop_test,'individual',calculateRno)
 #    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',25,19.5,bg_zerolepmt2_8_20_gluino_test,
@@ -69,21 +66,30 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
 #            bgunc_zerolepmt2_8_20_gluino_test,data_zerolepmt2_8_20_gluino_test,'individual',calculateRno)
 #    mt2_20b = j.ZeroLepMt2('MT2_analysis20','CMS8',123,19.5,bg_zerolepmt2_8_20,
 #            bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,'individual',calculateRno)
-    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',16,19.5,bg_lp8_20b_all,
-            bgunc_lp8_20b_all,data_lp8_20b_all,'strongest',calculateRno)
 #    data_lp8_20b_t2tt=IntVector([int(round(x)) for x in bg_lp8_20b_t2tt])
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b_t2tt,
 #            bgunc_lp8_20b_t2tt,data_lp8_20b_t2tt,'individual',calculateRno)
 #    data_lp8_20b_t2bbww=IntVector([int(round(x)) for x in bg_lp8_20b_t2bbww])
 #    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8',8,19.5,bg_lp8_20b_t2bbww,
 #            bgunc_lp8_20b_t2bbww,data_lp8_20b_t2bbww,'individual',calculateRno)
-    ss8_20b = j.SS8high('SS_analysis20','CMS8',24,19.5,bg_ss8HighPt,
-            bgunc_ss8HighPt,data_ss8HighPt,'combined',calculateRno)
 #    ss8_20b = j.SS8high('SS_analysis20','CMS8',8,19.5,bg_ss8HighPtBtag2,
 #            bgunc_ss8HighPtBtag2,data_ss8HighPtBtag2,'combined',calculateRno)
 #    data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
+
+    # Final 8 TeV searches
+    mt2_20b = j.ZeroLepMt2('MT2_analysis20', 'CMS8', 123, 19.5, 
+            bg_zerolepmt2_8_20, bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,
+            'combined', calculateRno)
+    monojet20 = j.MonoJet8('MonoJet20_analysis20','CMS8', 7, 19.5, bg_monojet20
+            bgunc_monojet20, data_monojet20, 'strongest', calculateRno)
+    lp8_20b = j.CmsSingleLepton20Fb('LP_analysis20','CMS8', 16, 19.5, 
+            bg_lp8_20b_all, bgunc_lp8_20b_all,data_lp8_20b_all,'strongest',
+            calculateRno)
+    ss8_20b = j.SS8high('SS_analysis20', 'CMS8', 24, 19.5, bg_ss8HighPt, 
+            bgunc_ss8HighPt, data_ss8HighPt, 'combined', calculateRno)
     ge3lp8_20b = j.Cms3Lepton20Fb('GE3LP_analysis20','CMS8',192,19.5,bg_cms3l8,
             bgunc_cms3l8,data_cms3l8,'combined',calculateRno)
+
 
     
     # for extrapolations:
@@ -117,30 +123,22 @@ def runlim(outdir,filemap_dict,com,ss5b=0,os5b=0,lp5b=0,alphat7b=0,alphat7bb=0,
         if alphat7bb:
              mgr.add(alphat7_5b)
     elif com == 8:
-#        if alphat12b:
-#             mgr.add(alphat8_12b)
-#        if ss11b:
-#             mgr.add(ss8_11b)
-#        if alphat40b:
-#             mgr.add(alphat8_40b)
-#        if ss40b:
-#             mgr.add(ss8_40b)
         if monojet20b:
             mgr.add(monojet20)
+        if mt220b:
+            mgr.add(mt2_20b)
         if lp20b:
             mgr.add(lp8_20b)
         if ss820b:
             mgr.add(ss8_20b)
         if ge3lp20b:
             mgr.add(ge3lp8_20b)
-        if mt220b:
-            mgr.add(mt2_20b)
     else:
          print "WRONG ENERGY"
          sys.exit(1) 
 
     filemap=filemap_from_dict(filemap_dict)
     mgr.run(FileMapVector([filemap]), "")
-    mgr.limit(0.20, writestatfileyes, docomboyes, calculateRcombono)
+    mgr.limit(0.20, writestatfileno, docomboyes, calculateRcombono)
     mgr.write()
   
