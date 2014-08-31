@@ -69,6 +69,8 @@ private:
   TH1D * recelectronshist;
   TH1D * genmuonshist;
   TH1D * recmuonshist;
+  TH1D * gentaushist;
+  TH1D * rectaushist;
   TH1D * genbjetshist;
   TH1D * recbjetshist;
 };

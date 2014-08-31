@@ -48,6 +48,8 @@ void SS8high::initHistos() {
   recelectronshist = new TH1D("recelectronshist",";gen electron $p_T$ (GeV);Efficiency",9,leptonEfficiencyBinEdges);
   genmuonshist = new TH1D("genmuonshist",";gen muon $p_T$ (GeV);Efficiency",9,leptonEfficiencyBinEdges);
   recmuonshist = new TH1D("recmuonshist",";gen muon $p_T$ (GeV);Efficiency",9,leptonEfficiencyBinEdges);
+  gentaushist = new TH1D("gentaushist",";gen tau $p_T$ (GeV);Efficiency", 10, 0.0, 100.0);
+  rectaushist = new TH1D("rectaushist",";gen tau $p_T$ (GeV);Efficiency", 10, 0.0, 100.0);
   genbjetshist = new TH1D("genbjetshist",";gen bjet $p_T$ (GeV);Efficiency",56,40.0,600.0);
   recbjetshist = new TH1D("recbjetshist",";gen bjet $p_T$ (GeV);Efficiency",56,40.0,600.0);
 }
@@ -73,6 +75,9 @@ void SS8high::Run(const Reader * treereader, const Reader * gentreereader, const
   std::vector<jlepton> recMuons = goodleptons(muons,10.0, 2.4);
   std::vector<jparticle> genMuons = getGenParticles(
           gentreereader->GetGenParticle(), 13, 3, 10.0, 2.4);
+  std::vector<jjet> recTaus = goodjetsSkim(treereader->GetTauJet(),10.0, 2.3);
+  std::vector<jparticle> genTaus = getGenParticles(
+          gentreereader->GetGenParticle(), 15, 3, 10.0, 2.3);
   std::vector<jjet> recBjets = goodbjetsSkim(treereader->GetJet(), 40.0, 2.4);
   std::vector<jparticle> genBjets = getGenParticles(
           gentreereader->GetGenParticle(), 5, 3, 40.0, 2.4);
@@ -103,6 +108,20 @@ void SS8high::Run(const Reader * treereader, const Reader * gentreereader, const
     genmuonshist->Fill(genMuon->Pt());
     if (minDeltaR<0.5)
       recmuonshist->Fill(genMuon->Pt());
+  }
+
+  std::vector<jparticle>::const_iterator genTau;
+  std::vector<jjet>::const_iterator recTau;
+  for (genTau=genTaus.begin();genTau!=genTaus.end();genTau++){
+    double minDeltaR=1e9;
+    for (recTau=recTaus.begin();recTau!=recTaus.end();recTau++){
+      double deltaR=recTau->DeltaR(*genTau);
+      if (deltaR<minDeltaR)
+        minDeltaR=deltaR;
+    }
+    gentaushist->Fill(genTau->Pt());
+    if (minDeltaR<0.5)
+      rectaushist->Fill(genTau->Pt());
   }
 
   std::vector<jparticle>::const_iterator genBjet;
