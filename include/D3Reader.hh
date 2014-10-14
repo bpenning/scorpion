@@ -23,6 +23,7 @@
 #include "jad_lepton_class.hh"
 #include "jad_photon_class.hh"
 #include "jad_object_class.hh"
+#include "jad_track_class.hh"
 
 #include <map>
 
@@ -31,6 +32,7 @@ class D3Reader : public Reader
 public :
 
   D3Reader(TTree *tree);
+  D3Reader(TTree *tree,bool gen);
   D3Reader();
   ~D3Reader();
 
@@ -42,6 +44,7 @@ public :
   TClonesArray *UseBranch(const char *branchName);
   std::vector<jjet> GetJet() const;
   std::vector<jparticle> GetGenParticle() const;
+  std::vector<jtrack> GetIsoChargedTrack() const;
   std::vector<jjet> GetTauJet() const;
   std::vector<jjet> GetMet() const;
   std::vector<jlepton> GetElec() const;
@@ -62,6 +65,7 @@ private:
 
   const TClonesArray * JET;   
   const TClonesArray * TAUJET;
+  const TClonesArray * CTRACK;
   const TClonesArray * PHOTON;
   const TClonesArray * ELEC; 
   const TClonesArray * MUON; 

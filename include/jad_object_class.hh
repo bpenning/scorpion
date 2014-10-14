@@ -9,7 +9,8 @@ class jobject : public TLorentzVector{
 	    mlepton,
 	    mjet,
 	    mparticle,
-	    mphoton
+	    mphoton,
+	    mtrack
 	};
 
 	jobject();

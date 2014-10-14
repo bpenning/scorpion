@@ -9,6 +9,7 @@
 #include "alphat_functions.hh"
 #include "jad_jet_functions.hh"
 #include "jad_lepton_functions.hh"
+#include "jad_track_functions.hh"
 #include "jad_photon_functions.hh"
 #include "analysis_base.hh"
 #include "fileobject_class.hh"

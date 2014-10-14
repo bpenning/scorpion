@@ -67,12 +67,13 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 
   andir->cd();
 
-  mCounter+=(0.9*weight); //keep a tally of all the files/events we are running over
+  mCounter+=(weight); //keep a tally of all the files/events we are running over
 
   //produce subarrays of objects satisfying our criteria
   std::vector<jlepton> ele=goodleptons(treereader->GetElec(), 10.0, 2.5,2.5,2.6);         //the central isolated electrons, pt > PT_ELEC GeV
   std::vector<jlepton> mu=goodleptons(treereader->GetMuon(), 10.0, 2.5,2.5,2.6);          //the central isolated muons, pt > PT_MUON GeV
-  std::vector<jphoton> photon=goodphotons(treereader->GetPhoton(), 25.0, 2.5,2.5,2.6); 
+  std::vector<jphoton> photon=goodphotons(treereader->GetPhoton(), 25.0, 2.5,2.5,2.6);
+  std::vector<jtrack> track=trackSkim(treereader->GetIsoChargedTrack(), 10.0);
   std::vector<jjet> badjets=badjetsSkim(treereader->GetJet(),50.0,3.0); //check for jets which we should veto
   std::vector<jjet> goodjets200=goodjetsSkim(treereader->GetJet(),36.7,3.0); //check for jets which we should analyse
   std::vector<jjet> goodjets275=goodjetsSkim(treereader->GetJet(),36.7,3.0); //check for jets which we should analyse
@@ -99,6 +100,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
   event_weight->Fill(weight);
   energy_sums esums = make_energy_sums_20(goodjets200, goodjets275, goodjets325, goodjets375);
   if(badjets.size() == 0 && ele.size() == 0 && mu.size() == 0) {
+   if(track.size() == 0) {   
       cut_sel->Fill(1.,weight);
 
       //some histograms:
@@ -192,120 +194,121 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 			  ht_vs_mht_post_alphaT->Fill(esums.total_ht, esums.total_mht, weight);
 			  if(esums.nbtags == 0) {
 			    if(esums.njets >= 2 && esums.njets <= 3){
-			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(0)+=(0.9*weight); }
-			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(1)+=(0.9*weight); }
-			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(2)+=(0.9*weight); }
-			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(3)+=(0.9*weight); }
-			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(4)+=(0.9*weight); }
-			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(5)+=(0.9*weight); }
-			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(6)+=(0.9*weight); }
-			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(7)+=(0.9*weight); }
-			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(8)+=(0.9*weight); }
-			      if(esums.total_ht > 975.0 && esums.total_ht <= 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(9)+=(0.9*weight); }
-                              if(esums.total_ht > 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(10)+=(0.9*weight); }
+			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(0)+=(weight); }
+			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(1)+=(weight); }
+			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(2)+=(weight); }
+			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(3)+=(weight); }
+			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(4)+=(weight); }
+			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(5)+=(weight); }
+			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(6)+=(weight); }
+			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(7)+=(weight); }
+			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(8)+=(weight); }
+			      if(esums.total_ht > 975.0 && esums.total_ht <= 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(9)+=(weight); }
+                              if(esums.total_ht > 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(10)+=(weight); }
 			      }
 			      
 			    if(esums.njets >= 4){
-			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(11)+=(0.9*weight); }
-			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(12)+=(0.9*weight); }
-			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(13)+=(0.9*weight); }
-			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(14)+=(0.9*weight); }
-			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(15)+=(0.9*weight); }
-			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(16)+=(0.9*weight); }
-			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(17)+=(0.9*weight); }
-			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(18)+=(0.9*weight); }
-			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(19)+=(0.9*weight); }
-                              if(esums.total_ht > 975.0 && esums.total_ht <= 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(20)+=(0.9*weight); }
-                              if(esums.total_ht > 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(21)+=(0.9*weight); }
+			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(11)+=(weight); }
+			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(12)+=(weight); }
+			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(13)+=(weight); }
+			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(14)+=(weight); }
+			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(15)+=(weight); }
+			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(16)+=(weight); }
+			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(17)+=(weight); }
+			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(18)+=(weight); }
+			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(19)+=(weight); }
+                              if(esums.total_ht > 975.0 && esums.total_ht <= 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(20)+=(weight); }
+                              if(esums.total_ht > 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(21)+=(weight); }
 			      }
                               
 			  }
 			  else if(esums.nbtags == 1) {
-			    /* if(esums.njets >= 2 && esums.njets <= 3){
-			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(22)+=(0.9*weight); }
-			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(23)+=(0.9*weight); }
-			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(24)+=(0.9*weight); }
-			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(25)+=(0.9*weight); }
-			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(26)+=(0.9*weight); }
-			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(27)+=(0.9*weight); }
-			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(28)+=(0.9*weight); }
-			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(29)+=(0.9*weight); }
-			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(30)+=(0.9*weight); }
-			      if(esums.total_ht > 975.0 && esums.total_ht <= 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(31)+=(0.9*weight); }
-			      if(esums.total_ht > 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(32)+=(0.9*weight); }
-			      }*/
+			     if(esums.njets >= 2 && esums.njets <= 3){
+			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(22)+=(weight); }
+			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(23)+=(weight); }
+			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(24)+=(weight); }
+			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(25)+=(weight); }
+			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(26)+=(weight); }
+			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(27)+=(weight); }
+			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(28)+=(weight); }
+			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(29)+=(weight); }
+			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(30)+=(weight); }
+			      if(esums.total_ht > 975.0 && esums.total_ht <= 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(31)+=(weight); }
+			      if(esums.total_ht > 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(32)+=(weight); }
+			      }
 			     if(esums.njets >= 4){
-			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(22)+=(0.9*weight); }
-			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(23)+=(0.9*weight); }
-			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(24)+=(0.9*weight); }
-			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(25)+=(0.9*weight); }
-			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(26)+=(0.9*weight); }
-			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(27)+=(0.9*weight); }
-			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(28)+=(0.9*weight); }
-			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(29)+=(0.9*weight); }
-			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(30)+=(0.9*weight); }
-			      if(esums.total_ht > 975.0 && esums.total_ht <= 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(31)+=(0.9*weight); }
-			      if(esums.total_ht > 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(32)+=(0.9*weight); }
+			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(22)+=(weight); }
+			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(23)+=(weight); }
+			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(24)+=(weight); }
+			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(25)+=(weight); }
+			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(26)+=(weight); }
+			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(27)+=(weight); }
+			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(28)+=(weight); }
+			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(29)+=(weight); }
+			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(30)+=(weight); }
+			      if(esums.total_ht > 975.0 && esums.total_ht <= 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(31)+=(weight); }
+			      if(esums.total_ht > 1075.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(32)+=(weight); }
 			      }
 			     
 			  }
 			  
-			  /*else if(esums.nbtags == 2) {
+			  else if(esums.nbtags == 2) {
 			     if(esums.njets >= 2 && esums.njets <= 3){
-			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(44)+=(0.9*weight); }
-			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(45)+=(0.9*weight); }
-			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(46)+=(0.9*weight); }
-			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(47)+=(0.9*weight); }
-			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(48)+=(0.9*weight); }
-			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(49)+=(0.9*weight); }
-			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(50)+=(0.9*weight); }
-			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(51)+=(0.9*weight); }
-			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(52)+=(0.9*weight); }
+			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(44)+=(weight); }
+			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(45)+=(weight); }
+			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(46)+=(weight); }
+			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(47)+=(weight); }
+			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(48)+=(weight); }
+			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(49)+=(weight); }
+			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(50)+=(weight); }
+			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(51)+=(weight); }
+			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(52)+=(weight); }
 			      }
 			    if(esums.njets >= 4){
-			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(53)+=(0.9*weight); }
-                              if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(54)+=(0.9*weight); }
-			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(55)+=(0.9*weight); }
-			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(56)+=(0.9*weight); }
-			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(57)+=(0.9*weight); }
-			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(58)+=(0.9*weight); }
-			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(59)+=(0.9*weight); }
-			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(60)+=(0.9*weight); }
-			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(61)+=(0.9*weight); }
+			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(53)+=(weight); }
+                              if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(54)+=(weight); }
+			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(55)+=(weight); }
+			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(56)+=(weight); }
+			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(57)+=(weight); }
+			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(58)+=(weight); }
+			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(59)+=(weight); }
+			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(60)+=(weight); }
+			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(61)+=(weight); }
 			      }
 
 			  } else if(esums.nbtags == 3) {
 			     if(esums.njets >= 4){
-                              if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(62)+=(0.9*weight); } 
-			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(63)+=(0.9*weight); }
-			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(64)+=(0.9*weight); }
-			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(65)+=(0.9*weight); }
-			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(66)+=(0.9*weight); }
-			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(67)+=(0.9*weight); }
-			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(68)+=(0.9*weight); }
-			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(69)+=(0.9*weight); }
-			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(70)+=(0.9*weight); }
+                              if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(62)+=(weight); } 
+			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(63)+=(weight); }
+			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(64)+=(weight); }
+			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(65)+=(weight); }
+			      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(66)+=(weight); }
+			      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(67)+=(weight); }
+			      if(esums.total_ht > 675.0 && esums.total_ht <= 775.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(68)+=(weight); }
+			      if(esums.total_ht > 775.0 && esums.total_ht <= 875.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(69)+=(weight); }
+			      if(esums.total_ht > 875.0 && esums.total_ht <= 975.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(70)+=(weight); }
 			      }
 			  }
 		            else if(esums.nbtags >= 4) {
 			     if(esums.njets >= 4){ 
-			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(71)+=(0.9*weight); }
-			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(72)+=(0.9*weight); }
-			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(73)+=(0.9*weight); }
-			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(74)+=(0.9*weight); }
-			     //if(esums.total_ht > 475.0 && esums.total_ht <= 575.0) { mSigPred.at(59)+=(0.9*weight); }
-			     //if(esums.total_ht > 575.0 && esums.total_ht <= 675.0) { mSigPred.at(60)+=(0.9*weight); }
-			     //if(esums.total_ht > 675.0 && esums.total_ht <= 775.0) { mSigPred.at(61)+=(0.9*weight); }
-			     //if(esums.total_ht > 775.0 && esums.total_ht <= 875.0) { mSigPred.at(62)+=(0.9*weight); }
-			     //if(esums.total_ht > 875.0) { mSigPred.at(63)+=(0.9*weight); }
+			      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(71)+=(weight); }
+			      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(72)+=(weight); }
+			      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(73)+=(weight); }
+			      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(74)+=(weight); }
+			     //if(esums.total_ht > 475.0 && esums.total_ht <= 575.0) { mSigPred.at(59)+=(weight); }
+			     //if(esums.total_ht > 575.0 && esums.total_ht <= 675.0) { mSigPred.at(60)+=(weight); }
+			     //if(esums.total_ht > 675.0 && esums.total_ht <= 775.0) { mSigPred.at(61)+=(weight); }
+			     //if(esums.total_ht > 775.0 && esums.total_ht <= 875.0) { mSigPred.at(62)+=(weight); }
+			     //if(esums.total_ht > 875.0) { mSigPred.at(63)+=(weight); }
 			      }
-			  }*/
+			  }
 }
 		  }
 	      }
 	      //}
       }
-  }
+    }
   }
   return;
-  }
+ }
+ }

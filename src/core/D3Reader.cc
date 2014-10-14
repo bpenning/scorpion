@@ -37,6 +37,7 @@ D3Reader::D3Reader(TTree *tree) :
     ELEC   = this->UseBranch("Electron");
     MUON   = this->UseBranch("Muon");
     ETMIS  = this->UseBranch("MissingET"); 
+    CTRACK  = this->UseBranch("ChargedTracks"); 
     GENEVENT  = this->UseBranch("Event"); 
 //Add this info later as takes time
 
@@ -44,122 +45,145 @@ D3Reader::D3Reader(TTree *tree) :
     GENPARTICLE = this->UseBranch("Particle");
 
 }
+//TEST
+D3Reader::D3Reader(TTree *tree, bool gen) :
+    fChain(tree), fCurrentTree(-1)
+{
+    if (!gen)
+    {
+	JET    = this->UseBranch("Jet");
+	//    TAUJET = this->UseBranch("TauJet");
+	PHOTON = this->UseBranch("Photon");
+	ELEC   = this->UseBranch("Electron");
+	MUON   = this->UseBranch("Muon");
+	ETMIS  = this->UseBranch("MissingET"); 
+	CTRACK  = this->UseBranch("ChargedTracks"); 
+    }
+    else 
+    {
+	GENEVENT  = this->UseBranch("Event"); 
+	//Add this info later as takes time
+
+	//    GENEVENT = this->UseBranch("Event");
+	GENPARTICLE = this->UseBranch("Particle");
+    }
+}
 
 //------------------------------------------------------------------------------
 
 D3Reader::~D3Reader()
 {
-  TBranchMap::iterator itBranchMap;
+    TBranchMap::iterator itBranchMap;
 
-  for(itBranchMap = fBranchMap.begin(); itBranchMap != fBranchMap.end(); ++itBranchMap)
-  {
-    delete itBranchMap->second.second;
-  }
+    for(itBranchMap = fBranchMap.begin(); itBranchMap != fBranchMap.end(); ++itBranchMap)
+    {
+	delete itBranchMap->second.second;
+    }
 }
 
 //------------------------------------------------------------------------------
 
 Bool_t D3Reader::ReadEntry(Long64_t entry)
 {
-  // Read contents of entry.
-  if(!fChain) return kFALSE;
+    // Read contents of entry.
+    if(!fChain) return kFALSE;
 
-  Int_t treeEntry = fChain->LoadTree(entry);
-  if(treeEntry < 0) return kFALSE;
+    Int_t treeEntry = fChain->LoadTree(entry);
+    if(treeEntry < 0) return kFALSE;
 
-  if(fChain->IsA() == TChain::Class())
-  {
-    TChain *chain = static_cast<TChain*>(fChain);
-    if(chain->GetTreeNumber() != fCurrentTree)
+    if(fChain->IsA() == TChain::Class())
     {
-      fCurrentTree = chain->GetTreeNumber();
-      Notify();
+	TChain *chain = static_cast<TChain*>(fChain);
+	if(chain->GetTreeNumber() != fCurrentTree)
+	{
+	    fCurrentTree = chain->GetTreeNumber();
+	    Notify();
+	}
     }
-  }
 
-  TBranchMap::iterator itBranchMap;
-  TBranch *branch;
+    TBranchMap::iterator itBranchMap;
+    TBranch *branch;
 
-  for(itBranchMap = fBranchMap.begin(); itBranchMap != fBranchMap.end(); ++itBranchMap)
-  {
-    branch = itBranchMap->second.first;
-    if(branch)
+    for(itBranchMap = fBranchMap.begin(); itBranchMap != fBranchMap.end(); ++itBranchMap)
     {
-      branch->GetEntry(treeEntry);
+	branch = itBranchMap->second.first;
+	if(branch)
+	{
+	    branch->GetEntry(treeEntry);
+	}
     }
-  }
 
-  return kTRUE;
+    return kTRUE;
 }
 
 //------------------------------------------------------------------------------
 
 TClonesArray *D3Reader::UseBranch(const char *branchName)
 {
-  TClonesArray *array = 0;
+    TClonesArray *array = 0;
 
-  TBranchMap::iterator itBranchMap = fBranchMap.find(branchName);
+    TBranchMap::iterator itBranchMap = fBranchMap.find(branchName);
 
-  if(itBranchMap != fBranchMap.end())
-  {
-    cout << "** WARNING: branch '" << branchName << "' is already in use" << endl;
-    array = itBranchMap->second.second;
-  }
-  else
-  {
-    TBranch *branch = fChain->GetBranch(branchName);
-    if(branch)
+    if(itBranchMap != fBranchMap.end())
     {
-      if(branch->IsA() == TBranchElement::Class())
-      {
-        TBranchElement *element = static_cast<TBranchElement*>(branch);
-        const char *className = element->GetClonesName();
-        Int_t size = element->GetMaximum();
-        TClass *cl = gROOT->GetClass(className);
-        if(cl)
-        {
-          array = new TClonesArray(cl, size);
-          array->SetName(branchName);
-          fBranchMap.insert(make_pair(branchName, make_pair(branch, array)));
-          branch->SetAddress(&array);
-        }
-      }
+	cout << "** WARNING: branch '" << branchName << "' is already in use" << endl;
+	array = itBranchMap->second.second;
     }
-  }
+    else
+    {
+	TBranch *branch = fChain->GetBranch(branchName);
+	if(branch)
+	{
+	    if(branch->IsA() == TBranchElement::Class())
+	    {
+		TBranchElement *element = static_cast<TBranchElement*>(branch);
+		const char *className = element->GetClonesName();
+		Int_t size = element->GetMaximum();
+		TClass *cl = gROOT->GetClass(className);
+		if(cl)
+		{
+		    array = new TClonesArray(cl, size);
+		    array->SetName(branchName);
+		    fBranchMap.insert(make_pair(branchName, make_pair(branch, array)));
+		    branch->SetAddress(&array);
+		}
+	    }
+	}
+    }
 
-  if(!array)
-  {
-    cout << "** WARNING: cannot access branch '" << branchName << "', return NULL pointer" << endl;
-  }
+    if(!array)
+    {
+	cout << "** WARNING: cannot access branch '" << branchName << "', return NULL pointer" << endl;
+    }
 
-  return array;
+    return array;
 }
 
 //------------------------------------------------------------------------------
 
 Bool_t D3Reader::Notify()
 {
-  // Called when loading a new file.
-  // Get branch pointers.
-  if(!fChain) return kFALSE;
+    // Called when loading a new file.
+    // Get branch pointers.
+    if(!fChain) return kFALSE;
 
-  TBranchMap::iterator itBranchMap;
-  TBranch *branch;
+    TBranchMap::iterator itBranchMap;
+    TBranch *branch;
 
-  for(itBranchMap = fBranchMap.begin(); itBranchMap != fBranchMap.end(); ++itBranchMap)
-  {
-    branch = fChain->GetBranch(itBranchMap->first);
-    if(branch)
+    for(itBranchMap = fBranchMap.begin(); itBranchMap != fBranchMap.end(); ++itBranchMap)
     {
-      itBranchMap->second.first = branch;
-      branch->SetAddress(&(itBranchMap->second.second));
+	branch = fChain->GetBranch(itBranchMap->first);
+	if(branch)
+	{
+	    itBranchMap->second.first = branch;
+	    branch->SetAddress(&(itBranchMap->second.second));
+	}
+	else
+	{
+	    cout << "** WARNING: cannot get branch '" << itBranchMap->first << "'" << endl;
+	}
     }
-    else
-    {
-      cout << "** WARNING: cannot get branch '" << itBranchMap->first << "'" << endl;
-    }
-  }
-  return kTRUE;
+    return kTRUE;
 }
 std::vector<jjet> D3Reader::GetJet() const {
     std::vector<jjet> jet_collection;
@@ -171,6 +195,17 @@ std::vector<jjet> D3Reader::GetJet() const {
     }
     std::sort(jet_collection.begin(), jet_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return jet_collection;
+}
+std::vector<jtrack> D3Reader::GetIsoChargedTrack() const {
+    std::vector<jtrack> track_collection;
+
+    for(int i = 0; i < CTRACK->GetEntries(); ++i)
+    {
+	Track *track = (Track*) CTRACK->At(i);
+	track_collection.push_back(jtrack(track->P4().Px(),track->P4().Py(),track->P4().Pz(),track->P4().E(),track->Charge,true));
+    }
+    std::sort(track_collection.begin(), track_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+    return track_collection;
 }
 
 std::vector<jlepton> D3Reader::GetElec() const {
@@ -191,7 +226,7 @@ std::vector<jlepton> D3Reader::GetMuon() const {
 
     for(int i = 0; i < MUON->GetEntries(); ++i)
     {
-    Muon *muon = (Muon*) MUON->At(i);
+	Muon *muon = (Muon*) MUON->At(i);
 	muon_collection.push_back(jlepton(muon->P4().Px(), muon->P4().Py(), muon->P4().Pz(), muon->P4().E(), false, muon->Charge,true));
     }
 
@@ -246,14 +281,14 @@ std::vector<jparticle> D3Reader::GetGenParticle() const {
     std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return particle_collection;
 }
-double D3Reader::GetWeight() const {
-    if (GENEVENT->GetEntries()>0)
-    {
-	HepMCEvent *event = (HepMCEvent *)GENEVENT->At(0); 
-	return event->Weight;
-    } 
-    return 1.0;
-}
+    double D3Reader::GetWeight() const {
+	if (GENEVENT->GetEntries()>0)
+	{
+	    HepMCEvent *event = (HepMCEvent *)GENEVENT->At(0); 
+	    return event->Weight;
+	} 
+	return 1.0;
+    }
 
 //   const TClonesArray * D2Reader::GenEvent() const {
 //   return GENEVENT;

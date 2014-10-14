@@ -4,7 +4,7 @@
 #include "TBranchElement.h"
 #include "TClonesArray.h"
 #include "TChain.h"
-
+#include "jad_track_class.hh"
 #include "D2Reader.hh"
 #include "Reader.hh"
 
@@ -172,6 +172,23 @@ std::vector<jjet> D2Reader::GetJet() const {
     std::sort(jet_collection.begin(), jet_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return jet_collection;
 }
+
+std::vector<jtrack> D2Reader::GetIsoChargedTrack() const { 
+   std::vector<jtrack> tracks;
+   return tracks;
+}
+
+/*std::vector<jtrack> D2Reader::GetIsoChargedTrack() const {
+    std::vector<jtrack> track_collection;
+
+    for(int i = 0; i < CTRACK->GetEntries(); ++i)
+    {
+	Track *track = (Track*) CTRACK->At(i);
+	track_collection.push_back(jtrack(track->P4().Px(),track->P4().Py(),track->P4().Pz(),track->P4().E(),track->Charge,true));
+    }
+    std::sort(track_collection.begin(), track_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+    return track_collection;
+}*/
 
 std::vector<jlepton> D2Reader::GetElec() const {
     std::vector<jlepton> electron_collection; 

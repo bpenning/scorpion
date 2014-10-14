@@ -7,6 +7,7 @@
 #include "jad_jet_class.hh"
 #include "jad_particle_class.hh"
 #include "jad_lepton_class.hh"
+#include "jad_track_class.hh"
 #include "jad_photon_class.hh"
 #include "jad_object_class.hh"
 #include "jBlockClasses.hh"
@@ -29,6 +30,7 @@ public :
   std::vector<jjet> GetTauJet() const;
   std::vector<jlepton> GetElec() const;
   std::vector<jlepton> GetMuon() const;
+  std::vector<jtrack> GetIsoChargedTrack() const;
   std::vector<jphoton> GetPhoton() const;
   std::vector<jjet> GetMet() const;
   std::vector<jparticle> GetGenParticle() const;
@@ -51,6 +53,7 @@ private:
   const TClonesArray * JET;   
   const TClonesArray * TAUJET;
   const TClonesArray * PHOTON;
+  const TClonesArray * CTRACK;
   const TClonesArray * ELEC; 
   const TClonesArray * MUON; 
   const TClonesArray * ETMIS;
