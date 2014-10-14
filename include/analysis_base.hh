@@ -49,6 +49,7 @@ public:
 
   void SetName(const std::string & newname);
   void SetFitMode(const std::string & newname);
+  void SetNumBins(const int &);
   void SetExperiment(const std::string & newexp);
   void SetLuminosity(const double & newlumi);
   void SetDataYields(const std::vector<int> & datayields);

@@ -26,7 +26,7 @@ const double FileMap::GetCrossSection(const std::string & experiment) const {
       return (ii->second).GetCrossSection();
     }
   }
-  std::cout << "Experiment not found. No cross-section returned" << std::endl;
+  std::cout << "Experiment '" << experiment << "' not found. No cross-section returned" << std::endl;
 
 }
 const int FileMap::GetReader() const {

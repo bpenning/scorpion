@@ -274,12 +274,16 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
           double maxCls = 0.0;
           //find the maximum index
           for (unsigned int i=0; i<fitresults.size(); i++){
-            double cls = fitresults[i].cls;
+            double cls = 1.0 - fitresults[i].cls;
             if (cls > maxCls){
               maxClsIndex = i;
               maxCls = cls;
             }
           }
+          std::cout << "Strongest CLs " << maxCls << " at index : " << maxClsIndex << std::endl; 
+          //set data yields back to real
+          datayields.clear();
+          datayields = (*an)->GetDataYields();
           //set data to the strongest expected limit
 		  datayields[0] = datayields[maxClsIndex];
 		  signalyields[0] = signalyields[maxClsIndex];
@@ -290,6 +294,7 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
 		  bgyields.erase( bgyields.begin()+1, bgyields.end());
 		  bguncert.erase( bguncert.begin()+1, bguncert.end());
           (*an)->SetFitMode("combined");
+          (*an)->SetNumBins(1);
         }
 		//check if data file needs to be written out (for debug or use with Higgs Limit code)
 		if(savestatfile) {
@@ -867,15 +872,15 @@ void AnalysisManager::SaveStatFile(const std::string & fitmode,
 	myfile << "kmax " << numbins+1 << "  number of nuisance parameters (sources of systematical uncertainties)" << std::endl;
 	myfile << "------------" << std::endl;
 	myfile << "# n bins" << std::endl;
-	myfile << "bin            ";
+//	myfile << "bin            ";
+//
+//	for(unsigned int i=0; i<numbins; i++) {
+//	    myfile << "b" << i+1;
+//	    if(i==(numbins - 1)) { myfile << std::endl; }
+//	    else { myfile << "  "; }
+//	}
 
-	for(unsigned int i=0; i<numbins; i++) {
-	    myfile << "b" << i+1;
-	    if(i==(numbins - 1)) { myfile << std::endl; }
-	    else { myfile << "  "; }
-	}
-
-	myfile << "observation    ";
+	myfile << "Observation    ";
 	for(unsigned int i=0; i<numbins; i++) {
 	    myfile << datayields.at(i);
 	    if(i==(numbins - 1)) { myfile << std::endl; }
@@ -891,17 +896,17 @@ void AnalysisManager::SaveStatFile(const std::string & fitmode,
 
 	myfile << "bin            ";
 	for(unsigned int i=0; i<numbins; i++) { 
-	    myfile << "b" << i+1 << "    " << "b" << i+1;
+	    myfile <<  i+1 << "    "  << i+1;
 	    if(i==(numbins - 1)) { myfile << std::endl; }
 	    else { myfile << "   "; }
 	}
 
-	myfile << "process        ";
-	for(unsigned int i=0; i<numbins; i++) {
-	    myfile << "sig    bg";
-	    if(i==(numbins - 1)) { myfile << std::endl; }
-	    else { myfile << "    "; } 
-	}
+//	myfile << "process        ";
+//	for(unsigned int i=0; i<numbins; i++) {
+//	    myfile << "sig    bg";
+//	    if(i==(numbins - 1)) { myfile << std::endl; }
+//	    else { myfile << "    "; } 
+//	}
 
 	myfile << "process         ";
 	for(unsigned int i=0; i<numbins; i++) {
@@ -918,7 +923,7 @@ void AnalysisManager::SaveStatFile(const std::string & fitmode,
 	}
 
 	myfile << "------------" << std::endl;
-	myfile << "signal   lnN   ";
+	myfile << "1   lnN   ";
 	for(unsigned int i=0; i<numbins; i++) {
 	    myfile << sigerror + 1.00 << "   " << " -";
 	    if(i==(numbins - 1)) { myfile << "   15% uncertainty on signal" << std::endl; }
@@ -927,7 +932,7 @@ void AnalysisManager::SaveStatFile(const std::string & fitmode,
 
 	unsigned int countme=0; //to place the required bg uncertainty in the right order since number of entries depends on mask
 	for(unsigned int i=0; i<numbins; i++) {
-	    myfile << "bgb" << i+1 << "    lnN     ";
+	    myfile <<  i+2 << "    lnN     ";
 	    for(unsigned int j=0; j<numbins; j++) {
 		if(j == countme) { myfile << "-    " << bguncert.at(i) + 1.00 << "    ";}
 		else {myfile << "-     -    ";}

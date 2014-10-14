@@ -200,6 +200,11 @@ void AnalysisBase::SetFitMode(const std::string & newFitMode) {
   return;
 }
 
+void AnalysisBase::SetNumBins(const int & newNumBins) {
+  mNumBins = newNumBins;
+  return;
+}
+
 void AnalysisBase::SetExperiment(const std::string & newexp) {
   mExperiment = newexp;
   return;
