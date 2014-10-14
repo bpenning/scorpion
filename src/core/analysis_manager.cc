@@ -13,10 +13,11 @@ AnalysisManager::~AnalysisManager() {
   std::cout << "--ALL DONE--" << std::endl;
 }
 
-AnalysisManager::AnalysisManager(const std::string & outputpath, const bool & loadgeninfo) {
+AnalysisManager::AnalysisManager(const std::string & outputpath, const bool & loadgeninfo, const bool & useEventWeight) {
   this->SetupOutputFile(outputpath+"outputfile.root");
   mOutputPath = outputpath; //set the outputpath as a private member variable
   mLoadGenInfo = loadgeninfo;
+  mUseEventWeights = useEventWeight;
   if(mLoadGenInfo) {
     std::cout << "NOTE: Generator information will be read - turn this off if you are not using it (to speed things up!)" << std::endl;
   }
@@ -195,24 +196,37 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 
 	unsigned int numevents = mytreereader->GetEntries();
 	std::cout << "there are " << numevents << " events." << std::endl; 
-	double sum = 0.0;
-	for(unsigned int counter=0; counter<numevents; counter++) {
-	   gentreereader->ReadEntry(counter);
-	   double event_weight = gentreereader->GetWeight();
+	double sum = 0.0 ;
+    if (mUseEventWeights){
+      for(unsigned int counter=0; counter<numevents; counter++) {
+           gentreereader->ReadEntry(counter);
+           double event_weight = gentreereader->GetWeight();
            sum+=event_weight;
-
-	   }
+         }
+     }
+     else{
+       sum = numevents;
+     }
+       std::cout << "The sum over the weights is: " << sum << std::endl;
 	//loop over all events:
 	for(unsigned int event=0; event<numevents; event++) {
 	    mytreereader->ReadEntry(event);	  
-	    if(mLoadGenInfo) {
+	    if(mLoadGenInfo || mUseEventWeights) {
 		// JM: added functionality in the manager to turn on/off generator info
 		// Added to manager since you will not achieve speedup if adding to individual search (overhead in reading the event, not analysing it)
 		// In principle you could NOT require geninfo for e.g. ATLAS analysis but for CMS analysis and here you'd read gen info for both
 		// However, best to run twice in this instance if you want speed up
 		gentreereader->ReadEntry(event);
 	    }
-	    double event_weight = gentreereader->GetWeight();
+
+	    double event_weight = 0.0;
+        if (mUseEventWeights){
+            event_weight = gentreereader->GetWeight();
+        }
+        else{
+            event_weight = 1.0;
+        }
+
 	    //loop over all analyses that depend on this experiment
 	    for(std::vector<AnalysisBase *>::const_iterator jj=(ii->second).begin(); jj != (ii->second).end(); jj++) {
 		//std::cout << "running analysis: " << (*jj)->GetName() << std::endl;

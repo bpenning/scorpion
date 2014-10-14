@@ -16,7 +16,7 @@ def filemap_from_dict(filemap_dict, internal_name):
         pairmap[experiment] = pair
     return j.FileMap(internal_name, pairmap,1)
 
-def runlim(outdir, filemap_dict, gen_info, calculate_r=False, 
+def runlim(outdir, filemap_dict, gen_info, use_event_weights, calculate_r=False, 
         calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
         alphat7bb=0, monojet20b=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
         ss820b=0, ge3lp20b=0):
@@ -51,7 +51,7 @@ def runlim(outdir, filemap_dict, gen_info, calculate_r=False,
             bg_cms3l8, bgunc_cms3l8, data_cms3l8, 'combined', calculate_r)
 
     
-    mgr = j.AnalysisManager(outdir, gen_info) #bool for geninfo
+    mgr = j.AnalysisManager(outdir, gen_info, use_event_weights) #bool for geninfo
     
     #7 TeV searches
     if alphat7bb:

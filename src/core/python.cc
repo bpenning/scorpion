@@ -26,7 +26,7 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 {
 
     class_<AnalysisManager>("AnalysisManager")
-	.def(init<const std::string &, const bool &>())
+	.def(init<const std::string &, const bool &, const bool &>())
 	//.def("run", &AnalysisManager::Run)
 	.def("run", &AnalysisManager::RunMany)
 	.def("add", &AnalysisManager::Add)

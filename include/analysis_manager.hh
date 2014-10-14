@@ -38,7 +38,7 @@ class AnalysisManager {
 public:
   AnalysisManager();
   ~AnalysisManager();
-  AnalysisManager(const std::string & outputpath, const bool & loadgeninfo);
+  AnalysisManager(const std::string & outputpath, const bool & loadgeninfo, const bool & useEventWeights);
 
   void Add(AnalysisBase & analysis);
   void Run(const FileMap & fileobj);
@@ -74,6 +74,7 @@ private:
   std::string mOutputPath;
   std::string mFolderName;
   bool mLoadGenInfo;
+  bool mUseEventWeights;
 };
 
 #endif
