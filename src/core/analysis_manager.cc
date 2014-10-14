@@ -195,6 +195,13 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 
 	unsigned int numevents = mytreereader->GetEntries();
 	std::cout << "there are " << numevents << " events." << std::endl; 
+	double sum = 0.0;
+	for(unsigned int counter=0; counter<numevents; counter++) {
+	   gentreereader->ReadEntry(counter);
+	   double event_weight = gentreereader->GetWeight();
+           sum+=event_weight;
+
+	   }
 	//loop over all events:
 	for(unsigned int event=0; event<numevents; event++) {
 	    mytreereader->ReadEntry(event);	  
@@ -205,21 +212,24 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 		// However, best to run twice in this instance if you want speed up
 		gentreereader->ReadEntry(event);
 	    }
+	    double event_weight = gentreereader->GetWeight();
 	    //loop over all analyses that depend on this experiment
 	    for(std::vector<AnalysisBase *>::const_iterator jj=(ii->second).begin(); jj != (ii->second).end(); jj++) {
 		//std::cout << "running analysis: " << (*jj)->GetName() << std::endl;
-		double weight = (1.0E+015 * (*jj)->GetLuminosity())  / (numevents / fileobj.GetCrossSection(ii->first));
+//		double weight = (1.0E+015 * (*jj)->GetLuminosity())  / (numevents / fileobj.GetCrossSection(ii->first));
+		double weight = (1.0E+015 * (*jj)->GetLuminosity()*event_weight)  / (sum / fileobj.GetCrossSection(ii->first));
 		//Run analysis
 		(*jj)->Run(mytreereader, gentreereader, weight);
 	    }
 	}
+	delete mytreereader;
+	delete gentreereader;
 
     }
 
   } else {
       std::cerr << "couldn't find data in file... quitting" << std::endl;
   }
-
   return;
 
 }
