@@ -130,6 +130,9 @@ bg_monojet20 = DoubleVector([49154.0, 18506.0, 7875.0, 3663.0,1931.0,949.0,501.0
 bgunc_monojet20 = DoubleVector([0.034, 0.037,0.043,0.054,0.068,0.087,0.12])
 data_monojet20 = IntVector([50419, 19108, 8056, 3677,1772,894,508])
 
+bg_monojet20ss = DoubleVector([35862.0, 17409.0, 8064.0, 3907.0,2098.0,1096.0,563.0])
+bgunc_monojet20ss = DoubleVector([0.0411, 0.046,0.054,0.064,0.076,0.097,0.126])
+data_monojet20ss = IntVector([36582, 17646, 8119, 3896, 1898, 1003, 565])
 
 bg_zerolepmt2_8_20_gluino_test = DoubleVector([
       #CMS PAS SUS-13-019 Table 2
