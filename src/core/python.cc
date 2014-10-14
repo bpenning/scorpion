@@ -61,6 +61,27 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 		const bool &
 		>());
     ;
+    class_<AlphaTb, bases<AnalysisBase> >("AlphaT20b", init<const std::string &, const std::string &, const unsigned int &>())
+	.def(init<
+		const std::string &, 
+		const std::string &, 
+		const unsigned int &, 
+		const double &, 
+		//const std::vector<int> &, 
+		const std::vector<double> & 
+		>())
+	.def(init<
+		const std::string &, 
+		const std::string &, 
+		const unsigned int &, 
+		const double &, 
+		const std::vector<double> &,
+		const std::vector<double> &,
+		const std::vector<int> &,
+		const std::string &,
+		const bool &
+		>());
+    ;
     class_<CmsOs5Fb, bases<AnalysisBase> >("CmsOs5Fb", init<const std::string &, const std::string &, const unsigned int &>())
 	.def(init<
 		const std::string &, 
