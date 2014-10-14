@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import optparse
-from python.make_filemap_dict import filepair_dict_from_pythia6_single_diroctory
+from python.make_filemap_dict import filepair_dict_from_pythia6_single_directory
+from python.make_filemap_dict import filepair_dict_from_pythia8_single_directory
 from python.run_limit_code import runlim
 from python.stop_xsections import get_stop_x_section_from_slha_file
 from python.stop_xsections import get_sbot_x_section_from_slha_file
@@ -70,26 +71,29 @@ def parse_args():
             help='provide slha file from which to extract mgluino')
     parser.add_option('--xsec-factor', type=float, default=1.0)
     parser.add_option('--rootfile', default='delphes-output.root')
+    parser.add_option('--pythia-version', default='6')
     options, args = parser.parse_args()
     return options
 
 def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
         with_cms_stop_cross_section, with_cms_sbot_cross_section,
         with_cms_gluino_cross_section, xsec_factor, experiments, rootfile,
-        analyses, gen_info):
+        analyses, gen_info, pythia_version):
     """
     Main program
     """
     if not len(pythia_delphes_dirs) == len(experiments):
         print('ERROR: the number of directories does not equal the number of '
                 'experiments')
-    #FIXME: reintroduce pythia 8 when needed
-    filepair_dict_from_single_diroctory = filepair_dict_from_pythia6_single_diroctory
+    if pythia_version == '6':
+        filepair_dict_from_single_directory = filepair_dict_from_pythia6_single_directory
+    elif pythia_version == '8':
+        filepair_dict_from_single_directory = filepair_dict_from_pythia8_single_directory
     filemap_dict = {}
     for i in range(len(experiments)):
         pythia_delphes_dir = pythia_delphes_dirs[i]
         experiment = experiments[i]
-        filepair_dict = filepair_dict_from_single_diroctory(pythia_delphes_dir,
+        filepair_dict = filepair_dict_from_single_directory(pythia_delphes_dir,
                 rootfile)
         if with_cms_stop_cross_section:
             slhafile = with_cms_stop_cross_section
