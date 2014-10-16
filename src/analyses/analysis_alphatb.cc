@@ -45,7 +45,7 @@ void AlphaTb::initHistos() {
   athist3jets = new TH1D("athist3jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
   athist4jets = new TH1D("athist4jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
   athist5jets = new TH1D("athist5jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
-  jet1pt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
+  jet1pt = new TH1D("firstjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
   jet2pt = new TH1D("secondjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
   deltaphi = new TH1D("deltaphi",";;",72,-0.05,3.55);
   njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
