@@ -3,6 +3,7 @@
 #include <vector>
 #include "analysis_os5.hh"
 #include "analysis_alphatb.hh"
+#include "analysis_alphat20b.hh"
 #include "analysis_monojet8.hh"
 #include "analysis_monojet8ss.hh"
 #include "analysis_zerolep8.hh"
@@ -62,7 +63,7 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 		const bool &
 		>());
     ;
-    class_<AlphaTb, bases<AnalysisBase> >("AlphaT20b", init<const std::string &, const std::string &, const unsigned int &>())
+    class_<AlphaT20b, bases<AnalysisBase> >("AlphaT20b", init<const std::string &, const std::string &, const unsigned int &>())
 	.def(init<
 		const std::string &, 
 		const std::string &, 

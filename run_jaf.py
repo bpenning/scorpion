@@ -83,6 +83,7 @@ def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
     """
     Main program
     """
+    print gen_info
     if not len(pythia_delphes_dirs) == len(experiments):
         print('ERROR: the number of directories does not equal the number of '
                 'experiments')
