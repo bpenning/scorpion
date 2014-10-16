@@ -4,7 +4,7 @@ import libjad_DelphesAnalysis as j
 from python.core.types import *
 from samples.exp_values import *
 
-def filemap_from_dict(filemap_dict, internal_name):
+def filemap_from_dict(filemap_dict,delphes_int, internal_name):
     #exctract relevant parameters form dicionary
     pairmap = j.jad_FilePairMap()
     for experiment, filepair_dict in filemap_dict.items():
@@ -14,9 +14,9 @@ def filemap_from_dict(filemap_dict, internal_name):
         filelist = StringVector(rootfiles)
         pair = j.FilePair(xsec, filelist)
         pairmap[experiment] = pair
-    return j.FileMap(internal_name, pairmap,1)
+    return j.FileMap(internal_name, pairmap,delphes_int)
 
-def runlim(outdir, filemap_dict, gen_info, use_event_weights, calculate_r=False, 
+def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, calculate_r=False, 
         calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
         alphat7bb=0, monojet20b=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
         ss820b=0, ge3lp20b=0):
@@ -72,7 +72,7 @@ def runlim(outdir, filemap_dict, gen_info, use_event_weights, calculate_r=False,
     if ge3lp20b:
         mgr.add(ge3lp8_20b)
 
-    filemap = filemap_from_dict(filemap_dict, 'jaf')
+    filemap = filemap_from_dict(filemap_dict,delphes_int, 'jaf')
     mgr.run(FileMapVector([filemap]), "")
     mgr.limit(0.20, write_stats_file, do_combo, calculate_r_combo)
     mgr.write()

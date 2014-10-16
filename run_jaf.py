@@ -73,17 +73,26 @@ def parse_args():
     parser.add_option('--xsec-factor', type=float, default=1.0)
     parser.add_option('--rootfile', default='delphes-output.root')
     parser.add_option('--pythia-version', default='6')
+    parser.add_option('--delphes-version',choices=('2','3'), default='3')
     options, args = parser.parse_args()
     return options
 
 def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
         with_cms_stop_cross_section, with_cms_sbot_cross_section,
         with_cms_gluino_cross_section, xsec_factor, experiments, rootfile,
-        analyses, gen_info, pythia_version, use_event_weights):
+        analyses, gen_info, pythia_version, use_event_weights,delphes_version):
     """
     Main program
     """
-    print gen_info
+    delphes_int = -1
+    if (delphes_version == '2'):
+	delphes_int = 0
+    elif (delphes_version == '3'):
+	delphes_int = 1
+    else:
+	print "Invalid delphes option"
+	exit()
+
     if not len(pythia_delphes_dirs) == len(experiments):
         print('ERROR: the number of directories does not equal the number of '
                 'experiments')
@@ -113,7 +122,7 @@ def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
             filepair_dict['xsec'] = with_cross_section
         filepair_dict['xsec'] = xsec_factor*filepair_dict['xsec']
         filemap_dict[experiment] = filepair_dict
-    runlim(jaf_output_dir, filemap_dict, gen_info, use_event_weights, **analyses_kwargs)
+    runlim(jaf_output_dir, filemap_dict, gen_info,delphes_int, use_event_weights, **analyses_kwargs)
 
 if __name__ == "__main__":
     main(**vars(parse_args()))
