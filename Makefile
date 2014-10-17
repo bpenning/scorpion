@@ -13,7 +13,8 @@ BOOST_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/boost/1.47.0/lib
 #MINE
 #ROOFIT_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/roofit/5.32.00-cms5/lib
 LIMIT_LIB=/vols/cms03/mc3909/LandS
-DELPHES_LIB=/home/hep/mc3909/scorpion/
+#DELPHES_LIB=/home/hep/mc3909/scorpion/
+DELPHES_LIB=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 CXX=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/gcc/4.6.2/bin/g++
 
