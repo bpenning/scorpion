@@ -28,7 +28,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
         os.makedirs(outdir)
    
     if expected_limits:
-        print "calculating expected limits"
+        print('Calculating expected limits')
         global data_at7b,data_monojet20,data_alphat20b,data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8
         data_at7b=IntVector([int(round(x)) for x in bg_at7b])
         data_monojet20=IntVector([int(round(x)) for x in bg_monojet20])
@@ -39,7 +39,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
         data_os5=IntVector([int(round(x)) for x in bg_os5])
         data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
     else:
-        print "calculating observed limits"
+        print('Calculating observed limits')
 
 # 7 TeV analyses
     alphat7_5b = j.AlphaTb('alphaTb7_analysis5','CMS7', 32, 4.98, bg_at7b, 
