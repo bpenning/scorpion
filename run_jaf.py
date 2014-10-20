@@ -61,6 +61,7 @@ def parse_args():
             default='all-7tev', help='specify which analeses to run')
     parser.add_option('--gen-info', action='store_true')
     parser.add_option('--use-event-weights', action='store_true')
+    parser.add_option('--expected-limits', action='store_true')
     parser.add_option('--jaf-output-dir')
     parser.add_option('--with-cross-section', type=float,
             help='give xsec (in barns)')
@@ -80,7 +81,7 @@ def parse_args():
 def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
         with_cms_stop_cross_section, with_cms_sbot_cross_section,
         with_cms_gluino_cross_section, xsec_factor, experiments, rootfile,
-        analyses, gen_info, pythia_version, use_event_weights,delphes_version):
+        analyses, gen_info, pythia_version, use_event_weights,delphes_version,expected_limits):
     """
     Main program
     """
@@ -122,7 +123,7 @@ def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
             filepair_dict['xsec'] = with_cross_section
         filepair_dict['xsec'] = xsec_factor*filepair_dict['xsec']
         filemap_dict[experiment] = filepair_dict
-    runlim(jaf_output_dir, filemap_dict, gen_info,delphes_int, use_event_weights, **analyses_kwargs)
+    runlim(jaf_output_dir, filemap_dict, gen_info,delphes_int, use_event_weights, expected_limits, **analyses_kwargs)
 
 if __name__ == "__main__":
     main(**vars(parse_args()))
