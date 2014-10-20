@@ -304,7 +304,7 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
               maxCls = cls;
             }
           }
-          std::cout << "Strongest CLs " << maxCls << " at index : " << maxClsIndex << std::endl; 
+          std::cout << "Strongest expected CLs " << maxCls << " at index : " << maxClsIndex << std::endl; 
           //set data yields back to real
           datayields.clear();
           datayields = (*an)->GetDataYields();
