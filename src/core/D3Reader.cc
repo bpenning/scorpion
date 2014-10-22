@@ -198,13 +198,19 @@ std::vector<jjet> D3Reader::GetJet() const {
 }
 std::vector<jtrack> D3Reader::GetIsoChargedTrack() const {
     std::vector<jtrack> track_collection;
-
-    for(int i = 0; i < CTRACK->GetEntries(); ++i)
+    if(CTRACK)
     {
-	Track *track = (Track*) CTRACK->At(i);
-	track_collection.push_back(jtrack(track->P4().Px(),track->P4().Py(),track->P4().Pz(),track->P4().E(),track->Charge,true));
+	for(int i = 0; i < CTRACK->GetEntries(); ++i)
+	{
+	    Track *track = (Track*) CTRACK->At(i);
+	    track_collection.push_back(jtrack(track->P4().Px(),track->P4().Py(),track->P4().Pz(),track->P4().E(),track->Charge,true));
+	}
+	std::sort(track_collection.begin(), track_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     }
-    std::sort(track_collection.begin(), track_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
+    /*else
+    {
+	std::cerr<<"No charged tracks info - returning empty vector" << std::endl;
+    }*/
     return track_collection;
 }
 
@@ -281,14 +287,14 @@ std::vector<jparticle> D3Reader::GetGenParticle() const {
     std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return particle_collection;
 }
-    double D3Reader::GetWeight() const {
-	if (GENEVENT->GetEntries()>0)
-	{
-	    HepMCEvent *event = (HepMCEvent *)GENEVENT->At(0); 
-	    return event->Weight;
-	} 
-	return 1.0;
-    }
+double D3Reader::GetWeight() const {
+    if (GENEVENT->GetEntries()>0)
+    {
+	HepMCEvent *event = (HepMCEvent *)GENEVENT->At(0); 
+	return event->Weight;
+    } 
+    return 1.0;
+}
 
 //   const TClonesArray * D2Reader::GenEvent() const {
 //   return GENEVENT;
