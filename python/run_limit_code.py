@@ -19,7 +19,7 @@ def filemap_from_dict(filemap_dict,delphes_int, internal_name):
 def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expected_limits,calculate_r=False, 
         calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
         alphat7bb=0, monojet20b=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
-        ss820b=0, ge3lp20b=0):
+        ss820b=0, ge3lp20b=0,alphat20bvalid = 0):
 
     #jaf needs the directory to end in '/'
     if not outdir[:-1] =='/':
@@ -29,7 +29,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
    
     if expected_limits:
         print('Calculating expected limits')
-        global data_at7b,data_monojet20,data_alphat20b,data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8
+        global data_at7b,data_monojet20,data_alphat20b,data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8, data_alphat20b_valid
         data_at7b=IntVector([int(round(x)) for x in bg_at7b])
         data_monojet20=IntVector([int(round(x)) for x in bg_monojet20])
         data_alphat20b=IntVector([int(round(x)) for x in bg_alphat20b])
@@ -38,6 +38,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
         data_ss8HighPt=IntVector([int(round(x)) for x in bg_ss8HighPt])
         data_os5=IntVector([int(round(x)) for x in bg_os5])
         data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
+        data_alphat20b_valid=IntVector([int(round(x)) for x in bg_alphat20b_valid])
     else:
         print('Calculating observed limits')
 
@@ -50,6 +51,9 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
             bgunc_monojet20, data_monojet20, 'strongest', calculate_r)
     alphat8_20b = j.AlphaT20b('alphaT20b_analysis20', 'CMS8',75, 18.5, 
             bg_alphat20b, bgunc_alphat20b, data_alphat20b, 'combined', 
+            calculate_r)
+    alphat8_20b_valid = j.AlphaT20bValid('alphaT20b_analysis20_valid', 'CMS8',44, 18.5, 
+            bg_alphat20b_valid, bgunc_alphat20b_valid, data_alphat20b_valid, 'combined', 
             calculate_r)
     mt2_20b = j.ZeroLepMt2('MT2_analysis20', 'CMS8', 123, 19.5, 
             bg_zerolepmt2_8_20, bgunc_zerolepmt2_8_20,data_zerolepmt2_8_20,
@@ -77,6 +81,8 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
         mgr.add(mt2_20b)
     if alphat20b:
         mgr.add(alphat8_20b)
+    if alphat20bvalid:
+        mgr.add(alphat8_20b_valid)
     if os5b:
          mgr.add(os5)
     if lp20b:

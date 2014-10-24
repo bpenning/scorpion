@@ -6,7 +6,7 @@ from python.run_limit_code import runlim
 from python.stop_xsections import get_stop_x_section_from_slha_file
 from python.stop_xsections import get_sbot_x_section_from_slha_file
 from python.gluino_xsections import get_gluino_x_section_from_slha_file
-
+from python.extract_CLs import print_and_save_CLs
 analyses_dict = {
         'all-7tev': ['ss5b', 'os5b', 'lp5b', 'alphat7bb'],
         'os5b-only': ['os5b'],
@@ -17,6 +17,7 @@ analyses_dict = {
         'ss820b-only': ['ss820b'],
         'alphat-only': ['alphat7bb'],
         'alphat8-only': ['alphat20b'],
+        'alphat8valid-only': ['alphat20bvalid'],
         'all-8tev': ['monojet20b', 'mt220b', 'lp20b', 'ss820b', 'os5b',
             'ge3lp20b'],
         '8tev-only': ['monojet20b', 'mt220b', 'lp20b', 'ss820b',
@@ -123,7 +124,11 @@ def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
             filepair_dict['xsec'] = with_cross_section
         filepair_dict['xsec'] = xsec_factor*filepair_dict['xsec']
         filemap_dict[experiment] = filepair_dict
+	print filepair_dict
     runlim(jaf_output_dir, filemap_dict, gen_info,delphes_int, use_event_weights, expected_limits, **analyses_kwargs)
+    print_and_save_CLs(jaf_output_dir)
+    #jaf_CMS8_alphaT20b_analysis20
+    
 
 if __name__ == "__main__":
     main(**vars(parse_args()))
