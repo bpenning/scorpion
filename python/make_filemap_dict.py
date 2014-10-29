@@ -1,12 +1,16 @@
 import commands
 import os
 
-def filepair_dict_from_pythia6_single_directory(dir, rootfile):
+def filepair_dict_from_pythia6_single_directory(dir, rootfile,cross_section):
     #UGLY but this works
-    (err, xsec) = commands.getstatusoutput('grep "TOTAL" ' + dir +
+    if cross_section: 
+	xsec=cross_section
+    else:
+	print "Using cross section from pythia-output.log"
+	(err, xsec) = commands.getstatusoutput('grep "TOTAL" ' + dir +
             '/pythia-output.log | grep -o "[0-9]\{1,100\}\.[0-9]\{1,100\}[E\-]\{0,2\}[0-9]\{0,3\}"')
     #very important: convert from milibarn to barn
-    xsec=float(xsec)*1e-3
+	xsec=float(xsec)*1e-3
     #to be robust against giving the absolute path to the rootfile
     rootfile = os.path.basename(rootfile)
     rootfile_path = os.path.join(dir,rootfile)
@@ -29,12 +33,16 @@ def filepair_dict_from_pythia6_single_directory(dir, rootfile):
 #            }
 #    
 #
-def filepair_dict_from_pythia8_single_directory(dir,rootfile):
+def filepair_dict_from_pythia8_single_directory(dir,rootfile,cross_section):
     #get xsection
-    pythialog=os.path.join(dir,'pythia-output.log')
-    with open(pythialog,'r') as f:
-        relevant_block=False
-        for line in f:
+    if cross_section: 
+	xsec=cross_section
+    else:
+	print "Using cross section from pythia-output.log"
+	pythialog=os.path.join(dir,'pythia-output.log')
+	with open(pythialog,'r') as f:
+	 relevant_block=False
+	 for line in f:
             if 'PYTHIA Event and Cross Section Statistics' in line:
                 relevant_block=True
             if 'End PYTHIA Event and Cross Section Statistics' in line:
