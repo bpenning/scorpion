@@ -107,7 +107,7 @@ def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
         pythia_delphes_dir = pythia_delphes_dirs[i]
         experiment = experiments[i]
         filepair_dict = filepair_dict_from_single_directory(pythia_delphes_dir,
-                rootfile)
+                rootfile,with_cross_section)
         if with_cms_stop_cross_section:
             slhafile = with_cms_stop_cross_section
             filepair_dict['xsec'] = get_stop_x_section_from_slha_file(slhafile)
@@ -124,9 +124,8 @@ def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
             filepair_dict['xsec'] = with_cross_section
         filepair_dict['xsec'] = xsec_factor*filepair_dict['xsec']
         filemap_dict[experiment] = filepair_dict
-	print filepair_dict
     runlim(jaf_output_dir, filemap_dict, gen_info,delphes_int, use_event_weights, expected_limits, **analyses_kwargs)
-    print_and_save_CLs(jaf_output_dir)
+    #print_and_save_CLs(jaf_output_dir)
     #jaf_CMS8_alphaT20b_analysis20
     
 
