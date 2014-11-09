@@ -18,7 +18,7 @@ def filemap_from_dict(filemap_dict,delphes_int, internal_name):
 
 def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expected_limits,calculate_r=False, 
         calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
-        alphat7bb=0, monojet20b=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
+        alphat7bb=0, monojet20b=0, dmbsr1=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
         ss820b=0, ge3lp20b=0,alphat20bvalid = 0):
 
     #jaf needs the directory to end in '/'
@@ -29,9 +29,10 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
    
     if expected_limits:
         print('Calculating expected limits')
-        global data_at7b,data_monojet20,data_alphat20b,data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8, data_alphat20b_valid
+        global data_at7b,data_monojet20, data_DMbSR1, data_alphat20b,data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8, data_alphat20b_valid
         data_at7b=IntVector([int(round(x)) for x in bg_at7b])
         data_monojet20=IntVector([int(round(x)) for x in bg_monojet20])
+        data_DMbSR1=IntVector([int(round(x)) for x in bg_DMbSR1])
         data_alphat20b=IntVector([int(round(x)) for x in bg_alphat20b])
         data_zerolepmt2_8_20=IntVector([int(round(x)) for x in bg_zerolepmt2_8_20])
         data_lp8_20b_all=IntVector([int(round(x)) for x in bg_lp8_20b_all])
@@ -49,6 +50,10 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     # Final 8 TeV searches
     monojet20 = j.MonoJet8('MonoJet20_analysis20', 'CMS8', 7, 19.5, bg_monojet20,
             bgunc_monojet20, data_monojet20, 'strongest', calculate_r)
+
+    dmbsr1 = j.DMbSR1('DMbSR1_analysis', 'CMS8', 1, 19.5, bg_DMbSR1,
+           bgunc_DMbSR1, data_DMbSR1, 'strongest', calculate_r)
+    
     alphat8_20b = j.AlphaT20b('alphaT20b_analysis20', 'CMS8',75, 18.5, 
             bg_alphat20b, bgunc_alphat20b, data_alphat20b, 'combined', 
             calculate_r)
@@ -77,6 +82,8 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     #8 TeV searches
     if monojet20b:
         mgr.add(monojet20)
+    if dmbsr1:
+        mgr.add(dmbsr1)
     if mt220b:
         mgr.add(mt2_20b)
     if alphat20b:
