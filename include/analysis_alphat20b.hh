@@ -18,6 +18,7 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TMath.h"
+#include "EcalMap.hh"
 
 
 class AlphaT20b : public AnalysisBase {
@@ -48,6 +49,7 @@ public:
 
   void Run(const Reader * treereader, const Reader * gentreereader, const double & weight);
   void initHistos();
+  double biasedDPhiMin(std::vector<jjet>  inJets);
 
 private:
 
@@ -63,6 +65,14 @@ private:
   TH1D * athist5jets;
   TH1D * njets;
   TH1D * ejets;
+  TH1D * bDPhiHisto23At53b0;
+  TH1D * bDPhiHistoGe4At53b0;
+  TH1D * bDPhiHisto23At55b0;
+  TH1D * bDPhiHistoGe4At55b0;
+  TH1D * bDPhiHisto23At53b1;
+  TH1D * bDPhiHistoGe4At53b1;
+  TH1D * bDPhiHisto23At55b1;
+  TH1D * bDPhiHistoGe4At55b1;
   TH1D * bjets;
   TH1D * mjets;
   TH1D * mht_over_ht;

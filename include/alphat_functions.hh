@@ -10,6 +10,7 @@
 #include "jad_lepton_class.hh"
 #include "jad_jet_class.hh"
 #include "jad_object_collection.hh"
+#include "jad_ecal_class.hh"
 
 
 struct energy_sums{
@@ -29,7 +30,10 @@ double alphat( const std::vector<double>& et,
 	       std::vector<bool>& pseudo_jet1,
 	       bool list);
 
+std::vector<double> biasedDPhi(std::vector<jjet> inJets);
+bool deadEcalCut(std::vector<jecal> ecalMap,std::vector<jjet> inJets);
 energy_sums make_energy_sums(const std::vector<jjet> & ht275, const std::vector<jjet> & ht325, const std::vector<jjet> & ht375);
 
 energy_sums make_energy_sums_20(const std::vector<jjet> & ht200, const std::vector<jjet> & ht275, const std::vector<jjet> & ht325, const std::vector<jjet> & ht375);
+
 #endif
