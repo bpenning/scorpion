@@ -54,6 +54,10 @@ public:
 private:
 
   TH1D * cut_sel;
+  TH1D * cut_sel23b0;
+  TH1D * cut_selGe4b0;
+  TH1D * cut_sel23b1;
+  TH1D * cut_selGe4b1;
   TH1D * leadingjetpt;
   TH1D * hthist;
   TH1D * mhthist;
@@ -64,7 +68,16 @@ private:
   TH1D * athist4jets;
   TH1D * athist5jets;
   TH1D * njets;
+  TH1D * boostHisto;
   TH1D * ejets;
+  TH1D * bDPhiHisto23At53b0EcalCut;
+  TH1D * bDPhiHistoGe4At53b0EcalCut;
+  TH1D * bDPhiHisto23At55b0EcalCut;
+  TH1D * bDPhiHistoGe4At55b0EcalCut;
+  TH1D * bDPhiHisto23At53b1EcalCut;
+  TH1D * bDPhiHistoGe4At53b1EcalCut;
+  TH1D * bDPhiHisto23At55b1EcalCut;
+  TH1D * bDPhiHistoGe4At55b1EcalCut;
   TH1D * bDPhiHisto23At53b0;
   TH1D * bDPhiHistoGe4At53b0;
   TH1D * bDPhiHisto23At55b0;
@@ -73,13 +86,20 @@ private:
   TH1D * bDPhiHistoGe4At53b1;
   TH1D * bDPhiHisto23At55b1;
   TH1D * bDPhiHistoGe4At55b1;
+
+  TH1D * bDPhiHisto23At53;
+  TH1D * bDPhiHistoGe4At53;
+  TH1D * bDPhiHisto23At53EcalCut;
+  TH1D * bDPhiHistoGe4At53EcalCut;
   TH1D * bjets;
+  TH1D * cTrack;
   TH1D * mjets;
   TH1D * mht_over_ht;
   TH1D * btagrate;
   TH2D * calomet_vs_mht;
   TH2D * ht_vs_mht_pre_alphaT;
   TH2D * ht_vs_mht_post_alphaT;
+  TH2D * ecal_map;
   TH1D * jet1pt;
   TH1D * jet2pt;
   TH1D * deltaphi;

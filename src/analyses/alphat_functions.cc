@@ -70,16 +70,18 @@ bool deadEcalCut(std::vector<jecal> ecalMap,std::vector<jjet> inJets)
 	if (biasedDPhiJet[jet] < minBiasDPhi)
 	{
 
-	    double etaCut = fabs(fabs(inJets[jet].Eta() - 1.5));
+	    double etaCut = fabs(fabs(inJets[jet].Eta()) - 1.5);
 	    double drMin = 100;
 	    int nDeadCells(0);
 	    for (int ecal = 0; ecal < ecalMap.size(); ecal++)
 	    {
 		double drTemp = inJets[jet].DeltaR(ecalMap[ecal]);
 		if (drTemp < 0.3) nDeadCells += ecalMap[ecal].nBadCells();
+		//ecalMap[ecal].Print();
 		if (drMin > drTemp) drMin = drTemp; 
 		
 	    }
+
 	    if ((nDeadCells > nBadCells && drMin < cut) || etaCut < cut2) return false;
 	}
     }

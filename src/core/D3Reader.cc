@@ -278,15 +278,18 @@ std::vector<jjet> D3Reader::GetTauJet() const {
 std::vector<jparticle> D3Reader::GetGenParticle() const {
 
     std::vector<jparticle> particle_collection;
-
-    for(int i = 0; i < GENPARTICLE->GetEntries(); ++i)
+    if (GENPARTICLE)
     {
-	GenParticle *gen = (GenParticle*) GENPARTICLE->At(i);
-	particle_collection.push_back(jparticle(gen->P4().Px(), gen->P4().Py(), gen->P4().Pz(), gen->P4().E(), gen->PID, gen->Status, gen->Charge));
+	for(int i = 0; i < GENPARTICLE->GetEntries(); ++i)
+	{
+	    GenParticle *gen = (GenParticle*) GENPARTICLE->At(i);
+	    particle_collection.push_back(jparticle(gen->P4().Px(), gen->P4().Py(), gen->P4().Pz(), gen->P4().E(), gen->PID, gen->Status, gen->Charge));
+	}
+	std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     }
-    std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return particle_collection;
 }
+
 double D3Reader::GetWeight() const {
     if (GENEVENT->GetEntries()>0)
     {

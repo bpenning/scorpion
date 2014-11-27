@@ -189,8 +189,8 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 		chainGen1.Add((*fil).c_str());
 	    }
 	    //If statement to choose correct reader here (based on number in filemap):
-	    mytreereader= new D3Reader(&chainRec1);
-	    gentreereader= new D3Reader(&chainGen1);
+	    mytreereader= new D3Reader(&chainRec1,false);
+	    gentreereader= new D3Reader(&chainGen1,true);
 
 	}
 
@@ -235,6 +235,7 @@ void AnalysisManager::Run(const FileMap & fileobj) {
 		//Run analysis
 		(*jj)->Run(mytreereader, gentreereader, weight);
 	    }
+	    if (event%1000 == 0) std::cout << std::setprecision(4) << event*100./numevents << "%     " << "\r" <<std::flush;
 	}
 	delete mytreereader;
 	delete gentreereader;
