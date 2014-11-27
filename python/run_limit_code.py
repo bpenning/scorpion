@@ -18,7 +18,7 @@ def filemap_from_dict(filemap_dict,delphes_int, internal_name):
 
 def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expected_limits,calculate_r=False, 
         calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
-        alphat7bb=0, monojet20b=0, dmbsr1=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
+        alphat7bb=0, monojet20b=0, dmbsr1b=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
         ss820b=0, ge3lp20b=0,alphat20bvalid = 0):
 
     #jaf needs the directory to end in '/'
@@ -82,7 +82,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     #8 TeV searches
     if monojet20b:
         mgr.add(monojet20)
-    if dmbsr1:
+    if dmbsr1b:
         mgr.add(dmbsr1)
     if mt220b:
         mgr.add(mt2_20b)

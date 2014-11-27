@@ -104,7 +104,6 @@ void DMbSR1::Run(const Reader * treereader, const Reader * gentreereader, const 
           if(calo_met > 300.0) { 
             cutflow->Fill(5.,weight);
             mSigPred.at(0)+=weight; 
-            std::cout<<"final "<<std::endl;
             
           }
         }

@@ -12,7 +12,7 @@ analyses_dict = {
         'os5b-only': ['os5b'],
         'lp20b-only': ['lp20b'],
         'monojet20b-only': ['monojet20b'],
-        'dmbsr1-only': ['dmbsr1'],
+        'dmbsr1-only': ['dmbsr1b'],
         'ge3lp20b-only': ['ge3lp20b'],
         'mt220b-only': ['mt220b'],
         'ss820b-only': ['ss820b'],
