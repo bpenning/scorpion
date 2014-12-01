@@ -18,7 +18,7 @@ def filemap_from_dict(filemap_dict,delphes_int, internal_name):
 
 def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expected_limits,calculate_r=False, 
         calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
-        alphat7bb=0, monojet20b=0, dmbsr1b=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
+        alphat7bb=0, monojet20b=0, dmbsr1=0, mt220b=0, alphat20b=0, lp20b=0,os5b=0, 
         ss820b=0, ge3lp20b=0,alphat20bvalid = 0):
 
     #jaf needs the directory to end in '/'
@@ -49,13 +49,13 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
 
     # Final 8 TeV searches
     monojet20 = j.MonoJet8('MonoJet20_analysis20', 'CMS8', 7, 19.5, bg_monojet20,
-            bgunc_monojet20, data_monojet20, 'strongest', calculate_r)
+            bgunc_monojet20, data_monojet20, 'individual', calculate_r)
 
     dmbsr1 = j.DMbSR1('DMbSR1_analysis', 'CMS8', 1, 19.5, bg_DMbSR1,
-           bgunc_DMbSR1, data_DMbSR1, 'strongest', calculate_r)
+           bgunc_DMbSR1, data_DMbSR1, 'individual', calculate_r)
     
     alphat8_20b = j.AlphaT20b('alphaT20b_analysis20', 'CMS8',75, 18.5, 
-            bg_alphat20b, bgunc_alphat20b, data_alphat20b, 'combined', 
+            bg_alphat20b, bgunc_alphat20b, data_alphat20b, 'individual', 
             calculate_r)
     alphat8_20b_valid = j.AlphaT20bValid('alphaT20b_analysis20_valid', 'CMS8',44, 18.5, 
             bg_alphat20b_valid, bgunc_alphat20b_valid, data_alphat20b_valid, 'combined', 
@@ -82,7 +82,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     #8 TeV searches
     if monojet20b:
         mgr.add(monojet20)
-    if dmbsr1b:
+    if dmbsr1:
         mgr.add(dmbsr1)
     if mt220b:
         mgr.add(mt2_20b)
