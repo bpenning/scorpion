@@ -84,6 +84,7 @@ void AnalysisBase::initTree() {
   andir->cd();
   analysistree = new TTree("AnalysisTree","AnalysisTree");
   analysistree->Branch("sigpred", &mSigPred);
+  analysistree->Branch("bkgpred", &mBGPred);
   analysistree->Branch("sigeff", &mSigEff);
   analysistree->Branch("sigefftot", &mSigEffTot);
   analysistree->Branch("sigbr", &mSBR);
@@ -131,6 +132,7 @@ void AnalysisBase::FillTree(const double & xsec) {
       (*kk)/=TMath::Sqrt((*mm));
     }
     mSBRTot = tot_sig / TMath::Sqrt(tot_bg);
+    //    std::cout<<"BPBP "<<tot_sig<<" "<<mSigPred<[mNumBins]<std::endl;
   } else if(mBGPred.size() != 0) {
     std::cerr << "Warning: the background vector was not the same size as the number of bins!" << std::endl;
   } else {
