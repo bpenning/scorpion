@@ -201,7 +201,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 				  if(esums.njets >= 2 && esums.njets <= 3){
 				      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(0)+=(SITVweight); }
 				      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(1)+=(SITVweight); }
-				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(2)+=(SITVweight); }
+				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.55 && goodjets325[1].Pt() > 86.7) { mSigPred.at(2)+=(SITVweight); }
 				      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(3)+=(SITVweight); }
 				      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(4)+=(SITVweight); }
 				      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(5)+=(SITVweight); }
@@ -215,7 +215,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 				  if(esums.njets >= 4){
 				      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(11)+=(SITVweight); }
 				      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(12)+=(SITVweight); }
-				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(13)+=(SITVweight); }
+				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.55 && goodjets325[1].Pt() > 86.7) { mSigPred.at(13)+=(SITVweight); }
 				      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(14)+=(SITVweight); }
 				      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(15)+=(SITVweight); }
 				      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(16)+=(SITVweight); }
@@ -231,7 +231,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 				  if(esums.njets >= 2 && esums.njets <= 3){
 				      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(22)+=(SITVweight); }
 				      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(23)+=(SITVweight); }
-				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(24)+=(SITVweight); }
+				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.55 && goodjets325[1].Pt() > 86.7) { mSigPred.at(24)+=(SITVweight); }
 				      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(25)+=(SITVweight); }
 				      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(26)+=(SITVweight); }
 				      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(27)+=(SITVweight); }
@@ -244,7 +244,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 				  if(esums.njets >= 4){
 				      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(33)+=(SITVweight); }
 				      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(34)+=(SITVweight); }
-				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(35)+=(SITVweight); }
+				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.55 && goodjets325[1].Pt() > 86.7) { mSigPred.at(35)+=(SITVweight); }
 				      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(36)+=(SITVweight); }
 				      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(37)+=(SITVweight); }
 				      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(38)+=(SITVweight); }
@@ -261,7 +261,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 				  if(esums.njets >= 2 && esums.njets <= 3){
 				      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(44)+=(SITVweight); }
 				      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(45)+=(SITVweight); }
-				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(46)+=(SITVweight); }
+				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.55 && goodjets325[1].Pt() > 86.7) { mSigPred.at(46)+=(SITVweight); }
 				      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(47)+=(SITVweight); }
 				      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(48)+=(SITVweight); }
 				      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(49)+=(SITVweight); }
@@ -272,7 +272,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 				  if(esums.njets >= 4){
 				      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(53)+=(SITVweight); }
 				      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(54)+=(SITVweight); }
-				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(55)+=(SITVweight); }
+				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.55 && goodjets325[1].Pt() > 86.7) { mSigPred.at(55)+=(SITVweight); }
 				      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(56)+=(SITVweight); }
 				      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(57)+=(SITVweight); }
 				      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(58)+=(SITVweight); }
@@ -285,7 +285,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 				  if(esums.njets >= 4){
 				      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(62)+=(SITVweight); } 
 				      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(63)+=(SITVweight); }
-				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(64)+=(SITVweight); }
+				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.55 && goodjets325[1].Pt() > 86.7) { mSigPred.at(64)+=(SITVweight); }
 				      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(65)+=(SITVweight); }
 				      if(esums.total_ht > 475.0 && esums.total_ht <= 575.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(66)+=(SITVweight); }
 				      if(esums.total_ht > 575.0 && esums.total_ht <= 675.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(67)+=(SITVweight); }
@@ -298,7 +298,7 @@ void AlphaT20b::Run(const Reader * treereader, const Reader * gentreereader, con
 				  if(esums.njets >= 4){ 
 				      if(esums.total_ht > 200.0 && esums.total_ht <= 275.0 && alpha_t > 0.65 && goodjets200[1].Pt() > 73.3) { mSigPred.at(71)+=(SITVweight); }
 				      if(esums.total_ht > 275.0 && esums.total_ht <= 325.0 && alpha_t > 0.60 && goodjets275[1].Pt() > 73.3) { mSigPred.at(72)+=(SITVweight); }
-				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.60 && goodjets325[1].Pt() > 86.7) { mSigPred.at(73)+=(SITVweight); }
+				      if(esums.total_ht > 325.0 && esums.total_ht <= 375.0 && alpha_t > 0.55 && goodjets325[1].Pt() > 86.7) { mSigPred.at(73)+=(SITVweight); }
 				      if(esums.total_ht > 375.0 && esums.total_ht <= 475.0 && goodjets375[1].Pt() > 100.0) { mSigPred.at(74)+=(SITVweight); }
 				      //if(esums.total_ht > 475.0 && esums.total_ht <= 575.0) { mSigPred.at(59)+=(SITVweight); }
 				      //if(esums.total_ht > 575.0 && esums.total_ht <= 675.0) { mSigPred.at(60)+=(SITVweight); }
