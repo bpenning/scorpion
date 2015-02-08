@@ -18,6 +18,7 @@ analyses_dict = {
         'ss820b-only': ['ss820b'],
         'alphat-only': ['alphat7bb'],
         'alphat8-only': ['alphat20b'],
+        'alphat13-only': ['alphat13T'],
         'alphat8valid-only': ['alphat20bvalid'],
         'all-8tev': ['monojet20b', 'mt220b', 'lp20b', 'ss820b', 'os5b',
             'ge3lp20b'],
