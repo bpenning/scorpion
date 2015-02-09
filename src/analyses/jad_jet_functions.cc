@@ -2,85 +2,85 @@
 //Normal Jet Collection (eta and pt cuts)
 std::vector <jjet> goodjetsSkim(const std::vector<jjet> & jet_collection,double ptcut, double etacut)
 {
-    std::vector<jjet> mjetvec;
-    for (int ii=0; ii<jet_collection.size();ii++)
+  std::vector<jjet> mjetvec;
+  for (int ii=0; ii<jet_collection.size();ii++)
     {
-	if(jet_collection[ii].Pt() < ptcut || fabs(jet_collection[ii].Eta()) > etacut) continue;
-	mjetvec.push_back(jet_collection[ii]);
+      if(jet_collection[ii].Pt() < ptcut || fabs(jet_collection[ii].Eta()) > etacut) continue;
+      mjetvec.push_back(jet_collection[ii]);
     }
-    return mjetvec;
+  return mjetvec;
 }
 
 std::vector <jjet> goodbjetsSkim(const std::vector<jjet> & jet_collection,double ptcut, double etacut)
 {
-    std::vector<jjet> mjetvec;
-    for (int ii=0; ii<jet_collection.size();ii++)
+  std::vector<jjet> mjetvec;
+  for (int ii=0; ii<jet_collection.size();ii++)
     {
-	if(jet_collection[ii].Pt() < ptcut || fabs(jet_collection[ii].Eta()) > etacut || !jet_collection[ii].Btag()) continue;
-	mjetvec.push_back(jet_collection[ii]);
+      if(jet_collection[ii].Pt() < ptcut || fabs(jet_collection[ii].Eta()) > etacut || !jet_collection[ii].Btag()) continue;
+      mjetvec.push_back(jet_collection[ii]);
     }
-    return mjetvec;
+  return mjetvec;
 }
 
 //Bad Jet Collection (pt cut normal but eta cut reversed)
 std::vector <jjet> badjetsSkim(const std::vector<jjet> & jet_collection,double ptcut, double etacut)
 {
-    std::vector<jjet> mjetvec;
-    for (int ii=0; ii<jet_collection.size();ii++)
+  std::vector<jjet> mjetvec;
+  for (int ii=0; ii<jet_collection.size();ii++)
     {
-	if(jet_collection[ii].Pt() < ptcut || fabs(jet_collection[ii].Eta()) < etacut) continue;
-	mjetvec.push_back(jet_collection[ii]);
+      if(jet_collection[ii].Pt() < ptcut || fabs(jet_collection[ii].Eta()) < etacut) continue;
+      mjetvec.push_back(jet_collection[ii]);
     }
-    return mjetvec;
+  return mjetvec;
 }
 double getht(const std::vector<jjet> & jets) {
-    double HT=0.0;
-    for(unsigned int i=0;i<jets.size();i++) {
-	HT += jets[i].Pt();
-    }
-    return HT;
+  double HT=0.0;
+  for(unsigned int i=0;i<jets.size();i++) {
+    HT += jets[i].Pt();
+  }
+  return HT;
 }
 //Jet collection with extra deltaR cut
 std::vector<jjet> goodjetsSkimDRcut(const std::vector<jjet> & jet_collection, const float & pt, const float & eta, const std::vector<jlepton> & lep, const double & drlim) {
 
-    //this method drops jets with DR<0.4 with any leptons that pass the selection
+  //this method drops jets with DR<0.4 with any leptons that pass the selection
 
-    std::vector<jjet> jets;
+  std::vector<jjet> jets;
 
-    for (int ii=0; ii<jet_collection.size();ii++)
+  for (int ii=0; ii<jet_collection.size();ii++)
     {
-	//check if any jet has Pt>50 and |eta|<3.0
-	if(jet_collection[ii].Pt() > pt && fabs(jet_collection[ii].Eta()) < eta) {
-	    jjet myjet(jet_collection[ii].Px(), jet_collection[ii].Py(), jet_collection[ii].Pz(), jet_collection[ii].E(), jet_collection[ii].Btag(),jet_collection[ii].TauTag());
-	    bool veto = false;
-	    for(unsigned int j=0; j<lep.size(); j++) {
-		if(myjet.DeltaR(lep[j]) < drlim) {
-		    veto = true;
-		}
-	    }
-	    if(!veto) {
-		jets.push_back(myjet);
-	    }
-	}
+      //check if any jet has Pt>50 and |eta|<3.0
+      if(jet_collection[ii].Pt() > pt && fabs(jet_collection[ii].Eta()) < eta) {
+        jjet myjet(jet_collection[ii].Px(), jet_collection[ii].Py(), jet_collection[ii].Pz(), jet_collection[ii].E(), jet_collection[ii].Btag(),jet_collection[ii].TauTag());
+        bool veto = false;
+        for(unsigned int j=0; j<lep.size(); j++) {
+          if(myjet.DeltaR(lep[j]) < drlim) {
+            veto = true;
+          }
+        }
+        if(!veto) {
+          jets.push_back(myjet);
+        }
+      }
     }
 
-    std::sort(jets.begin(), jets.end(), std::greater<jjet>()); //operators defined in the jjets class
+  std::sort(jets.begin(), jets.end(), std::greater<jjet>()); //operators defined in the jjets class
 
-    return jets;
+  return jets;
 
 }
 
 unsigned int getnbtags(const std::vector<jjet> & jets) {
 
-    unsigned int numbtags = 0;
+  unsigned int numbtags = 0;
 
-    for(unsigned int i=0; i<jets.size(); i++) {
-	if(jets[i].Btag()) {
+  for(unsigned int i=0; i<jets.size(); i++) {
+    if(jets[i].Btag()) {
 	    numbtags++;
-	}
     }
+  }
 
-    return numbtags;
+  return numbtags;
 
 }
 /*
