@@ -34,6 +34,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
         data_monojet20=IntVector([int(round(x)) for x in bg_monojet20])
         data_DMbSR1=IntVector([int(round(x)) for x in bg_DMbSR1])
         data_alphat20b=IntVector([int(round(x)) for x in bg_alphat20b])
+        data_alphat13T=IntVector([int(round(x)) for x in bg_alphat13T])
         data_zerolepmt2_8_20=IntVector([int(round(x)) for x in bg_zerolepmt2_8_20])
         data_lp8_20b_all=IntVector([int(round(x)) for x in bg_lp8_20b_all])
         data_ss8HighPt=IntVector([int(round(x)) for x in bg_ss8HighPt])
@@ -58,7 +59,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
             bg_alphat20b, bgunc_alphat20b, data_alphat20b, 'individual', 
             calculate_r)
 
-    alphat13T_4b = j.AlphaT13T('alphaT20b_analysis20', 'CMS8',75, 4, 
+    alphat13T_4b = j.Alphat13T('alphaT4b_analysis', 'CMS13',75, 4, 
                bg_alphat13T, bgunc_alphat13T, data_alphat13T, 'individual', 
                calculate_r)
         
