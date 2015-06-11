@@ -19,7 +19,7 @@ def filemap_from_dict(filemap_dict,delphes_int, internal_name):
 def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expected_limits,calculate_r=False, 
         calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
         alphat7bb=0, monojet20b=0, dmbsr1=0, mt220b=0, alphat20b=0, alphat13T=0, lp20b=0,os5b=0, 
-        ss820b=0, ge3lp20b=0,alphat20bvalid = 0):
+        ss820b=0, ge3lp20b=0,alphat20bvalid = 0,hinv20b=0):
 
     #jaf needs the directory to end in '/'
     if not outdir[:-1] =='/':
@@ -29,12 +29,13 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
    
     if expected_limits:
         print('Calculating expected limits')
-        global data_at7b,data_monojet20, data_DMbSR1, data_alphat20b, data_alphat13T, data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8, data_alphat20b_valid
+        global data_at7b,data_monojet20, data_DMbSR1, data_alphat20b, data_alphat13T, data_hinv20b, data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8, data_alphat20b_valid
         data_at7b=IntVector([int(round(x)) for x in bg_at7b])
         data_monojet20=IntVector([int(round(x)) for x in bg_monojet20])
         data_DMbSR1=IntVector([int(round(x)) for x in bg_DMbSR1])
         data_alphat20b=IntVector([int(round(x)) for x in bg_alphat20b])
         data_alphat13T=IntVector([int(round(x)) for x in bg_alphat13T])
+        data_hinv20b=IntVector([int(round(x)) for x in bg_hinv20b])
         data_zerolepmt2_8_20=IntVector([int(round(x)) for x in bg_zerolepmt2_8_20])
         data_lp8_20b_all=IntVector([int(round(x)) for x in bg_lp8_20b_all])
         data_ss8HighPt=IntVector([int(round(x)) for x in bg_ss8HighPt])
@@ -79,6 +80,10 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     ge3lp8_20b = j.Cms3Lepton20Fb('GE3LP_analysis20', 'CMS8', 192, 19.5, 
             bg_cms3l8, bgunc_cms3l8, data_cms3l8, 'combined', calculate_r)
 
+    #!!REPLACE WITH FINAL WANTED HINV VERSION
+    hinv8_20b = j.Hinv20b('hinv20b_analysis20', 'CMS8',75, 18.5, 
+            bg_hinv20b, bgunc_hinv20b, data_hinv20b, 'individual', 
+            calculate_r)
     
     mgr = j.AnalysisManager(outdir, gen_info, use_event_weights) #bool for geninfo
     
@@ -106,6 +111,8 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
         mgr.add(ss8_20b)
     if ge3lp20b:
         mgr.add(ge3lp8_20b)
+    if hinv20b:
+        mgr.add(hinv8_20b)
 
     filemap = filemap_from_dict(filemap_dict,delphes_int, 'jaf')
     mgr.run(FileMapVector([filemap]), "")

@@ -5,6 +5,7 @@
 #include "analysis_alphatb.hh"
 #include "analysis_alphat20bValid.hh"
 #include "analysis_alphat20b.hh"
+#include "analysis_hinv20b.hh"
 #include "analysis_alphat13T.hh"
 #include "analysis_monojet8.hh"
 #include "analysis_DMbSR1.hh"
@@ -88,6 +89,27 @@ BOOST_PYTHON_MODULE(libjad_DelphesAnalysis)
 		>());
     ;
     class_<AlphaT20b, bases<AnalysisBase> >("AlphaT20b", init<const std::string &, const std::string &, const unsigned int &>())
+	.def(init<
+		const std::string &, 
+		const std::string &, 
+		const unsigned int &, 
+		const double &, 
+		//const std::vector<int> &, 
+		const std::vector<double> & 
+		>())
+	.def(init<
+		const std::string &, 
+		const std::string &, 
+		const unsigned int &, 
+		const double &, 
+		const std::vector<double> &,
+		const std::vector<double> &,
+		const std::vector<int> &,
+		const std::string &,
+		const bool &
+		>());
+    ;
+    class_<Hinv20b, bases<AnalysisBase> >("Hinv20b", init<const std::string &, const std::string &, const unsigned int &>())
 	.def(init<
 		const std::string &, 
 		const std::string &, 
