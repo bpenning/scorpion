@@ -262,6 +262,7 @@ void AnalysisManager::Limit(const double & signal_uncertainty, const bool & save
     //check if any analyses in the vector
     if(mAnalysesToRun.size()) {
 	//check if those analyses have been run i.e. the size of the mSigPred
+      std::cout<<"Running "<<mAnalysesToRun.size()<<" analyses"<<std::endl;//!!
 	for(std::vector<AnalysisBase *>::iterator an=mAnalysesToRun.begin(); an!=mAnalysesToRun.end(); an++) {
 	    if((*an)->GetSignalPrediction().size() == (*an)->GetNumBins() && 
 		    //signal_uncertainty.size() == (*an)->GetNumBins() &&

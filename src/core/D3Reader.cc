@@ -39,6 +39,7 @@ D3Reader::D3Reader(TTree *tree) :
     ETMIS  = this->UseBranch("MissingET"); 
     CTRACK  = this->UseBranch("ChargedTracks"); 
     GENEVENT  = this->UseBranch("Event"); 
+    SCALARHT  = this->UseBranch("ScalarHT");
 //Add this info later as takes time
 
 //    GENEVENT = this->UseBranch("Event");
@@ -58,6 +59,7 @@ D3Reader::D3Reader(TTree *tree, bool gen) :
 	MUON   = this->UseBranch("Muon");
 	ETMIS  = this->UseBranch("MissingET"); 
 	CTRACK  = this->UseBranch("ChargedTracks"); 
+	SCALARHT = this->UseBranch("ScalarHT");
     }
     else 
     {
@@ -287,6 +289,18 @@ std::vector<jparticle> D3Reader::GetGenParticle() const {
     std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return particle_collection;
 }
+
+std::vector<double> D3Reader::GetScalarHT() const {
+    std::vector<double> scalarht_collection;
+    for(int i = 0; i < SCALARHT->GetEntries(); ++i)
+    {
+	ScalarHT *scalarht = (ScalarHT*) SCALARHT->At(i);
+	scalarht_collection.push_back(scalarht->HT);
+    }
+
+    return scalarht_collection;
+}
+
 double D3Reader::GetWeight() const {
     if (GENEVENT->GetEntries()>0)
     {

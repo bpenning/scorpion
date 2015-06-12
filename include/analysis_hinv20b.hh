@@ -53,28 +53,21 @@ public:
 
 private:
 
-  TH1D * cut_sel;
-  TH1D * leadingjetpt;
-  TH1D * hthist;
-  TH1D * mhthist;
-  TH1D * calomethist;
-  TH1D * athist;
-  TH1D * athist2jets;
-  TH1D * athist3jets;
-  TH1D * athist4jets;
-  TH1D * athist5jets;
   TH1D * njets;
-  TH1D * ejets;
-  TH1D * bjets;
-  TH1D * mjets;
-  TH1D * mht_over_ht;
-  TH1D * btagrate;
-  TH2D * calomet_vs_mht;
-  TH2D * ht_vs_mht_pre_alphaT;
-  TH2D * ht_vs_mht_post_alphaT;
+  TH1D * nelectrons;
+  TH1D * nmuons;
   TH1D * jet1pt;
   TH1D * jet2pt;
-  TH1D * deltaphi;
+  TH1D * jet1eta;
+  TH1D * jet2eta;
+  TH1D * jet1phi;
+  TH1D * jet2phi;
+  TH1D * jetmet_mindphi;
+  TH1D * met;
+  TH1D * metsignificance;
+  TH1D * deltaphijj;
+  TH1D * deltaetajj;
+  TH1D * mjj;
   TH1D * event_weight;
 };
 

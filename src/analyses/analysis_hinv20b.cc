@@ -38,28 +38,21 @@ void Hinv20b::initHistos() {
   andir->cd();
   //!!MAKE SOME HISTOGRAMS: TAILOR TO HINV ONES
   event_weight = new TH1D("event_weight",";weight_num;entries",1000,1940e9,1960e9);
-  cut_sel = new TH1D("cut_selection","cut;Entries",7,-0.5,6.5);
-  leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
-  hthist = new TH1D("hthist", ";H_{T} [GeV];Entries",250,-5.,2495.);
-  mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
-  calomethist = new TH1D("calomethist", ";CALO Missing E_{T} [GeV];Entries",200,-5.,1995.);
-  athist = new TH1D("athist", ";#alpha_{T};Normalised",200,-0.005,1.995);
-  athist2jets = new TH1D("athist2jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
-  athist3jets = new TH1D("athist3jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
-  athist4jets = new TH1D("athist4jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
-  athist5jets = new TH1D("athist5jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
   jet1pt = new TH1D("firstjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
   jet2pt = new TH1D("secondjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
-  deltaphi = new TH1D("deltaphi",";;",72,-0.05,3.55);
+  jet1eta = new TH1D("firstjeteta", ";P_{T} [GeV];Entries",200,-5.,1995.);
+  jet2eta = new TH1D("secondjeteta", ";P_{T} [GeV];Entries",200,-5.,1995.);
+  jet1phi = new TH1D("firstjetphi", ";P_{T} [GeV];Entries",200,-5.,1995.);
+  jet2phi = new TH1D("secondjetphi", ";P_{T} [GeV];Entries",200,-5.,1995.);
+  jetmet_mindphi = new TH1D("jetmetmindphi",";;",72,-0.05,3.55);
+  metsignificance = new TH1D("metsignificance",";;",150,0,30);
+  met = new TH1D("met",";;",200,0,200.);
+  deltaphijj = new TH1D("deltaphijj",";;",72,-0.05,3.55);
+  deltaetajj = new TH1D("deltaetajj",";;",50,-5,5);
+  mjj = new TH1D("mjj",";;",200,0.,2000.);
   njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
-  bjets = new TH1D("bjets", ";N_{jets};Entries",10,-0.5,9.5);
-  ejets = new TH1D("ejets", ";N_{jets};Entries",10,-0.5,9.5);
-  mjets = new TH1D("mjets", ";N_{jets};Entries",10,-0.5,9.5);
-  mht_over_ht = new TH1D("mht_over_ht",";MH_{T}/H_{T};Entries",200,-0.005, 1.995);
-  btagrate = new TH1D("btagrate",";#b-tags;Entries",10,-0.5,9.5);
-  calomet_vs_mht = new TH2D("calomet_vs_mht",";caloMET;MHT",200,-5.,1995., 200,-5.,1995.);
-  ht_vs_mht_pre_alphaT = new TH2D("ht_vs_mht_pre_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
-  ht_vs_mht_post_alphaT = new TH2D("ht_vs_mht_post_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
+  nelectrons = new TH1D("nelectrons", ";N_{jets};Entries",10,-0.5,9.5);
+  nmuons = new TH1D("nmuons", ";N_{jets};Entries",10,-0.5,9.5);
   event_weight->SetBit(TH1::kCanRebin);
 }
 
@@ -79,6 +72,7 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
   std::vector<jjet> vbfjets=goodjetsSkim(treereader->GetJet(),30,4.7);
   std::vector<jjet> triggeremulationjets=goodjetsSkim(treereader->GetJet(),0.,3);
   std::vector<jjet> etmis=treereader->GetMet(); //Missing transverse energy array
+  std::vector<double> sumet=treereader->GetScalarHT(); //scalar sum of transverse energy
 
 
   //emulate trigger with mht from jets with eta<3
@@ -90,8 +84,9 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
   }
   double l1met=sqrt(pow(etx,2)+pow(ety,2));
 
-  //!!Get met significance
-
+  //Get met significance !!sumet is only from jets pt>20 so this variable may be biased high
+  double met_significance=etmis[0].Et()/sqrt(sumet[0]);
+  
   //Loop over jets to find jet 1 and 2 and do jetmetdphi
   double jet1_pt=-1;
   double jet2_pt=-1;
@@ -148,8 +143,30 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
     dijet_dphi = fabs(vbfjets[ijet1].Phi()-vbfjets[ijet2].Phi());  
     dijet_M = (vbfjets[ijet1]+vbfjets[ijet2]).M();
   }
+  if(vbfjets.size()>=2){
+    //!!Fill hinv histograms and set msigpred to right value
+    if(jet1_pt>50&&jet2_pt>45&&(jet1_eta*jet2_eta<=0)&&jetmetmindphi>2.3&&met_significance>4&&etmis[0].Et()>90&&dijet_deta>3.6&&dijet_M>1200&&ele.size()==0&&mu.size()==0){
+      event_weight->Fill(weight);
+      jet1pt->Fill(jet1_pt);
+      jet2pt->Fill(jet2_pt);
+      jet1eta->Fill(jet1_eta);
+      jet2eta->Fill(jet2_eta);
+      jet1phi->Fill(jet1_phi);
+      jet2phi->Fill(jet2_phi);
+      jetmet_mindphi->Fill(jetmetmindphi);
+      metsignificance->Fill(met_significance);
+      met->Fill(etmis[0].Et());
+      deltaphijj->Fill(dijet_deta);
+      deltaetajj->Fill(dijet_dphi);
+      mjj->Fill(dijet_M);
+      njets->Fill(vbfjets.size());
+      nelectrons->Fill(ele.size());
+      nmuons->Fill(mu.size());
+      mSigPred.at(0)+=weight;
+    }
+  }
 
-  //!!Fill hinv histograms and set msigpred to right value
+  //!!Increment msigpred by eventweight
 
   //!!residual alphat things below
 
