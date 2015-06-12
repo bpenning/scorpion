@@ -53,7 +53,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     monojet20 = j.MonoJet8('MonoJet20_analysis20', 'CMS8', 7, 19.5, bg_monojet20,
             bgunc_monojet20, data_monojet20, 'individual', calculate_r)
 
-    dmbsr1 = j.DMbSR1('DMbSR1_analysis', 'CMS8', 1, 19.5, bg_DMbSR1,
+    dm_bsr1 = j.DMbSR1('DMbSR1_analysis', 'CMS8', 1, 19.5, bg_DMbSR1,
            bgunc_DMbSR1, data_DMbSR1, 'individual', calculate_r)
     
     alphat8_20b = j.AlphaT20b('alphaT20b_analysis20', 'CMS8',75, 18.5, 
@@ -80,8 +80,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     ge3lp8_20b = j.Cms3Lepton20Fb('GE3LP_analysis20', 'CMS8', 192, 19.5, 
             bg_cms3l8, bgunc_cms3l8, data_cms3l8, 'combined', calculate_r)
 
-    #!!REPLACE WITH FINAL WANTED HINV VERSION
-    hinv8_20b = j.Hinv20b('hinv20b_analysis20', 'CMS8',75, 18.5, 
+    hinv8_20b = j.Hinv20b('hinv20b_analysis20', 'CMS8',1, 18.5, 
             bg_hinv20b, bgunc_hinv20b, data_hinv20b, 'individual', 
             calculate_r)
     
@@ -94,7 +93,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     if monojet20b:
         mgr.add(monojet20)
     if dmbsr1:
-        mgr.add(dmbsr1)
+        mgr.add(dm_bsr1)
     if mt220b:
         mgr.add(mt2_20b)
     if alphat20b:
