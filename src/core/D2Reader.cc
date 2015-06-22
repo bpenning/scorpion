@@ -277,6 +277,14 @@ std::vector<jparticle> D2Reader::GetGenParticle() const {
     std::sort(particle_collection.begin(), particle_collection.end(), std::greater<jobject>()); //operators defined in the jobject class
     return particle_collection;
 }
+
+std::vector<double> D2Reader::GetScalarHT() const {
+  //dummy for compatibility
+    std::vector<double> scalarht_collection;
+    scalarht_collection.push_back(-1);
+    return scalarht_collection;
+}
+
 double D2Reader::GetWeight() const {
 //Dummy for compatability 
     return 1.0;

@@ -34,6 +34,7 @@ public :
   std::vector<jphoton> GetPhoton() const;
   std::vector<jjet> GetMet() const;
   std::vector<jparticle> GetGenParticle() const;
+  std::vector<double> GetScalarHT() const;
   double GetWeight() const;
 
 private:

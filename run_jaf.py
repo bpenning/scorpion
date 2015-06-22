@@ -25,6 +25,7 @@ analyses_dict = {
         'all-dm-8tev': ['monojet20b', 'dmbsr1', 'alphat20b'],
         '8tev-only': ['monojet20b', 'mt220b', 'lp20b', 'ss820b',
             'ge3lp20b'],
+        'hinv-8tev': ['hinv20b'],
 #        'all-8tev': ['monojet20b', 'lp20b', 'ss820b', 'os5b',],
         }
 
@@ -127,6 +128,7 @@ def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
         #     filepair_dict['xsec'] = with_cross_section
         filepair_dict['xsec'] = xsec_factor*filepair_dict['xsec']
         filemap_dict[experiment] = filepair_dict
+
     runlim(jaf_output_dir, filemap_dict, gen_info,delphes_int, use_event_weights, expected_limits, **analyses_kwargs)
     #print_and_save_CLs(jaf_output_dir)
     #jaf_CMS8_alphaT20b_analysis20

@@ -27,6 +27,7 @@ public :
   virtual std::vector<jphoton> GetPhoton() const = 0;
   virtual std::vector<jjet> GetMet() const = 0;
   virtual std::vector<jparticle> GetGenParticle() const = 0;
+  virtual std::vector<double> GetScalarHT() const = 0;
   virtual double GetWeight() const = 0;
 
 };
