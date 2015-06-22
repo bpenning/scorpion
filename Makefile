@@ -1,22 +1,22 @@
-PYTHON_INC=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/python/2.6.4/include/python2.6
+PYTHON_INC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/include/python2.7
 ROOT_INC=$(ROOTSYS)/include
-BOOST_INC=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/boost/1.47.0/include
+BOOST_INC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/include/
 #MINE
-ROOFIT_INC=/vols/cms03/mc3909/root/roofit/roofitcore/inc
-ROOFIT_INC2=/vols/cms03/mc3909/root/roofit/roofit/inc
+ROOFIT_INC=$(ROOFITSYS)/include/ #/vols/cms03/mc3909/root/roofit/roofitcore/inc
+ROOFIT_INC2=$(ROOFITSYS)/include/ #/vols/cms03/mc3909/root/roofit/roofit/inc
 
 LIMIT_INC=/vols/cms03/mc3909/LandS/include
 
-PYTHON_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/python/2.6.4/lib
+PYTHON_LIB=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/lib/python2.7
 ROOT_LIB=$(ROOTSYS)/lib
-BOOST_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/boost/1.47.0/lib
+BOOST_LIB=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/lib/
 #MINE
-#ROOFIT_LIB=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/roofit/5.32.00-cms5/lib
+ROOFIT_LIB=$(ROOFITSYS)/lib/
 LIMIT_LIB=/vols/cms03/mc3909/LandS
 #DELPHES_LIB=/home/hep/mc3909/scorpion/
 DELPHES_LIB=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-CXX=/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/gcc/4.6.2/bin/g++
+CXX=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/bin/g++
 
 OBJDIR=obj
 INCDIR=include
