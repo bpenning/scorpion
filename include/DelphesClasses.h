@@ -179,6 +179,16 @@ public:
 
 //---------------------------------------------------------------------------
 
+class SumET: public TObject
+{
+public:
+  Float_t ET; // scalar sum of transverse momenta
+
+  ClassDef(SumET, 1)
+};
+
+//---------------------------------------------------------------------------
+
 class Rho: public TObject
 {
 public:

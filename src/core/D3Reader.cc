@@ -40,6 +40,7 @@ D3Reader::D3Reader(TTree *tree) :
     CTRACK  = this->UseBranch("ChargedTracks"); 
     GENEVENT  = this->UseBranch("Event"); 
     SCALARHT  = this->UseBranch("ScalarHT");
+    SUMET  = this->UseBranch("SumET");
 //Add this info later as takes time
 
 //    GENEVENT = this->UseBranch("Event");
@@ -60,6 +61,7 @@ D3Reader::D3Reader(TTree *tree, bool gen) :
 	ETMIS  = this->UseBranch("MissingET"); 
 	CTRACK  = this->UseBranch("ChargedTracks"); 
 	SCALARHT = this->UseBranch("ScalarHT");
+	SUMET = this->UseBranch("SumET");
     }
     else 
     {
@@ -299,6 +301,17 @@ std::vector<double> D3Reader::GetScalarHT() const {
     }
 
     return scalarht_collection;
+}
+
+std::vector<double> D3Reader::GetSumET() const {
+    std::vector<double> sumet_collection;
+    for(int i = 0; i < SUMET->GetEntries(); ++i)
+    {
+	SumET *sumet = (SumET*) SUMET->At(i);
+	sumet_collection.push_back(sumet->ET);
+    }
+
+    return sumet_collection;
 }
 
 double D3Reader::GetWeight() const {

@@ -40,15 +40,15 @@ void Hinv20b::initHistos() {
   event_weight = new TH1D("event_weight",";weight_num;entries",1000,1940e9,1960e9);
   jet1pt = new TH1D("firstjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
   jet2pt = new TH1D("secondjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
-  jet1eta = new TH1D("firstjeteta", ";P_{T} [GeV];Entries",200,-5.,1995.);
-  jet2eta = new TH1D("secondjeteta", ";P_{T} [GeV];Entries",200,-5.,1995.);
-  jet1phi = new TH1D("firstjetphi", ";P_{T} [GeV];Entries",200,-5.,1995.);
-  jet2phi = new TH1D("secondjetphi", ";P_{T} [GeV];Entries",200,-5.,1995.);
-  jetmet_mindphi = new TH1D("jetmetmindphi",";;",72,-0.05,3.55);
+  jet1eta = new TH1D("firstjeteta", ";P_{T} [GeV];Entries",100,-5.,5.);
+  jet2eta = new TH1D("secondjeteta", ";P_{T} [GeV];Entries",100,-5.,5.);
+  jet1phi = new TH1D("firstjetphi", ";P_{T} [GeV];Entries",64,-3.2,3.2);
+  jet2phi = new TH1D("secondjetphi", ";P_{T} [GeV];Entries",64,-3.2,3.2);
+  jetmet_mindphi = new TH1D("jetmetmindphi",";;",64,0.,3.2);
   metsignificance = new TH1D("metsignificance",";;",150,0,30);
   met = new TH1D("met",";;",200,0,200.);
-  deltaphijj = new TH1D("deltaphijj",";;",72,-0.05,3.55);
-  deltaetajj = new TH1D("deltaetajj",";;",50,-5,5);
+  deltaphijj = new TH1D("deltaphijj",";;",72,0.,3.55);
+  deltaetajj = new TH1D("deltaetajj",";;",100,0.,10.);
   mjj = new TH1D("mjj",";;",200,0.,2000.);
   njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
   nelectrons = new TH1D("nelectrons", ";N_{jets};Entries",10,-0.5,9.5);
@@ -72,7 +72,7 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
   std::vector<jjet> vbfjets=goodjetsSkim(treereader->GetJet(),30,4.7);
   std::vector<jjet> triggeremulationjets=goodjetsSkim(treereader->GetJet(),0.,3);
   std::vector<jjet> etmis=treereader->GetMet(); //Missing transverse energy array
-  std::vector<double> sumet=treereader->GetScalarHT(); //scalar sum of transverse energy
+  std::vector<double> sumet=treereader->GetSumET(); //scalar sum of transverse energy
 
 
   //emulate trigger with mht from jets with eta<3
@@ -116,7 +116,8 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
     }
 
     //Do jetmetdphi calculation
-    double thisjetmetdphi=fabs(vbfjets[iJet].Phi()-etmis[0].Phi());  
+    double thisjetmetdphi=fmod(fabs(vbfjets[iJet].Phi()-etmis[0].Phi()),3.141593);  
+    if(thisjetmetdphi>3.141593)std::cout<<"Warning: Delta phi greater than pi jphi "<<vbfjets[iJet].Phi()<<" met phi "<<etmis[0].Phi()<<std::endl;
     if(thisjetmetdphi<jetmetmindphi){
       jetmetmindphi=thisjetmetdphi;
     }
@@ -140,7 +141,8 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
   double dijet_M=-1;
   if(vbfjets.size()>=2){
     dijet_deta = fabs(vbfjets[ijet1].Eta() - vbfjets[ijet2].Eta());
-    dijet_dphi = fabs(vbfjets[ijet1].Phi()-vbfjets[ijet2].Phi());  
+    dijet_dphi = fmod(fabs(vbfjets[ijet1].Phi()-vbfjets[ijet2].Phi()),3.141593);  
+    if(dijet_dphi>3.141593)std::cout<<"Warning: Delta phi greater than pi j1phi "<<vbfjets[ijet1].Phi()<<" j2phi "<<vbfjets[ijet2].Phi()<<std::endl;
     dijet_M = (vbfjets[ijet1]+vbfjets[ijet2]).M();
   }
   if(vbfjets.size()>=2){
@@ -156,8 +158,8 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
       jetmet_mindphi->Fill(jetmetmindphi);
       metsignificance->Fill(met_significance);
       met->Fill(etmis[0].Et());
-      deltaphijj->Fill(dijet_deta);
-      deltaetajj->Fill(dijet_dphi);
+      deltaphijj->Fill(dijet_dphi);
+      deltaetajj->Fill(dijet_deta);
       mjj->Fill(dijet_M);
       njets->Fill(vbfjets.size());
       nelectrons->Fill(ele.size());
