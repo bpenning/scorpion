@@ -40,10 +40,13 @@ void Hinv20b::initHistos() {
   event_weight = new TH1D("event_weight",";weight_num;entries",1000,1940e9,1960e9);
   jet1pt = new TH1D("firstjetpt", ";P_{T} [GeV];Entries",80,-5.,395.);
   jet2pt = new TH1D("secondjetpt", ";P_{T} [GeV];Entries",60,-5.,295.);
+  jet3pt = new TH1D("thirdjetpt", ";P_{T} [GeV];Entries",60,-5.,295.);
   jet1eta = new TH1D("firstjeteta", ";P_{T} [GeV];Entries",50,-5.,5.);
   jet2eta = new TH1D("secondjeteta", ";P_{T} [GeV];Entries",50,-5.,5.);
+  jet3eta = new TH1D("thirdjeteta", ";P_{T} [GeV];Entries",50,-5.,5.);
   jet1phi = new TH1D("firstjetphi", ";P_{T} [GeV];Entries",16,-3.2,3.2);
   jet2phi = new TH1D("secondjetphi", ";P_{T} [GeV];Entries",16,-3.2,3.2);
+  jet3phi = new TH1D("thirdjetphi", ";P_{T} [GeV];Entries",16,-3.2,3.2);
   jetmet_mindphi = new TH1D("jetmetmindphi",";;",64,0.,3.2);
   metsignificance = new TH1D("metsignificance",";;",150,0,30);
   met = new TH1D("met",";;",40,0,400.);
@@ -51,6 +54,7 @@ void Hinv20b::initHistos() {
   deltaetajj = new TH1D("deltaetajj",";;",50,0.,10.);
   mjj = new TH1D("mjj",";;",20,0.,2000.);
   njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
+  njets_cjv = new TH1D("njetscjv", ";N_{jets} CJV;Entries",10,-0.5,9.5);
   nelectrons = new TH1D("nelectrons", ";N_{jets};Entries",10,-0.5,9.5);
   nmuons = new TH1D("nmuons", ";N_{jets};Entries",10,-0.5,9.5);
   event_weight->SetBit(TH1::kCanRebin);
@@ -90,28 +94,40 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
   //Loop over jets to find jet 1 and 2 and do jetmetdphi
   double jet1_pt=-1;
   double jet2_pt=-1;
+  double jet3_pt=-1;
   double jet1_eta=-10000;
   double jet2_eta=-10000;
+  double jet3_eta=-10000;
   double jet1_phi=-1;
   double jet2_phi=-1;
+  double jet3_phi=-1;
   double jet1_E=-1;
   double jet2_E=-1;
+  double jet3_E=-1;
   double jetmetmindphi=10;
-  int ijet1=-1,ijet2=-1;
+  int ijet1=-1,ijet2=-1,ijet3=-1;
   //std::cout<<"Listing  jet pts:"<<std::endl;                                                                                                        
   for(unsigned iJet=0;iJet<vbfjets.size();iJet++){
     //Find two highest pt jets
-    double pt=vbfjets[iJet].Pt();//!!fix for jad framework
-    if(pt>jet2_pt){
-      jet2_pt=pt;
-      ijet2=iJet;
-      if(jet2_pt>jet1_pt){
-	double tmppt=jet1_pt;
-	double tmpijet=ijet1;
-	jet1_pt=jet2_pt;
-	ijet1=ijet2;
-	jet2_pt=tmppt;
-	ijet2=tmpijet;
+    double pt=vbfjets[iJet].Pt();
+    if(pt>jet3_pt){
+      jet3_pt=pt;
+      ijet3=iJet;
+      if(jet3_pt>jet2_pt){
+	double tmppt=jet2_pt;
+	double tmpijet=ijet2;
+	jet2_pt=jet3_pt;
+	ijet2=ijet3;
+	jet3_pt=tmppt;
+	ijet3=tmpijet;
+	if(jet2_pt>jet1_pt){
+	  double tmppt=jet1_pt;
+	  double tmpijet=ijet1;
+	  jet1_pt=jet2_pt;
+	  ijet1=ijet2;
+	  jet2_pt=tmppt;
+	  ijet2=tmpijet;
+	}
       }
     }
 
@@ -158,18 +174,29 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
   }
   if(vbfjets.size()>=2){
     //!!Fill hinv histograms and set msigpred to right value
-    //if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.74&&dijet_deta>4.2&&jet1_pt>50&&jet2_pt>50&&etmis[0].Et()>130&&dijet_M>1100&&dijet_dphi<1.0&&njetscjv==0){//prompt analysis
+    //if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.74&&dijet_deta>4.2&&jet1_pt>50&&jet2_pt>50&&etmis[0].Et()>130&&dijet_M>1100&&dijet_dphi<1.0&&njetscjv==0&&l1met>40){//prompt analysis
+    //if(jet1_eta<4.7&&jet2_eta<4.74&&dijet_deta>3.5&&jet1_pt>40&&jet2_pt>40&&dijet_M>800&&etmis[0].Et()>65&&l1met>40){//!!relaxed cuts
 
-    //if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&met_significance>3&&dijet_deta>3.6&&jet1_pt>50&&jet2_pt>45&&jetmetmindphi>2.3&&etmis[0].Et()>90){//!!relaxed mjj and metsig cuts
-    if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&met_significance>4&&dijet_deta>3.6&&jet1_pt>50&&jet2_pt>45&&jetmetmindphi>2.3&&etmis[0].Et()>90){
+    //if(true){//no cuts
+  
+    //if(jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&dijet_deta>3.6&&jet1_pt>35&&jet2_pt>35&&l1met>40){//parked step -1
+    //if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&met_significance>3&&dijet_deta>3.6&&jet1_pt>35&&jet2_pt>35&&dijet_M>700&&l1met>40){//parked step 0
+    //if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&met_significance>3&&dijet_deta>3.6&&jet1_pt>50&&jet2_pt>45&&dijet_M>700&&l1met>40){//parked step 1
+    //if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&met_significance>3&&dijet_deta>3.6&&jet1_pt>50&&jet2_pt>45&&dijet_M>700&&l1met>40&&etmis[0].Et()>90){//parked step 2
+    //if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&met_significance>3&&dijet_deta>3.6&&jet1_pt>50&&jet2_pt>45&&dijet_M>1200&&l1met>40&&etmis[0].Et()>90){//parked step 3
+    //if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&met_significance>4&&dijet_deta>3.6&&jet1_pt>50&&jet2_pt>45&&dijet_M>1200&&l1met>40&&etmis[0].Et()>90){//parked step 4
+    if((jet1_eta*jet2_eta<0)&&jet1_eta<4.7&&jet2_eta<4.7&&met_significance>4&&dijet_deta>3.6&&jet1_pt>50&&jet2_pt>45&&jetmetmindphi>2.3&&etmis[0].Et()>90&&dijet_M>1200&&l1met>40){//full parked
       //std::cout<<"filling"<<std::endl;
       event_weight->Fill(weight);
       jet1pt->Fill(jet1_pt);
       jet2pt->Fill(jet2_pt);
+      jet3pt->Fill(jet3_pt);
       jet1eta->Fill(jet1_eta);
       jet2eta->Fill(jet2_eta);
+      jet3eta->Fill(jet3_eta);
       jet1phi->Fill(jet1_phi);
       jet2phi->Fill(jet2_phi);
+      jet3phi->Fill(jet3_phi);
       jetmet_mindphi->Fill(jetmetmindphi);
       metsignificance->Fill(met_significance);
       met->Fill(etmis[0].Et());
@@ -177,6 +204,7 @@ void Hinv20b::Run(const Reader * treereader, const Reader * gentreereader, const
       deltaetajj->Fill(dijet_deta);
       mjj->Fill(dijet_M);
       njets->Fill(vbfjets.size());
+      njets_cjv->Fill(njetscjv);
       nelectrons->Fill(ele.size());
       nmuons->Fill(mu.size());
       //}
