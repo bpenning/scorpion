@@ -21,6 +21,7 @@ struct energy_sums{
   unsigned int njets;
   unsigned int nbtags;
   bool pass_quality_cuts;
+  bool asym;
 };
 
 double alphat( const std::vector<double>& et,
@@ -29,10 +30,10 @@ double alphat( const std::vector<double>& et,
 	       std::vector<bool>& pseudo_jet1,
 	       bool list);
 
-double biasedDPhi(std::vector<jjet> inJets);
+double makeBiasedDPhi(std::vector<jjet> inJets);
 energy_sums make_energy_sums(const std::vector<jjet> & ht275, const std::vector<jjet> & ht325, const std::vector<jjet> & ht375);
 
-energy_sums make_energy_sums(const std::vector<jjet> & ht40, const std::vector<jjet> & ht100);
+energy_sums make_energy_sums(const std::vector<jjet> & ht40);
 
 energy_sums make_energy_sums_20(const std::vector<jjet> & ht200, const std::vector<jjet> & ht275, const std::vector<jjet> & ht325, const std::vector<jjet> & ht375);
 #endif

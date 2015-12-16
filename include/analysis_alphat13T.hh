@@ -17,6 +17,7 @@
 #include "TSimpleArray.hh"
 #include "TH1.h"
 #include "TH2.h"
+#include "TString.h"
 #include "TMath.h"
 
 
@@ -72,8 +73,9 @@ private:
   TH2D * ht_vs_mht_post_alphaT;
   TH1D * jet1pt;
   TH1D * jet2pt;
-  TH1D * deltaphi;
+  TH1D * biasedDPhiHist;
   TH1D * event_weight;
+  TH2D * alphaStatsInputHists[32];
 };
 
 #endif
