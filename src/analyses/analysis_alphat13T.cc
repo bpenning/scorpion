@@ -109,7 +109,7 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
   if(badjets.size() == 0 && ele.size() == 0 && mu.size() == 0) {
       if(track.size() == 0) {   
 	  cut_sel->Fill(1.,weight);
-	  if(esums.pass_quality_cuts) { //this cut contains njets>=2, HT check requirements and leading/sub-leading requirements
+	  if(esums.pass_quality_cuts) { //this cut contains njets>=1, HT check requirements and leading/sub-leading requirements
 	      cut_sel->Fill(2.,weight);
 	      njets->Fill(esums.njets, weight);
 	      btagrate->Fill(esums.nbtags, weight);
@@ -122,6 +122,8 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 		  mht_over_ht->Fill(esums.total_mht/esums.total_ht, weight);
 		  //calomethist->Fill(calo_met);
 		  calomet_vs_mht->Fill(calo_met, esums.total_mht, weight);
+
+          if(esums.total_mht > 130.) {
 
 		  if(esums.total_mht/calo_met < 1.25) {
 		      double alpha_t;
@@ -153,6 +155,15 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 
 		      if (pseudoSize) {
 			  cut_sel->Fill(5.,weight);
+
+              if(esums.total_ht > 200.0 && esums.total_ht <= 250.0 && alpha_t < 0.65) return;
+              if(esums.total_ht > 250.0 && esums.total_ht <= 300.0 && alpha_t < 0.60) return;
+              if(esums.total_ht > 300.0 && esums.total_ht <= 350.0 && alpha_t < 0.55) return;
+              if(esums.total_ht > 350.0 && esums.total_ht <= 400.0 && alpha_t < 0.55) return;
+              if(esums.total_ht > 400.0 && esums.total_ht <= 500.0 && alpha_t < 0.53) return;
+              if(esums.total_ht > 500.0 && esums.total_ht <= 600.0 && alpha_t < 0.52) return;
+              if(esums.total_ht > 600.0 && esums.total_ht <= 800.0 && alpha_t < 0.52) return;
+
 			  if (biasedDPhi > 0.5){
 			      if (esums.njets == 1){
 				  if (esums.nbtags == 0) alphaStatsInputHists[0]->Fill(esums.total_ht,esums.total_mht,SITVweight);
@@ -223,6 +234,7 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 
 		  }
 	      }
+          }
 	  }
       }
   }

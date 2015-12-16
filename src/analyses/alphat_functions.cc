@@ -417,7 +417,7 @@ energy_sums make_energy_sums(const std::vector<jjet> & ht40){
 
   if(total_ht > 200.0 && ht40.size() >= 1) {
     //now check the jet quality criteria. if ok, fill esum struct
-    if(ht40.at(0).Pt() > 100.0 && fabs(ht40.at(0).Eta()) < 2.4) {
+    if(ht40.at(0).Pt() > 100.0 && fabs(ht40.at(0).Eta()) < 2.5) {
       esums.pass_quality_cuts = true;
       esums.njets = ht40.size();
       esums.nbtags = nbtags;
