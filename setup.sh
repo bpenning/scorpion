@@ -6,12 +6,14 @@
 # 3. BOOST (compiled against python)
 
 #export ROOTSYS='/vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms5/'
+source /vols/cms/grid/setup.sh
 export ROOTSYS='/vols/cms03/mc3909/root/'
 
 MY_LD_LIBRARY_PATH=$ROOTSYS/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/lib/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/libjpg/8b/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/lib/python2.7:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/lib/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/lib64/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/xz/5.0.3__5.1.2alpha/lib:/vols/cms03/mc3909/LandS/:
 
 export LD_LIBRARY_PATH=$MY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH:$(pwd)/lib:/home/hep/mc3909/scorpion/
 export PATH=$ROOTSYS/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_1_5/external/slc6_amd64_gcc481/bin/python:$PATH
+export PATH='/vols/cms03/mc3909/python/Python-2.7.6/':$PATH
 #export PYTHONPATH=$ROOTSYS/lib:/home/hep/jm1103/development/delphes-stuff-rewrite-boost-makefile-gen-optimised-xsec/lib
 export PYTHONPATH=$ROOTSYS/lib:$(pwd)/lib:/home/hep/mc3909/scorpion/
 
