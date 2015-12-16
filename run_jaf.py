@@ -80,13 +80,16 @@ def parse_args():
     parser.add_option('--rootfile', default='delphes-output.root')
     parser.add_option('--pythia-version', default='6')
     parser.add_option('--delphes-version',choices=('2','3'), default='3')
+    parser.add_option('--skip-limits', action='store_true')
     options, args = parser.parse_args()
     return options
 
 def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
         with_cms_stop_cross_section, with_cms_sbot_cross_section,
-        with_cms_gluino_cross_section, xsec_factor, experiments, rootfile,
-        analyses, gen_info, pythia_version, use_event_weights,delphes_version,expected_limits):
+        with_cms_gluino_cross_section, xsec_factor, experiments, 
+        rootfile, analyses, gen_info, pythia_version, 
+        use_event_weights, delphes_version, expected_limits, skip_limits):
+
     """
     Main program
     """
@@ -129,7 +132,7 @@ def main(pythia_delphes_dirs, jaf_output_dir, with_cross_section,
         filepair_dict['xsec'] = xsec_factor*filepair_dict['xsec']
         filemap_dict[experiment] = filepair_dict
 
-    runlim(jaf_output_dir, filemap_dict, gen_info,delphes_int, use_event_weights, expected_limits, **analyses_kwargs)
+    runlim(jaf_output_dir, filemap_dict, gen_info,delphes_int, use_event_weights, expected_limits, skip_limits, **analyses_kwargs)
     #print_and_save_CLs(jaf_output_dir)
     #jaf_CMS8_alphaT20b_analysis20
     

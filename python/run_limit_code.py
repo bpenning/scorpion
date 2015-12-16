@@ -16,8 +16,8 @@ def filemap_from_dict(filemap_dict,delphes_int, internal_name):
         pairmap[experiment] = pair
     return j.FileMap(internal_name, pairmap,delphes_int)
 
-def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expected_limits,calculate_r=False, 
-        calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
+def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expected_limits, skip_limits,
+        calculate_r=False, calculate_r_combo=False,  do_combo=True, write_stats_file=True, 
         alphat7bb=0, monojet20b=0, dmbsr1=0, mt220b=0, alphat20b=0, alphat13T=0, lp20b=0,os5b=0, 
         ss820b=0, ge3lp20b=0,alphat20bvalid = 0,hinv20b=0):
 
@@ -27,25 +27,26 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     if not os.path.exists(outdir):
         os.makedirs(outdir)
    
-    if expected_limits:
-        print('Calculating expected limits')
-        global data_at7b,data_monojet20, data_DMbSR1, data_alphat20b, data_alphat13T, data_hinv20b, data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8, data_alphat20b_valid
-        data_at7b=IntVector([int(round(x)) for x in bg_at7b])
-        data_monojet20=IntVector([int(round(x)) for x in bg_monojet20])
-        data_DMbSR1=IntVector([int(round(x)) for x in bg_DMbSR1])
-        data_alphat20b=IntVector([int(round(x)) for x in bg_alphat20b])
-        data_alphat13T=IntVector([int(round(x)) for x in bg_alphat13T])
-        data_hinv20b=IntVector([int(round(x)) for x in bg_hinv20b])
-        data_zerolepmt2_8_20=IntVector([int(round(x)) for x in bg_zerolepmt2_8_20])
-        data_lp8_20b_all=IntVector([int(round(x)) for x in bg_lp8_20b_all])
-        data_ss8HighPt=IntVector([int(round(x)) for x in bg_ss8HighPt])
-        data_os5=IntVector([int(round(x)) for x in bg_os5])
-        data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
-        data_alphat20b_valid=IntVector([int(round(x)) for x in bg_alphat20b_valid])
-    else:
-        print('Calculating observed limits')
+    if not skip_limits:
+        if expected_limits:
+            print('Calculating expected limits')
+            global data_at7b,data_monojet20, data_DMbSR1, data_alphat20b, data_alphat13T, data_hinv20b, data_zerolepmt2_8_20,data_lp8_20b_all,data_ss8HighPt,data_os5,data_cms3l8, data_alphat20b_valid
+            data_at7b=IntVector([int(round(x)) for x in bg_at7b])
+            data_monojet20=IntVector([int(round(x)) for x in bg_monojet20])
+            data_DMbSR1=IntVector([int(round(x)) for x in bg_DMbSR1])
+            data_alphat20b=IntVector([int(round(x)) for x in bg_alphat20b])
+            data_alphat13T=IntVector([int(round(x)) for x in bg_alphat13T])
+            data_hinv20b=IntVector([int(round(x)) for x in bg_hinv20b])
+            data_zerolepmt2_8_20=IntVector([int(round(x)) for x in bg_zerolepmt2_8_20])
+            data_lp8_20b_all=IntVector([int(round(x)) for x in bg_lp8_20b_all])
+            data_ss8HighPt=IntVector([int(round(x)) for x in bg_ss8HighPt])
+            data_os5=IntVector([int(round(x)) for x in bg_os5])
+            data_cms3l8=IntVector([int(round(x)) for x in bg_cms3l8])
+            data_alphat20b_valid=IntVector([int(round(x)) for x in bg_alphat20b_valid])
+        else:
+            print('Calculating observed limits')
 
-# 7 TeV analyses
+    # 7 TeV analyses
     alphat7_5b = j.AlphaTb('alphaTb7_analysis5','CMS7', 32, 4.98, bg_at7b, 
             bgunc_at7b, data_at7b, 'combined', calculate_r)
 
@@ -115,7 +116,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
 
     filemap = filemap_from_dict(filemap_dict,delphes_int, 'jaf')
     mgr.run(FileMapVector([filemap]), "")
-    mgr.limit(0.20, write_stats_file, do_combo, calculate_r_combo)
+    if not skip_limits: mgr.limit(0.20, write_stats_file, do_combo, calculate_r_combo)
     mgr.write()
   
 # FIXME: for reference these commented out lines are kept... Remove them at some point
