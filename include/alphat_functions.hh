@@ -29,6 +29,7 @@ double alphat( const std::vector<double>& et,
 	       std::vector<bool>& pseudo_jet1,
 	       bool list);
 
+double biasedDPhi(std::vector<jjet> inJets);
 energy_sums make_energy_sums(const std::vector<jjet> & ht275, const std::vector<jjet> & ht325, const std::vector<jjet> & ht375);
 
 energy_sums make_energy_sums(const std::vector<jjet> & ht40, const std::vector<jjet> & ht100);

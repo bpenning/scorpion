@@ -37,6 +37,27 @@ double alphat( const std::vector<double>& et,
   return ( 0.5 * ( sum_et - min_delta_sum_et ) / sqrt( sum_et*sum_et - (sum_px*sum_px+sum_py*sum_py) ) );
   
 }
+double biasedDPhi(std::vector<jjet> inJets)
+{
+    TLorentzVector mht;
+    TLorentzVector jJet = TLorentzVector();
+    std::vector<double> biasedDPhi;
+    double biasedDPhiMin = 0.;
+    for (int jet = 0; jet < inJets.size();jet++)
+    {
+	jJet.SetPtEtaPhiM(inJets.at(jet).Pt(),0,inJets.at(jet).Phi(),0);
+	mht -= jJet;
+    }
+    for (int jet = 0; jet < inJets.size();jet++)
+    {
+	jJet.SetPtEtaPhiM(inJets.at(jet).Pt(),0,inJets.at(jet).Phi(),0);
+	TLorentzVector biasedMht = mht + jJet;
+	biasedDPhi.push_back(fabs(biasedMht.DeltaPhi(jJet)));
+	if (fabs(biasedDPhi.back()) < biasedDPhiMin) biasedDPhiMin = fabs(biasedDPhi.back());
+    }
+    return biasedDPhiMin;
+
+}
 
 energy_sums make_energy_sums(const std::vector<jjet> & ht275, const std::vector<jjet> & ht325, const std::vector<jjet> & ht375) {
 
