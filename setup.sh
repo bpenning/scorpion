@@ -17,6 +17,7 @@ export PATH='/vols/cms03/mc3909/python/Python-2.7.6/':$PATH
 #export PYTHONPATH=$ROOTSYS/lib:/home/hep/jm1103/development/delphes-stuff-rewrite-boost-makefile-gen-optimised-xsec/lib
 export PYTHONPATH=$ROOTSYS/lib:$(pwd)/lib:/home/hep/mc3909/scorpion/
 
+python splash.py
 
 echo "LD_LIBRARY_PATH is:" $LD_LIBRARY_PATH
 echo "PYTHONPATH is:" $PYTHONPATH
