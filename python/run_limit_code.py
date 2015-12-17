@@ -61,7 +61,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
             bg_alphat20b, bgunc_alphat20b, data_alphat20b, 'individual', 
             calculate_r)
 
-    alphat13T_4b = j.Alphat13T('alphaT4b_analysis', 'CMS13',75, 4, 
+    alphat13T_2b = j.Alphat13T('alphaT2b_analysis', 'CMS13',75, 2.2, 
                bg_alphat13T, bgunc_alphat13T, data_alphat13T, 'individual', 
                calculate_r)
         
@@ -100,7 +100,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     if alphat20b:
         mgr.add(alphat8_20b)
     if alphat13T:
-        mgr.add(alphat13T_4b)
+        mgr.add(alphat13T_2b)
     if alphat20bvalid:
         mgr.add(alphat8_20b_valid)
     if os5b:
