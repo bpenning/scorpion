@@ -76,6 +76,7 @@ private:
   TH1D * biasedDPhiHist;
   TH1D * event_weight;
   TH2D * alphaStatsInputHists[32];
+  TH2D * plotSummary;
 };
 
 #endif

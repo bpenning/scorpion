@@ -57,6 +57,7 @@ void Alphat13T::initHistos() {
 	ht_vs_mht_pre_alphaT = new TH2D("ht_vs_mht_pre_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
 	ht_vs_mht_post_alphaT = new TH2D("ht_vs_mht_post_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
 	TDirectory * alphaStatsInput = andir->mkdir("alphaStatsInput");
+    TDirectory * plotSummaryDir = andir->mkdir("plotSummary");
 	TString categoryList[32] = {
 	    "eq0b_eq1j","eq1b_eq1j",
 	"eq0b_eq2j","eq1b_eq2j","eq2b_eq2j",
@@ -67,12 +68,20 @@ void Alphat13T::initHistos() {
 	"eq0b_eq3a","eq1b_eq3a","eq2b_eq3a","ge3b_eq3a",
 	"eq0b_eq4a","eq1b_eq4a","eq2b_eq4a","ge3b_eq4a",
 	"eq0b_ge5a","eq1b_ge5a","eq2b_ge5a","ge3b_ge5a"};
+    double htBins[9] = {200.,250.,300.,350.,400.,500.,600.,800.,10000.};
+
+    plotSummaryDir->cd();
+    plotSummary = new TH2D("h_ht_mht_all","", 8,htBins, 32,0,32);
+    plotSummary->Sumw2();
+    for (int bin=1; bin<=plotSummary->GetNbinsY(); ++bin)
+        plotSummary->GetYaxis()->SetBinLabel(bin,categoryList[bin-1]);
 
 	for (int cat = 0; cat < 32;cat++)
 	{
 	    TDirectory * catDir = alphaStatsInput->mkdir(categoryList[cat]);
 	    catDir->cd();
 	    alphaStatsInputHists[cat] = new TH2D("h_mht_"+categoryList[cat],"MHT",120,0.,3000.,60,0.,1500.);
+        alphaStatsInputHists[cat]->Sumw2();
 	}
 	
 	event_weight->SetBit(TH1::kCanRebin);
@@ -166,54 +175,150 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 
 			  if (biasedDPhi > 0.5){
 			      if (esums.njets == 1){
-				  if (esums.nbtags == 0) alphaStatsInputHists[0]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 1) alphaStatsInputHists[1]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[0]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,0.5,weight);
+                  }
+				  else if (esums.nbtags == 1) {
+                    alphaStatsInputHists[1]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,1.5,weight);
+                  }
 			      }
 			      else if (esums.njets == 2 && !esums.asym){
-				  if (esums.nbtags == 0) alphaStatsInputHists[2]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  if (esums.nbtags == 1) alphaStatsInputHists[3]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 2) alphaStatsInputHists[4]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[2]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,2.5,weight);
+                  }
+				  if (esums.nbtags == 1) {
+                    alphaStatsInputHists[3]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,3.5,weight);
+                  }  
+				  else if (esums.nbtags == 2) {
+                    alphaStatsInputHists[4]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,4.5,weight);
+                  }
 			      }
 			      else if (esums.njets == 3 && !esums.asym){
-				  if (esums.nbtags == 0) alphaStatsInputHists[5]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  if (esums.nbtags == 1) alphaStatsInputHists[6]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 2) alphaStatsInputHists[7]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags > 2) alphaStatsInputHists[8]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[5]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,5.5,weight);
+                  }
+				  if (esums.nbtags == 1) {
+                    alphaStatsInputHists[6]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,6.5,weight);
+                  }
+				  else if (esums.nbtags == 2) {
+                    alphaStatsInputHists[7]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,7.5,weight);
+                  }
+				  else if (esums.nbtags > 2) {
+                    alphaStatsInputHists[8]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,8.5,weight);
+                  }
 			      }
 			      else if (esums.njets == 4 && !esums.asym){
-				  if (esums.nbtags == 0) alphaStatsInputHists[9]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  if (esums.nbtags == 1) alphaStatsInputHists[10]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 2) alphaStatsInputHists[11]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags > 2) alphaStatsInputHists[12]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[9]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,9.5,weight);
+                  }
+				  if (esums.nbtags == 1) {
+                    alphaStatsInputHists[10]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,10.5,weight);
+                  }
+				  else if (esums.nbtags == 2) {
+                    alphaStatsInputHists[11]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,11.5,weight);
+                  }
+				  else if (esums.nbtags > 2) {
+                    alphaStatsInputHists[12]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,12.5,weight);
+                  }
 			      }
 			      else if (esums.njets > 4  && !esums.asym){
-				  if (esums.nbtags == 0) alphaStatsInputHists[13]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  if (esums.nbtags == 1) alphaStatsInputHists[14]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 2) alphaStatsInputHists[15]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags > 2) alphaStatsInputHists[16]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[13]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,13.5,weight);
+                  }
+				  if (esums.nbtags == 1) {
+                    alphaStatsInputHists[14]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,14.5,weight);
+                  }
+				  else if (esums.nbtags == 2) {
+                    alphaStatsInputHists[15]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,15.5,weight);
+                  }
+				  else if (esums.nbtags > 2) {
+                    alphaStatsInputHists[16]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,16.5,weight);
+                  }
 			      }
 			      else if (esums.njets == 2 && esums.asym){
-				  if (esums.nbtags == 0) alphaStatsInputHists[17]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  if (esums.nbtags == 1) alphaStatsInputHists[18]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 2) alphaStatsInputHists[19]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[17]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,17.5,weight);
+                  }
+				  if (esums.nbtags == 1) {
+                    alphaStatsInputHists[18]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,18.5,weight);
+                  }
+				  else if (esums.nbtags == 2) {
+                    alphaStatsInputHists[19]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,19.5,weight);
+                  }
 			      }
 			      else if (esums.njets == 3 && esums.asym){
-				  if (esums.nbtags == 0) alphaStatsInputHists[20]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  if (esums.nbtags == 1) alphaStatsInputHists[21]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 2) alphaStatsInputHists[22]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags > 2) alphaStatsInputHists[23]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[20]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,20.5,weight);
+                  }
+				  if (esums.nbtags == 1) {
+                    alphaStatsInputHists[21]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,21.5,weight);
+                  }
+				  else if (esums.nbtags == 2) {
+                    alphaStatsInputHists[22]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,22.5,weight);
+                  }
+				  else if (esums.nbtags > 2) {
+                    alphaStatsInputHists[23]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,23.5,weight);
+                  }
 			      }
 			      else if (esums.njets == 4 && esums.asym){
-				  if (esums.nbtags == 0) alphaStatsInputHists[24]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  if (esums.nbtags == 1) alphaStatsInputHists[25]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 2) alphaStatsInputHists[26]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags > 2) alphaStatsInputHists[27]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[24]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,24.5,weight);
+                  }
+				  if (esums.nbtags == 1) {
+                    alphaStatsInputHists[25]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,25.5,weight);
+                  }
+				  else if (esums.nbtags == 2) {
+                    alphaStatsInputHists[26]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,26.5,weight);
+                  }
+				  else if (esums.nbtags > 2) {
+                    alphaStatsInputHists[27]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,27.5,weight);
+                  }
 			      }
 			      else if (esums.njets > 4  && esums.asym){
-				  if (esums.nbtags == 0) alphaStatsInputHists[28]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  if (esums.nbtags == 1) alphaStatsInputHists[29]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags == 2) alphaStatsInputHists[30]->Fill(esums.total_ht,esums.total_mht,SITVweight);
-				  else if (esums.nbtags > 2) alphaStatsInputHists[31]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+				  if (esums.nbtags == 0) {
+                    alphaStatsInputHists[28]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,28.5,weight);
+                  }
+				  if (esums.nbtags == 1) {
+                    alphaStatsInputHists[29]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,29.5,weight);
+                  }
+				  else if (esums.nbtags == 2) {
+                    alphaStatsInputHists[30]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,30.5,weight);
+                  }
+				  else if (esums.nbtags > 2) {
+                    alphaStatsInputHists[31]->Fill(esums.total_ht,esums.total_mht,SITVweight);
+                    plotSummary->Fill(esums.total_ht,31.5,weight);
+                  }
 			      }
 			      athist->Fill(alpha_t, weight);
 			      ht_vs_mht_post_alphaT->Fill(esums.total_ht, esums.total_mht, weight);
