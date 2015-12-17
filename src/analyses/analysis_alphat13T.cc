@@ -149,12 +149,12 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 			  else {
 			      biasedDPhi = makeBiasedDPhi(goodjets20);
 			  }
-			  pseudoSize = pseudo.size() == esums.etvec.size();
+			  pseudoSize = true;
 		      }
 		      else {
 			  alpha_t = alphat(esums.etvec, esums.pxvec, esums.pyvec, pseudo, true);
 			  biasedDPhi = makeBiasedDPhi(goodjets40);
-			  pseudoSize = true;
+			  pseudoSize = pseudo.size() == esums.etvec.size();
 		      }
 		      biasedDPhiHist->Fill(biasedDPhi,weight);
 		      ///////////////////////////////
