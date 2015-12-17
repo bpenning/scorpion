@@ -58,6 +58,7 @@ void Alphat13T::initHistos() {
 	ht_vs_mht_post_alphaT = new TH2D("ht_vs_mht_post_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
 	TDirectory * alphaStatsInput = andir->mkdir("alphaStatsInput");
     TDirectory * plotSummaryDir = andir->mkdir("plotSummary");
+    TDirectory * modelDir = plotSummaryDir->mkdir("model");
 	TString categoryList[32] = {
 	    "eq0b_eq1j","eq1b_eq1j",
 	"eq0b_eq2j","eq1b_eq2j","eq2b_eq2j",
@@ -71,6 +72,7 @@ void Alphat13T::initHistos() {
     double htBins[9] = {200.,250.,300.,350.,400.,500.,600.,800.,10000.};
 
     plotSummaryDir->cd();
+    modelDir->cd();
     plotSummary = new TH2D("h_ht_mht_all","", 8,htBins, 32,0,32);
     plotSummary->Sumw2();
     for (int bin=1; bin<=plotSummary->GetNbinsY(); ++bin)
