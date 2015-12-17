@@ -36,7 +36,7 @@ Alphat13T::~Alphat13T() {}
 void Alphat13T::initHistos() {
 	andir->cd();
 	event_weight = new TH1D("event_weight",";weight_num;entries",1000,1940e9,1960e9);
-	cut_sel = new TH1D("cut_selection","cut;Entries",7,-0.5,6.5);
+	cut_sel = new TH1D("cut_selection","cut;Entries",9,-0.5,8.5);
 	leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
 	hthist = new TH1D("hthist", ";H_{T} [GeV];Entries",250,-5.,2495.);
 	mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
@@ -46,7 +46,7 @@ void Alphat13T::initHistos() {
 	athist3jets = new TH1D("athist3jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
 	athist4jets = new TH1D("athist4jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
 	athist5jets = new TH1D("athist5jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
-	biasedDPhiHist = new TH1D("bdhpi",";;",36,0.,3.6);
+	biasedDPhiHist = new TH1D("bdphi",";;",36,0.,3.6);
 	njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
 	bjets = new TH1D("bjets", ";N_{jets};Entries",10,-0.5,9.5);
 	ejets = new TH1D("ejets", ";N_{jets};Entries",10,-0.5,9.5);
@@ -135,12 +135,13 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 		  calomet_vs_mht->Fill(calo_met, esums.total_mht, weight);
 
           if(esums.total_mht > 130.) {
+            cut_sel->Fill(4.,weight);
 
 		  if(esums.total_mht/calo_met < 1.25) {
 		      double alpha_t;
 		      bool pseudoSize;
 		      double biasedDPhi;
-		      cut_sel->Fill(4.,weight);
+		      cut_sel->Fill(5.,weight);
 		      std::vector<bool> pseudo;
 
 		      if (goodjets40.size() == 1){
@@ -165,7 +166,7 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 		      ///////////////////////////
 
 		      if (pseudoSize) {
-			  cut_sel->Fill(5.,weight);
+			  cut_sel->Fill(6.,weight);
 
 			  if(esums.total_ht > 200.0 && esums.total_ht <= 250.0 && alpha_t < 0.65) return;
 			  if(esums.total_ht > 250.0 && esums.total_ht <= 300.0 && alpha_t < 0.60) return;
@@ -175,7 +176,10 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 			  if(esums.total_ht > 500.0 && esums.total_ht <= 600.0 && alpha_t < 0.52) return;
 			  if(esums.total_ht > 600.0 && esums.total_ht <= 800.0 && alpha_t < 0.52) return;
 
+              cut_sel->Fill(7.,weight);
+
 			  if (biasedDPhi > 0.5){
+                cut_sel->Fill(8.,weight);
 			      if (esums.njets == 1){
 				  if (esums.nbtags == 0) {
 				      alphaStatsInputHists[0]->Fill(esums.total_ht,esums.total_mht,SITVweight);
