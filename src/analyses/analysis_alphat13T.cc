@@ -37,28 +37,39 @@ void Alphat13T::initHistos() {
 	andir->cd();
 	event_weight = new TH1D("event_weight",";weight_num;entries",1000,1940e9,1960e9);
 	cut_sel = new TH1D("cut_selection","cut;Entries",9,-0.5,8.5);
-	leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",200,-5.,1995.);
-	hthist = new TH1D("hthist", ";H_{T} [GeV];Entries",250,-5.,2495.);
-	mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",200,-5.,1995.);
+	leadingjetpt = new TH1D("leadingjetpt", ";P_{T} [GeV];Entries",50,0.,1000.);
+	hthist = new TH1D("hthist", ";H_{T} [GeV];Entries",40,0.,2000.);
+	mhthist = new TH1D("mhthist", ";Missing H_{T} [GeV];Entries",50,100.,1000.);
 	calomethist = new TH1D("calomethist", ";CALO Missing E_{T} [GeV];Entries",200,-5.,1995.);
-	athist = new TH1D("athist", ";#alpha_{T};Normalised",200,-0.005,1.995);
+	athist = new TH1D("athist", ";#alpha_{T};Normalised",20,0.,3.);
 	athist2jets = new TH1D("athist2jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
 	athist3jets = new TH1D("athist3jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
 	athist4jets = new TH1D("athist4jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
 	athist5jets = new TH1D("athist5jets", ";#alpha_{T};Normalised",200,-0.005,1.995);
-	biasedDPhiHist = new TH1D("bdphi",";;",36,0.,3.6);
-	njets = new TH1D("njets", ";N_{jets};Entries",10,-0.5,9.5);
+	biasedDPhiHist = new TH1D("bdphi",";;",20,0.,3.14);
+	njets = new TH1D("njets", ";N_{jets};Entries",10,0.,10.);
 	bjets = new TH1D("bjets", ";N_{jets};Entries",10,-0.5,9.5);
 	ejets = new TH1D("ejets", ";N_{jets};Entries",10,-0.5,9.5);
 	mjets = new TH1D("mjets", ";N_{jets};Entries",10,-0.5,9.5);
-	mht_over_ht = new TH1D("mht_over_ht",";MH_{T}/H_{T};Entries",200,-0.005, 1.995);
-	btagrate = new TH1D("btagrate",";#b-tags;Entries",10,-0.5,9.5);
+	mht_over_ht  = new TH1D("mht_over_ht", ";MH_{T}/H_{T};Entries", 200,-0.005, 1.995);
+    mht_over_met = new TH1D("mht_over_met",";MH_{T}/ME_{T};Entries",20,0.,2.);
+	btagrate = new TH1D("btagrate",";#b-tags;Entries",5,0.,5.);
 	calomet_vs_mht = new TH2D("calomet_vs_mht",";caloMET;MHT",200,-5.,1995., 200,-5.,1995.);
 	ht_vs_mht_pre_alphaT = new TH2D("ht_vs_mht_pre_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
 	ht_vs_mht_post_alphaT = new TH2D("ht_vs_mht_post_alphaT",";H_{T} [GeV]; Missing H_{T} [GeV]", 250, -5., 2495., 200, -5, 1995.);
+
+    leadingjetpt->Sumw2();
+    hthist->Sumw2();
+    mhthist->Sumw2();
+    athist->Sumw2();
+    biasedDPhiHist->Sumw2();
+    njets->Sumw2();
+    btagrate->Sumw2();
+    mht_over_met->Sumw2();
+
 	TDirectory * alphaStatsInput = andir->mkdir("alphaStatsInput");
     TDirectory * plotSummaryDir = andir->mkdir("plotSummary");
-    TDirectory * modelDir = plotSummaryDir->mkdir("model");
+    TDirectory * modelDir = plotSummaryDir->mkdir("Pseudo");
 	TString categoryList[32] = {
 	    "eq0b_eq1j","eq1b_eq1j",
 	"eq0b_eq2j","eq1b_eq2j","eq2b_eq2j",
@@ -122,15 +133,15 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 	  cut_sel->Fill(1.,weight);
 	  if(esums.pass_quality_cuts) { //this cut contains njets>=1, HT check requirements and leading/sub-leading requirements
 	      cut_sel->Fill(2.,weight);
-	      njets->Fill(esums.njets, weight);
-	      btagrate->Fill(esums.nbtags, weight);
-	      hthist->Fill(esums.total_ht, weight);
+	      //njets->Fill(esums.njets, weight);
+	      //btagrate->Fill(esums.nbtags, weight);
+	      //hthist->Fill(esums.total_ht, weight);
               ht_vs_mht_pre_alphaT->Fill(esums.total_ht, esums.total_mht, weight);
 
 	      if(esums.total_ht > 200.0) {
 		  cut_sel->Fill(3.,weight);
-		  mhthist->Fill(esums.total_mht, weight);
-		  mht_over_ht->Fill(esums.total_mht/esums.total_ht, weight);
+		  //mhthist->Fill(esums.total_mht, weight);
+		  //mht_over_ht->Fill(esums.total_mht/esums.total_ht, weight);
 		  //calomethist->Fill(calo_met);
 		  calomet_vs_mht->Fill(calo_met, esums.total_mht, weight);
 
@@ -159,7 +170,7 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 			  biasedDPhi = makeBiasedDPhi(goodjets40);
 			  pseudoSize = pseudo.size() == esums.etvec.size();
 		      }
-		      biasedDPhiHist->Fill(biasedDPhi,weight);
+		      //biasedDPhiHist->Fill(biasedDPhi,weight);
 		      ///////////////////////////////
 		      //PSEUDO SITV HERE - MUST REMOVE
 		      double SITVweight = weight;
@@ -178,8 +189,20 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 
               cut_sel->Fill(7.,weight);
 
-			  if (biasedDPhi > 0.5){
+			  if (biasedDPhi > 0.5) {
+
                 cut_sel->Fill(8.,weight);
+                leadingjetpt->Fill(goodjets40[0].Pt(),weight);
+                njets->Fill(esums.njets, weight);
+                btagrate->Fill(esums.nbtags, weight);
+                hthist->Fill(esums.total_ht, weight);
+                mhthist->Fill(esums.total_mht, weight);
+                mht_over_ht->Fill(esums.total_mht/esums.total_ht, weight);
+                mht_over_met->Fill(esums.total_mht/calo_met, weight);
+                if (goodjets40.size() > 1) biasedDPhiHist->Fill(biasedDPhi,weight);
+                athist->Fill(alpha_t, weight);
+                ht_vs_mht_post_alphaT->Fill(esums.total_ht, esums.total_mht, weight);
+
 			      if (esums.njets == 1){
 				  if (esums.nbtags == 0) {
 				      alphaStatsInputHists[0]->Fill(esums.total_ht,esums.total_mht,SITVweight);
@@ -326,8 +349,6 @@ void Alphat13T::Run(const Reader * treereader, const Reader * gentreereader, con
 				      plotSummary->Fill(esums.total_ht,31.5,weight);
 				  }
 			      }
-			      athist->Fill(alpha_t, weight);
-			      ht_vs_mht_post_alphaT->Fill(esums.total_ht, esums.total_mht, weight);
 
 			      if(esums.total_ht > 200.0 && esums.total_ht <= 250.0 && alpha_t > 0.65) { mSigPred.at(0)+=(SITVweight); }
 			      if(esums.total_ht > 250.0 && esums.total_ht <= 300.0 && alpha_t > 0.6) { mSigPred.at(1)+=(SITVweight); }

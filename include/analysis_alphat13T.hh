@@ -67,6 +67,7 @@ private:
   TH1D * bjets;
   TH1D * mjets;
   TH1D * mht_over_ht;
+  TH1D * mht_over_met;
   TH1D * btagrate;
   TH2D * calomet_vs_mht;
   TH2D * ht_vs_mht_pre_alphaT;
