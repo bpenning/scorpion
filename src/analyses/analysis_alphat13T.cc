@@ -67,9 +67,9 @@ void Alphat13T::initHistos() {
     btagrate->Sumw2();
     mht_over_met->Sumw2();
 
-	TDirectory * alphaStatsInput = andir->mkdir("alphaStatsInput");
+	TDirectory * alphaStatsInput = andir->mkdir("alphaStatsInputScorpion");
     TDirectory * plotSummaryDir = andir->mkdir("plotSummary");
-    TDirectory * modelDir = plotSummaryDir->mkdir("Pseudo");
+    TDirectory * modelDir = plotSummaryDir->mkdir("ScorpionModel");
 	TString categoryList[32] = {
 	    "eq0b_eq1j","eq1b_eq1j",
 	"eq0b_eq2j","eq1b_eq2j","eq2b_eq2j",
