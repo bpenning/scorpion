@@ -35,6 +35,7 @@ public :
   std::vector<jjet> GetMet() const;
   std::vector<jparticle> GetGenParticle() const;
   std::vector<double> GetScalarHT() const;
+  std::vector<double> GetSumET() const;
   double GetWeight() const;
 
 private:

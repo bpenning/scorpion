@@ -51,6 +51,7 @@ public :
   std::vector<jlepton> GetMuon() const;
   std::vector<jphoton> GetPhoton() const;
   std::vector<double> GetScalarHT() const;
+  std::vector<double> GetSumET() const;
   double GetWeight() const;
 
 private:
@@ -72,6 +73,7 @@ private:
   const TClonesArray * MUON; 
   const TClonesArray * ETMIS;
   const TClonesArray * SCALARHT;
+  const TClonesArray * SUMET;
 
   const TClonesArray * GENPARTICLE;
   const TClonesArray * GENEVENT;

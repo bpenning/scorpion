@@ -285,6 +285,13 @@ std::vector<double> D2Reader::GetScalarHT() const {
     return scalarht_collection;
 }
 
+std::vector<double> D2Reader::GetSumET() const {
+  //dummy for compatibility
+    std::vector<double> sumet_collection;
+    sumet_collection.push_back(-1);
+    return sumet_collection;
+}
+
 double D2Reader::GetWeight() const {
 //Dummy for compatability 
     return 1.0;

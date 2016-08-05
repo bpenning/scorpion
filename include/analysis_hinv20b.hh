@@ -54,14 +54,18 @@ public:
 private:
 
   TH1D * njets;
+  TH1D * njets_cjv;
   TH1D * nelectrons;
   TH1D * nmuons;
   TH1D * jet1pt;
   TH1D * jet2pt;
+  TH1D * jet3pt;
   TH1D * jet1eta;
   TH1D * jet2eta;
+  TH1D * jet3eta;
   TH1D * jet1phi;
   TH1D * jet2phi;
+  TH1D * jet3phi;
   TH1D * jetmet_mindphi;
   TH1D * met;
   TH1D * metsignificance;

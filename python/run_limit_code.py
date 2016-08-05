@@ -80,7 +80,7 @@ def runlim(outdir, filemap_dict, gen_info, delphes_int, use_event_weights, expec
     ge3lp8_20b = j.Cms3Lepton20Fb('GE3LP_analysis20', 'CMS8', 192, 19.5, 
             bg_cms3l8, bgunc_cms3l8, data_cms3l8, 'combined', calculate_r)
 
-    hinv8_20b = j.Hinv20b('hinv20b_analysis20', 'CMS8',1, 18.5, 
+    hinv8_20b = j.Hinv20b('hinv20b_analysis20', 'CMS8',1, 19.2, 
             bg_hinv20b, bgunc_hinv20b, data_hinv20b, 'individual', 
             calculate_r)
     
