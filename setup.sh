@@ -7,6 +7,7 @@
 
 
 #source /vols/cms/grid/setup.sh
+source /home/hep/bpenning/bin/setup_cmssw.sh
 source /vols/grid/cms/setup.sh
 export ROOTSYS='/vols/build/cms/penning/root/root/'
 export PYTHONPATH=$ROOTSYS/lib/:lib/

@@ -15,7 +15,8 @@ requirements
 installation
 ============
 
-Currently works at Imperial only (slc6). Recent upates (BP) are based on updated IC vols structure. Setting up CMSSW_8_0_4 before
+Currently works at Imperial only (slc6). Recent upates (BP) are based on updated IC vols structure. Setup scripts now includes CMSSW_8_0_4 to get all of the code without 
+compiling manually
 
 To install:
 ```bash
