@@ -1,0 +1,1 @@
+./run_jaf.py  --experiments CMS8 --jaf-output-dir output --analyses all-dm-8tev  --pythia-delphes-dirs  /vols/cms/pjd12_willgowhencorrectionsaredone/pjd12/scorpion/input/vbf-hinv-8TeV-powheg/mh125/
