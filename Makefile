@@ -2,18 +2,20 @@ PYTHON_INC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/include/py
 ROOT_INC=$(ROOTSYS)/include
 BOOST_INC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/include/
 #MINE
-ROOFIT_INC=$(ROOFITSYS)/include/ #/vols/cms03/mc3909/root/roofit/roofitcore/inc
-ROOFIT_INC2=$(ROOFITSYS)/include/ #/vols/cms03/mc3909/root/roofit/roofit/inc
+#ROOFIT_INC=$(ROOFITSYS)/include/ #/vols/cms03/mc3909/root/roofit/roofitcore/inc
+#ROOFIT_INC2=$(ROOFITSYS)/include/ #/vols/cms03/mc3909/root/roofit/roofit/inc
+ROOFIT_INC=/vols/build/cms/penning/bin/root/roofit/roofit/inc/
+ROOFIT_INC2=/vols/build/cms/penning/bin/root/roofit/roofitcore/inc/
 
-LIMIT_INC=/vols/cms03/mc3909/LandS/include
+LIMIT_INC=/vols/build/cms/penning/scorpion/LandS/include/
+
 
 PYTHON_LIB=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/lib/python2.7
 ROOT_LIB=$(ROOTSYS)/lib
 BOOST_LIB=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/lib/
 #MINE
 ROOFIT_LIB=$(ROOFITSYS)/lib/
-LIMIT_LIB=/vols/cms03/mc3909/LandS
-#DELPHES_LIB=/home/hep/mc3909/scorpion/
+LIMIT_LIB=/vols/build/cms/penning/scorpion/LandS/
 DELPHES_LIB=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 CXX=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/bin/g++
@@ -40,7 +42,7 @@ CXXFLAGS=-c -fPIC -ansi -g -DLinux
 
 all: $(ANALYSESOBJ) $(COREOBJ) $(OBJDIR)/fileobject_class.o $(OBJDIR)/delphesdictionary.o
 	@echo Building Library
-	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) \
+	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -I$(ROOFIT_INC2) \
 		-L$(DELPHES_LIB) -L$(PWD) -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) \
 	   	-g -fPIC $(COREDIR)/python.cc -shared \
 		-lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lDelphes -lRint -lPostscript \
