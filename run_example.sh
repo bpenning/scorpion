@@ -1,0 +1,1 @@
+./run_jaf.py  --experiments CMS8 --jaf-output-dir output --analyses all-dm-8tev  --pythia-delphes-dirs  example/
