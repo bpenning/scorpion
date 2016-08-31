@@ -15,7 +15,7 @@ requirements
 installation
 ============
 
-Currently works at Imperial only (slc6). Recent upates (BP) are based on updated IC vols structure. Setting up CMSSW_8_0_4 before
+Currently on slc6 with setup of CMSSW_8_0_4 (included in setup script). Note: conflics with CMSSW root version, please edid setup.sh to point to your manual root installation
 
 To install:
 ```bash
