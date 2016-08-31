@@ -28,7 +28,7 @@ To see options run with:
 ```
 Example for runnning DM searches set up for CMS (8TeV)
 ```bash
-./run_jaf.py  --experiments CMS8 --jaf-output-dir output --analyses all-dm-8tev  --pythia-delphes-dirs  /vols/cms04/pjd12/scorpion/input/vbf-hinv-8TeV-powheg/mh125/
+   source run_example.sh
 ```
 
 
