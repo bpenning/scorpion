@@ -14,9 +14,9 @@ cd CMSSW_8_0_4/src/; cmsenv; cd ../../
 #change here to your ROOTSYS directory, doesn't compile for some reason with ROOTSYS in CMSSW
 export ROOTSYS='/vols/build/cms/penning/root/root/'
 export PYTHONPATH=$ROOTSYS/lib/:lib/
-export SCORPIONSYS='/home/hep/bpenning/build/generator/scorpion/lib'
+export SCORPIONSYS=./lib
 
-MY_LD_LIBRARY_PATH=$ROOTSYS/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/lib/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/libjpg/8b/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/lib/python2.7:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/lib/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/lib64/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/xz/5.0.3__5.1.2alpha/lib:/home/hep/bpenning/build/scorpion/LandS/:
+MY_LD_LIBRARY_PATH=$ROOTSYS/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/lib/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/libjpg/8b/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/lib/python2.7:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/lib/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/lib64/:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/xz/5.0.3__5.1.2alpha/lib
 
 
 
