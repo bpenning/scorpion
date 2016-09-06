@@ -1,12 +1,11 @@
-#ROOTSYS=/vols/build/cms/penning/root/root/
 PYTHON_INC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/include/python2.7
 ROOT_INC=$(ROOTSYS)/include
 BOOST_INC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/include/
 #MINE
-ROOFIT_INC=/vols/build/cms/penning/bin/root/roofit/roofit/inc/
-ROOFIT_INC2=/vols/build/cms/penning/bin/root/roofit/roofitcore/inc/
+ROOFIT_INC=$(ROOTSYS)/roofit/roofit/inc/
+ROOFIT_INC2=$(ROOTSYS)/roofit/roofitcore/inc/
 ROOFITSY=$(ROOTSYS)
-LIMIT_INC=/vols/build/cms/penning/scorpion/LandS/include/
+LIMIT_INC=./LandS/include/
 
 
 PYTHON_LIB=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/lib/python2.7

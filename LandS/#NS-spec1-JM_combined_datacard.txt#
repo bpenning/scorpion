@@ -1,0 +1,42 @@
+# Counting experiment with multiple channels
+imax 16  number of channels
+jmax 1  number of backgrounds
+kmax 32  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# n bins
+bin            b1  b2  b3  b4  b5  b6  b7  b8  b9  b10  b11  b12  b13  b14  b15  b16
+observation    3703  1536  1043  346  122  44  14  6  3703  1536  1043  346  122  44  14  6
+------------
+# now we list the expected events for signal and all backgrounds in that bin
+# the second 'process' line must have a positive number for backgrounds, and 0 for signal
+# now we list the independent sources of uncertainties, and give their effect (syst. error)
+# on each process and bin
+bin            b1    b1   b2    b2   b3    b3   b4    b4   b5    b5   b6    b6   b7    b7   b8    b8   b9    b9   b10    b10   b11    b11   b12    b12   b13    b13   b14    b14   b15    b15   b16    b16
+process        sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg
+process         0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1
+rate           0.105178   3735.5  0.114739   1478.9  0.513139   1049.6  0.870106   370.1  1.05178   116.4  1.15377   52.6  1.15377   14  2.86529   8.6  0.105178   3735.5  0.114739   1478.9  0.513139   1049.6  0.870106   370.1  1.05178   116.4  1.15377   52.6  1.15377   14  2.86529   8.6
+------------
+signal1   lnN   1.2    -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   15% uncertainty on signal
+signal   lnN   1.2    -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   15% uncertainty on signal
+signal   lnN   1.2    -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   15% uncertainty on signal
+signal   lnN   1.2    -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   15% uncertainty on signal
+signal   lnN   1.2    -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   15% uncertainty on signal
+signal   lnN   1.2    -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   15% uncertainty on signal
+signal   lnN   1.2    -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   15% uncertainty on signal
+signal   lnN   1.2    -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   -      -   15% uncertainty on signal
+bgb1    lnN     -    1.017    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb2    lnN     -     -    -    1.03    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb3    lnN     -     -    -     -    -    1.03    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb4    lnN     -     -    -     -    -     -    -    1.04    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb5    lnN     -     -    -     -    -     -    -     -    -    1.062    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb6    lnN     -     -    -     -    -     -    -     -    -     -    -    1.09    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb7    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -    1.21    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb8    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.22    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb9    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.017    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb10    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.03    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb11    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.03    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb12    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.04    -     -    -     -    -     -    -     -    x% on background in bin
+bgb13    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.062    -     -    -     -    -     -    x% on background in bin
+bgb14    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.09    -     -    -     -    x% on background in bin
+bgb15    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.21    -     -    x% on background in bin
+bgb16    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.22    x% on background in bin

@@ -1,0 +1,63 @@
+2011-06-22  Matevz Tadel  <matevz.tadel@cern.ch>
+
+	Last pass of "return member vectors by const-ref" optimizations:
+	all getters are converted now.
+	See previous entry about two more steps that need to be done.
+
+	* include/CountingModel.h
+	One last missed vector.
+
+	* include/BayesianBase.h
+	* include/CLsLimit.h
+	* include/SignificanceBands.h
+	* src/CLsLimit.cc
+	Return member vectors via const-ref.
+	Remove unnecessary semi-colons after inline methods.
+
+2011-06-22  Matevz Tadel  <matevz.tadel@cern.ch>
+
+	Second pass of "return member vectors by const-ref" optimizations:
+	now all getters in CountingModel.h and LimitBands.h are converted.
+
+	What remains to be done:
+	- convert getters in other .h files;
+	- trace down code in .cc files that uses all these getters;
+	- inspect / improve usage of vectors as function arguments.
+
+	* include/CountingModel.h
+	* src/CountingModel.cc
+	Return vectors by const-ref in all remaining functions.
+
+	* include/LimitBands.h
+	Return vectors by const-ref in all functions.
+	Remove unnecessary semi-colons after inline methods.
+
+	* src/CLsLimit.cc
+	Move one declaration into scope to allow usage of refs.
+
+2011-06-22  Matevz Tadel  <matevz.tadel@cern.ch>
+
+	First pass of optimizations - focused on Dima's use-case.
+	Note that retrieval of vectors from CountingModel should be fixed
+	in other places, too.
+
+	* makefile:
+	Enable -O2 optimization by default. Also enable debug infromation
+	as with gcc this does not slow down the execution.
+	Add options for compiling with profiling information.
+	Use standard variable names for compiler, linker and flags.
+
+	* include/CountingModel.h
+	Return most vectors by const reference.
+	Remove unnecessary semi-colons after inline methods.
+
+	* src/CLsLimit.cc
+	in function void Chisquare(...) store vectors from CountingModel
+	into const references to avoid unnecessary creation, copying and
+	destruction.
+
+	* test/lands.cc
+	Add profiling instrumentation.
+
+	* changelog
+	New file for documenting changes.

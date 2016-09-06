@@ -1,0 +1,25 @@
+# Counting experiment with multiple channels
+imax 6  number of channels
+jmax 1  number of backgrounds
+kmax 7  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# n bins
+bin            b1  b2  b3  b4  b5  b6
+observation    9  6  5  10  5  13
+------------
+# now we list the expected events for signal and all backgrounds in that bin
+# the second 'process' line must have a positive number for backgrounds, and 0 for signal
+# now we list the independent sources of uncertainties, and give their effect (syst. error)
+# on each process and bin
+bin            b1    b1   b2    b2   b3    b3   b4    b4   b5    b5   b6    b6
+process        sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg
+process         0    1    0    1    0    1    0    1    0    1    0    1
+rate           2.71235   5.7  6.73516   5.2  1.31046   5.6  0.609517   5.7  1.55427   5.2  0.36571   5.6
+------------
+signal   lnN   1.2    -   1.2    -   1.2    -   1.2    -   1.2    -   1.2    -   15% uncertainty on signal
+bgb1    lnN     -    1.89    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb2    lnN     -     -    -    1.79    -     -    -     -    -     -    -     -    x% on background in bin
+bgb3    lnN     -     -    -     -    -    1.61    -     -    -     -    -     -    x% on background in bin
+bgb4    lnN     -     -    -     -    -     -    -    1.89    -     -    -     -    x% on background in bin
+bgb5    lnN     -     -    -     -    -     -    -     -    -    1.79    -     -    x% on background in bin
+bgb6    lnN     -     -    -     -    -     -    -     -    -     -    -    1.61    x% on background in bin

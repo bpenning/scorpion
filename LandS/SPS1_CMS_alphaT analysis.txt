@@ -1,0 +1,27 @@
+# Counting experiment with multiple channels
+imax 8  number of channels
+jmax 1  number of backgrounds
+kmax 9  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# n bins
+bin            b1  b2  b3  b4  b5  b6  b7  b8
+observation    782  321  196  62  21  6  3  1
+------------
+# now we list the expected events for signal and all backgrounds in that bin
+# the second 'process' line must have a positive number for backgrounds, and 0 for signal
+# now we list the independent sources of uncertainties, and give their effect (syst. error)
+# on each process and bin
+bin            b1    b1   b2    b2   b3    b3   b4    b4   b5    b5   b6    b6   b7    b7   b8    b8
+process        sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg    sig    bg
+process         0    1    0    1    0    1    0    1    0    1    0    1    0    1    0    1
+rate           0.202032   787  0.242439   310  0.323252   202  0.262642   60.4  0.232337   20.3  0.171728   7.7  0.232337   3.2  0.242439   2.8
+------------
+signal   lnN   1.15    -   1.15    -   1.15    -   1.15    -   1.15    -   1.15    -   1.15    -   1.15    -   15% uncertainty on signal
+bgb1    lnN     -    1.05    -     -    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb2    lnN     -     -    -    1.05    -     -    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb3    lnN     -     -    -     -    -    1.05    -     -    -     -    -     -    -     -    -     -    x% on background in bin
+bgb4    lnN     -     -    -     -    -     -    -    1.07    -     -    -     -    -     -    -     -    x% on background in bin
+bgb5    lnN     -     -    -     -    -     -    -     -    -    1.09    -     -    -     -    -     -    x% on background in bin
+bgb6    lnN     -     -    -     -    -     -    -     -    -     -    -    1.1    -     -    -     -    x% on background in bin
+bgb7    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -    1.13    -     -    x% on background in bin
+bgb8    lnN     -     -    -     -    -     -    -     -    -     -    -     -    -     -    -    1.15    x% on background in bin

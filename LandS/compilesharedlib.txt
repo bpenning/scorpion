@@ -1,0 +1,9 @@
+ g++ -Iinclude -I/vols/cms02/jm1103/ROOT/root/include -L/vols/cms02/jm1103/ROOT/root/lib -fPIC test/jadtest.cc -shared -lGpad -lHist -lGraf -lGraf3d 
+-lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lRIO -lNet -lThread -lCore -lCint -pthread -lm -ldl -rdynamic -m64 -lMathMore -lMinuit 
+-lRooFit -lRooFitCore -lFoam -o lib_fitshit.so bin/BayesianBase.o  bin/CLsLimit.o  bin/CountingModel.o  bin/CRandom.o  bin/LimitBands.o  
+bin/MLLxsBands.o  bin/PlotUtilities.o  bin/SignificanceBands.o  bin/Utilities.o  bin/UtilsROOT.o
+
+
+
+#use this command to make liblimitcode!
+/vols/sl5_exp_software/cms/slc5_amd64_gcc462/external/gcc/4.6.2/bin/g++ -shared -o liblimitcode.so bin/*.o

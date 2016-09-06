@@ -1,0 +1,37 @@
+/2010.06.22_hww_mh160B_3ch_0jets.txt/1.1/Thu Jul  8 14:16:47 2010//Tt3-04-17
+/AKinputTemplate.cc/1.1/Thu Jul  8 14:05:54 2010//Tt3-04-17
+/Bayesian.cc/1.7/Thu Jun 16 19:05:55 2011//Tt3-04-17
+/Bayesian.cc_def/1.1/Wed Mar  9 09:02:48 2011//Tt3-04-17
+/Bayesian_2dataCards.cc/1.3/Fri Mar 25 16:35:18 2011//Tt3-04-17
+/Bayesian_dataCard.cc/1.3/Wed Mar  9 08:59:39 2011//Tt3-04-17
+/CLs.cc/1.6/Thu Jun 16 19:05:55 2011//Tt3-04-17
+/CLs.cc_def/1.1/Wed Mar  9 09:02:48 2011//Tt3-04-17
+/CLs_dataCard.cc/1.5/Sat Mar 12 23:28:54 2011//Tt3-04-17
+/FloridaStyle.C/1.1/Thu Jul  8 13:23:05 2010//Tt3-04-17
+/MSSM_A_R95_tb20.txt/1.1/Thu Jul  8 14:05:54 2010//Tt3-04-17
+/MultipleChannels.cc/1.2/Tue Mar  8 22:35:51 2011//Tt3-04-17
+/MultipleChannels.cc_47sources/1.1/Thu Jul  8 14:05:54 2010//Tt3-04-17
+/MultipleChannels.cc_AKinput/1.1/Wed Mar  9 09:02:48 2011//Tt3-04-17
+/MultipleChannels.cc_ForHZZ10TeVNote/1.1/Thu Jul  8 13:23:05 2010//Tt3-04-17
+/MultipleChannels.cc_standard/1.1/Wed Mar  9 09:02:48 2011//Tt3-04-17
+/PlotUtilities_standalone.cc/1.10/Tue Aug 23 20:07:44 2011//Tt3-04-17
+/PlotUtilities_standalone.h/1.6/Wed Jul 27 17:12:40 2011//Tt3-04-17
+/ProfileLikelihoodApproxLimit.cc/1.2/Sat Mar 12 22:14:15 2011//Tt3-04-17
+/ShapeAnalysis.cc_ForHZZ10TeVNote/1.1/Thu Jul  8 13:23:05 2010//Tt3-04-17
+/Significance_dataCard.cc/1.3/Wed Mar  9 08:59:39 2011//Tt3-04-17
+/drawMSSMA.cc/1.1/Thu Jul  8 14:05:54 2010//Tt3-04-17
+/example.cc/1.2/Wed Mar  9 08:59:39 2011//Tt3-04-17
+/exampleMakeTevatron.cc/1.1/Wed Mar  9 09:02:48 2011//Tt3-04-17
+/fitRvsCLs.C/1.9/Fri Jan  6 11:55:20 2012//Tt3-04-17
+/fitRvsCLsb.C/1.1/Tue Jan 24 17:38:42 2012//Tt3-04-17
+/inputs.C/1.1/Thu Jul  8 14:05:54 2010//Tt3-04-17
+/lands.cc/1.93/Tue Apr  3 20:48:01 2012//Tt3-04-17
+/makeplots.cc/1.1/Tue Mar  8 22:37:06 2011//Tt3-04-17
+/plot2GraphsFromCanvas.C/1.1/Thu Jul  8 14:05:54 2010//Tt3-04-17
+/plotBand.C/1.2/Thu Aug  4 13:59:01 2011//Tt3-04-17
+/runCLsHZZ2l2nu.py/1.1/Wed Jul 27 17:28:45 2011//Tt3-04-17
+/runLHC.C/1.2/Mon Jul  4 11:06:44 2011//Tt3-04-17
+/test.card/1.1/Wed Mar  9 09:02:48 2011//Tt3-04-17
+/testGenerator.cc/1.1/Thu Jul  8 14:05:54 2010//Tt3-04-17
+D/MSSM_A////
+D/hww4atlas_2011.03.11////
