@@ -1,31 +1,25 @@
-PYTHON_INC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/include/python2.7
-ROOT_INC=$(ROOTSYS)/include
-BOOST_INC=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/include/
-#MINE
-ROOFIT_INC=$(ROOTSYS)/roofit/roofit/inc/
-ROOFIT_INC2=$(ROOTSYS)/roofit/roofitcore/inc/
-ROOFITSY=$(ROOTSYS)
-LIMIT_INC=./LandS/include/
+CXX=g++
 
+CXXFLAGS=-c -fPIC -ansi -g -DLinux
 
-PYTHON_LIB=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/python/2.7.6/lib/python2.7
-ROOT_LIB=$(ROOTSYS)/lib/
-BOOST_LIB=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0/lib/
-#MINE
-ROOFIT_LIB=$(ROOFITSYS)/lib/
-LIMIT_LIB=/vols/build/cms/penning/scorpion/LandS/
+OBJDIR=$(SCORPIONDIR)/obj
+INCDIR=$(SCORPIONDIR)/include
+LIBDIR=$(SCORPIONDIR)/lib
+
+PYTHON_INC=$(shell python-config --includes) 
+ROOT_INC=$(shell root-config --incdir)
+BOOST_INC=$(BOOSTDIR)/include
+ROOFIT_INC=$(ROOFITSYS)/include
+LIMIT_INC=$(SCORPIONDIR)/LandS/include
+
+BOOST_LIB=$(BOOSTDIR)/lib
+LIMIT_LIB=$(SCORPIONDIR)/LandS
 DELPHES_LIB=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-CXX=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/bin/g++
 
-OBJDIR=obj
-INCDIR=include
-LIBDIR=lib
-
-ANALYSESDIR=src/analyses
-COREDIR=src/core
-
+ANALYSESDIR=$(SCORPIONDIR)/src/analyses
 ANALYSES=$(wildcard $(ANALYSESDIR)/*.cc)
+COREDIR=$(SCORPIONDIR)/src/core
 CORE=$(filter-out $(COREDIR)/python.cc $(COREDIR)/fileobject_class.cc, $(wildcard $(COREDIR)/*.cc))
 #filter out python.cc and fileobject_class.cc which require specialist treatment
 
@@ -36,17 +30,19 @@ CORE=$(filter-out $(COREDIR)/python.cc $(COREDIR)/fileobject_class.cc, $(wildcar
 ANALYSESOBJ=$(subst .cc,.o,$(subst $(ANALYSESDIR)/,$(OBJDIR)/,$(ANALYSES)))
 COREOBJ=$(subst .cc,.o,$(subst $(COREDIR)/,$(OBJDIR)/,$(CORE)))
 
-CXXFLAGS=-c -fPIC -ansi -g -DLinux
+
 
 all: $(ANALYSESOBJ) $(COREOBJ) $(OBJDIR)/fileobject_class.o $(OBJDIR)/delphesdictionary.o
 	@echo Building Library
-	$(CXX) -I$(INCDIR) -I$(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -I$(ROOFIT_INC2) \
-		-L$(DELPHES_LIB) -L$(PWD) -L$(BOOST_LIB) -L$(PYTHON_LIB) -L$(ROOT_LIB) -L$(LIMIT_LIB) -L$(ROOFIT_LIB) \
+	$(CXX) -I$(INCDIR) $(PYTHON_INC) -I$(BOOST_INC) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) \
 	   	-g -fPIC $(COREDIR)/python.cc -shared \
-		-lboost_python -lpython2.6 -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lDelphes -lRint -lPostscript \
-		-lMatrix -lPhysics -lMathCore -lThread -lMathMore -lGenVector -lMinuit -lRooFit -lRooFitCore -pthread -lm -ldl -llimitcode \
-	   	-rdynamic -pthread -m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
+		$(ROOTLIB) -L$(shell root-config --libdir) -lMathMore -lGenVector -lMinuit \
+		$(PYTHONLIB) -L$(BOOST_LIB) -lboost_python -L$(DELPHES_LIB) -lDelphes \
+		-L$(ROOFITSYS)/lib -lRooFit -lRooFitCore \
+		-L$(LIMIT_LIB) -llimitcode \
+	   	-m64 -o $(LIBDIR)/libjad_DelphesAnalysis.so $(wildcard $(OBJDIR)/*.o)
 	@echo --DONE--
+
 
 $(ANALYSESOBJ): $(ANALYSES)
 	@echo Compiling $(subst .o,.cc,$(subst $(OBJDIR),$(ANALYSESDIR),$@))
@@ -54,7 +50,7 @@ $(ANALYSESOBJ): $(ANALYSES)
 
 $(COREOBJ): $(CORE)
 	@echo Compiling $(subst .o,.cc,$(subst $(OBJDIR),$(COREDIR),$@))
-	$(CXX) $(CXXFLAGS) $(subst .o,.cc,$(subst $(OBJDIR),$(COREDIR),$@)) -o $@ -pthread -m64 -I$(INCDIR) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) -I$(ROOFIT_INC2)
+	$(CXX) $(CXXFLAGS) $(subst .o,.cc,$(subst $(OBJDIR),$(COREDIR),$@)) -o $@ -pthread -m64 -I$(INCDIR) -I$(ROOT_INC) -I$(LIMIT_INC) -I$(ROOFIT_INC) 
 
 $(OBJDIR)/fileobject_class.o: $(COREDIR)/fileobject_class.cc
 	@echo Compiling $(COREDIR)/fileobject_class.cc
